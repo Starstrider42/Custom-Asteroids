@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -134,14 +134,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ac54ce402cec4f1d67a1cef4db841d26d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function is called when the object will be destroyed.  <a href="#ac54ce402cec4f1d67a1cef4db841d26d">More...</a><br/></td></tr>
 <tr class="separator:ac54ce402cec4f1d67a1cef4db841d26d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adb78016c077d49bc61a4a1d64d0ab917"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917">CatchAsteroidSpawn</a> (Vessel vessel)</td></tr>
-<tr class="memdesc:adb78016c077d49bc61a4a1d64d0ab917"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects newly created asteroids and forwards them to <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> for processing.  <a href="#adb78016c077d49bc61a4a1d64d0ab917">More...</a><br/></td></tr>
+<tr class="memdesc:adb78016c077d49bc61a4a1d64d0ab917"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects newly created asteroids and forwards them to <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html" title="Central class for controlling asteroid orbits. ">OrbitManager</a> for processing.  <a href="#adb78016c077d49bc61a4a1d64d0ab917">More...</a><br/></td></tr>
 <tr class="separator:adb78016c077d49bc61a4a1d64d0ab917"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class for identifying and manipulating new asteroids before they are seen by the player. </p>
 <dl class="section invariant"><dt>Invariant</dt><dd>At most one instance of this class exists </dd>
 <dd>
-If and only if an instance of this class edists, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to Population for processing. ">SpawnCatcher.CatchAsteroidSpawn()</a> will be called whenever a new vessel is created </dd></dl>
+If and only if an instance of this class edists, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to OrbitManager for processing. ...">SpawnCatcher.CatchAsteroidSpawn()</a> will be called whenever a new vessel is created </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="adb78016c077d49bc61a4a1d64d0ab917"></a>
 <div class="memitem">
@@ -157,14 +157,14 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
       </table>
 </div><div class="memdoc">
 
-<p>Selects newly created asteroids and forwards them to <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> for processing. </p>
+<p>Selects newly created asteroids and forwards them to <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html" title="Central class for controlling asteroid orbits. ">OrbitManager</a> for processing. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">vessel</td><td>A newly created ship object</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section post"><dt>Postcondition</dt><dd>if <code>vessel</code> is an asteroid, its orbit is modified using <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a>. Otherwise, the function has no effect</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>if <code>vessel</code> is an asteroid, its orbit is modified using <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html" title="Central class for controlling asteroid orbits. ">OrbitManager</a>. Otherwise, the function has no effect</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>Unknown exception spec </dd></dl>
 
 </div>
@@ -184,7 +184,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 
 <p>This function is called when the object will be destroyed. </p>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">Unity Documentation</a></dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to Population for processing. ">SpawnCatcher.CatchAsteroidSpawn()</a> will no longer be called whenever a new vessel is created</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to OrbitManager for processing. ...">SpawnCatcher.CatchAsteroidSpawn()</a> will no longer be called whenever a new vessel is created</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>Unknown exception spec </dd></dl>
 
 </div>
@@ -204,7 +204,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 
 <p>Called on the frame when a script is enabled just before any of the Update methods is called the first time. </p>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html">Unity Documentation</a></dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to Population for processing. ">SpawnCatcher.CatchAsteroidSpawn()</a> will henceforth be called whenever a new vessel is created</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to OrbitManager for processing. ...">SpawnCatcher.CatchAsteroidSpawn()</a> will henceforth be called whenever a new vessel is created</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>Unknown exception spec </dd></dl>
 
 </div>
@@ -218,7 +218,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html">SpawnCatcher</a></li>
-    <li class="footer">Generated on Wed Apr 9 2014 21:35:28 for Custom Asteroids by
+    <li class="footer">Generated on Thu Apr 10 2014 22:55:57 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -8,8 +8,7 @@ using UnityEngine;
 
 namespace Starstrider42 {
 
-	namespace CustomAsteroids
-	{
+	namespace CustomAsteroids {
 		/** Class for identifying and manipulating new asteroids before they are seen by the player
 		 * 
 		 * @invariant At most one instance of this class exists
@@ -45,11 +44,11 @@ namespace Starstrider42 {
 				GameEvents.onVesselCreate.Remove(CatchAsteroidSpawn);
 			}
 
-			/** Selects newly created asteroids and forwards them to Population for processing
+			/** Selects newly created asteroids and forwards them to OrbitManager for processing
 			 * 
 			 * @param[in] vessel A newly created ship object
 			 * 
-			 * @post if @p vessel is an asteroid, its orbit is modified using Population. Otherwise, 
+			 * @post if @p vessel is an asteroid, its orbit is modified using OrbitManager. Otherwise, 
 			 * 		the function has no effect
 			 * 
 			 * @warning Unknown exception spec
@@ -58,15 +57,12 @@ namespace Starstrider42 {
 				if (vessel.vesselType == VesselType.SpaceObject || vessel.vesselType == VesselType.Unknown) {
 					// Verify that each asteroid is caught exactly once
 					Debug.Log("CustomAsteroids: caught spawn of " + vessel.GetName());
-					//vessel.DiscoveryInfo.SetLastObservedTime(Planetarium.GetUniversalTime());
 
 					// track it by default, else its orbit won't be visible in mapview
+					//vessel.DiscoveryInfo.SetLastObservedTime(Planetarium.GetUniversalTime());
 					//vessel.DiscoveryInfo.SetLevel(DiscoveryLevels.StateVectors | DiscoveryLevels.Name | DiscoveryLevels.Presence);
 
-					Population x = new Population();
-					//Orbit newOrbit = new Orbit(RandomDist.drawAngle(), 0f, 1060053.49854083, 217.714701468054, 126.848000556171, 0.52911447506945, Planetarium.GetUniversalTime(), FlightGlobals.Bodies.Find(body => body.name == "Eve"));
-
-					vessel.orbitDriver.orbit = x.drawOrbit();
+					vessel.orbitDriver.orbit = OrbitManager.makeOrbit();
 				}
 			}
 		}

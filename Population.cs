@@ -5,42 +5,101 @@
  */
 
 using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace Starstrider42 {
 
-	namespace CustomAsteroids
-	{
+	namespace CustomAsteroids {
 		/** Represents a set of asteroids with similar orbits
 		 */
-		public class Population
+		internal class Population
 		{
+			/** Default constructor.
+			 * 
+			 * Without later modification, the object is not suitable for use
+			 * 
+			 * @note Required by interface of CustomNode.LoadObjectFromConfig()
+			 */
+			internal Population() {
+				this.name = "";
+				// Make sure that we don't get any asteroids until the values are set sensibly
+				this.spawnRate = 0.0;
+				this.smaMin = 0.0;
+				this.smaMax = 0.0;
+				this.eccAvg = 0.0;
+				this.incAvg = 0.0;
+			}
+
+			/** Creates a population with specific properties
+			 * 
+			 * @param[in] name The name of the population. Currently unused.
+			 * @param[in] rate The desired rate at which asteroids appear in the population. Currently relative to 
+			 * 		the rates of all other populations.
+			 * @param[in] aMin,aMax The minimum and maximum semimajor axes allowed in the population.
+			 * @param[in] eAvg, iAvg The average eccentricity and (absolute value of) inclination of the population.
+			 * 
+			 * @todo Find a way to let constructor throw exceptions without breaking PopulationLoader
+			 */
+			internal Population(string name, double rate, double aMin, double aMax, double eAvg, double iAvg) {
+				this.name = name;
+				this.spawnRate = rate;
+				this.smaMin = aMin;
+				this.smaMax = aMax;
+				this.eccAvg = eAvg;
+				this.incAvg = iAvg;
+			}
+
 			/** Generates a random orbit consistent with the population properties
 			 * 
 			 * @return The orbit of a randomly selected member of the population
 			 * 
-			 * @note Current implementation has a hardcoded asteroid belt. I intend to make it more general later
+			 * @exception System.ArgumentOutOfRangeException Thrown if population has invalid parameters.
+			 * 
+			 * @todo Move this test to the constructor, where it belongs.
+			 * 
+			 * @exceptsafe The program is in a consistent state in the event of an exception
 			 */
-			public Orbit drawOrbit() {
-				// Some mods might rename it to "Kerbol" or something else
+			internal Orbit drawOrbit() {
+				// Would like to make this static, but I don't know when it would be initialized
 				CelestialBody sun  = FlightGlobals.Bodies.Find(body => body.name == "Sun");
+				// Some mods might rename it to "Kerbol" or something else
 				if (sun == null) sun = FlightGlobals.Bodies[0];
 
-				double aJool = FlightGlobals.Bodies.Find(body => body.name == "Jool").GetOrbit().semiMajorAxis;
+				Debug.Log("CustomAsteroids: drawing orbit from " + name);
 
-				double a = RandomDist.drawLogUniform(aJool*Math.Pow(0.25,2.0/3.0), aJool*Math.Pow(0.5,2.0/3.0));
-				double e = RandomDist.drawRayleigh(0.18);
-				double i = RandomDist.drawSign() * RandomDist.drawRayleigh(7.5);		// I *think* angles are in degrees...
+				double a = RandomDist.drawLogUniform(smaMin, smaMax);
+				double e = RandomDist.drawRayleigh(eccAvg);
+				// Explicit sign is redundant with 180-degree shift in longitude of ascending node
+				double i = /*RandomDist.drawSign() * */ RandomDist.drawRayleigh(incAvg);
+				double aPe = RandomDist.drawAngle();		// argument of periapsis
+				double lAn = RandomDist.drawAngle();		// longitude of ascending node
+				double mEp = RandomDist.drawAngle();		// mean anomaly at epoch?
 
 				Debug.Log("CustomAsteroids: new orbit at " + a + " m, e = " + e + ", i = " + i);
 
-				Orbit newOrbit = new Orbit(i, e, a, RandomDist.drawAngle(), RandomDist.drawAngle(), RandomDist.drawAngle(), 
-					Planetarium.GetUniversalTime(),sun);
-				//Orbit newOrbit = new Orbit(RandomDist.drawAngle(), 0f, 1060053.49854083, 217.714701468054, 126.848000556171, 0.52911447506945, Planetarium.GetUniversalTime(), FlightGlobals.Bodies.Find(body => body.name == "Eve"));
+				Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, Planetarium.GetUniversalTime(), sun);
 				newOrbit.UpdateFromUT(Planetarium.GetUniversalTime());
 
 				return newOrbit;
 			}
+
+			/** Returns the rate at which asteroids are discovered in the population
+			 * 
+			 * @return The rate relative to the rates of all other populations.
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal double getSpawnRate() {
+				return spawnRate;
+			}
+
+			[Persistent] private string name;
+			[Persistent] private double spawnRate;
+			[Persistent] private double smaMin;
+			[Persistent] private double smaMax;
+			[Persistent] private double eccAvg;
+			[Persistent] private double incAvg;
 		}
 	}
 }

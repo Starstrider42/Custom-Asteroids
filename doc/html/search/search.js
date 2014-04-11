@@ -7,12 +7,13 @@
 
 var indexSectionsWithContent =
 {
-  0: "cdoprsv",
-  1: "prs",
+  0: "cdfglmoprstvw",
+  1: "oprs",
   2: "s",
-  3: "cprs",
-  4: "cdos",
-  5: "cv"
+  3: "coprs",
+  4: "cdglmopsw",
+  5: "fs",
+  6: "ctv"
 };
 
 var indexSectionNames =
@@ -22,7 +23,8 @@ var indexSectionNames =
   2: "namespaces",
   3: "files",
   4: "functions",
-  5: "pages"
+  5: "properties",
+  6: "pages"
 };
 
 function convertToId(search)

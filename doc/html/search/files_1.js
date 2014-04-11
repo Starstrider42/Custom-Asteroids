@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['population_2ecs',['Population.cs',['../_population_8cs.html',1,'']]]
+  ['orbitmanager_2ecs',['OrbitManager.cs',['../_orbit_manager_8cs.html',1,'']]]
 ];

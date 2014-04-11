@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -107,7 +107,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 
 <div class="header">
   <div class="summary">
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
+<a href="#pac-static-methods">Static Package Functions</a> &#124;
 <a href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">RandomDist Class Reference</div>  </div>
@@ -117,8 +117,11 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 <p>Contains static methods for random number distributions.  
  <a href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#details">More...</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-static-methods"></a>
+Static Package Functions</h2></td></tr>
+<tr class="memitem:a93a0d6c7d2fb9c073d3fb1eea39f0402"><td class="memItemLeft" align="right" valign="top">static T&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a93a0d6c7d2fb9c073d3fb1eea39f0402">weightedSample&lt; T &gt;</a> (System.Collections.Generic.IList&lt; Pair&lt; T, double &gt;&gt; weightedChoices)</td></tr>
+<tr class="memdesc:a93a0d6c7d2fb9c073d3fb1eea39f0402"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomly selects from discrete options with unequal weights.  <a href="#a93a0d6c7d2fb9c073d3fb1eea39f0402">More...</a><br/></td></tr>
+<tr class="separator:a93a0d6c7d2fb9c073d3fb1eea39f0402"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a391083b8110d71df0286bbc82c30b176"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a391083b8110d71df0286bbc82c30b176">drawSign</a> ()</td></tr>
 <tr class="memdesc:a391083b8110d71df0286bbc82c30b176"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns +1 or -1 with equal probability.  <a href="#a391083b8110d71df0286bbc82c30b176">More...</a><br/></td></tr>
 <tr class="separator:a391083b8110d71df0286bbc82c30b176"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -129,7 +132,7 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memdesc:a551fae8a8b2bd3280dd6e9491102f924"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a value from a log-uniform distribution.  <a href="#a551fae8a8b2bd3280dd6e9491102f924">More...</a><br/></td></tr>
 <tr class="separator:a551fae8a8b2bd3280dd6e9491102f924"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54f14844bf17014c65d968b4bd8312e1"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a54f14844bf17014c65d968b4bd8312e1">drawRayleigh</a> (double mean)</td></tr>
-<tr class="memdesc:a54f14844bf17014c65d968b4bd8312e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a value drawn from a Rayleigh distribution.  <a href="#a54f14844bf17014c65d968b4bd8312e1">More...</a><br/></td></tr>
+<tr class="memdesc:a54f14844bf17014c65d968b4bd8312e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a value from a Rayleigh distribution.  <a href="#a54f14844bf17014c65d968b4bd8312e1">More...</a><br/></td></tr>
 <tr class="separator:a54f14844bf17014c65d968b4bd8312e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -151,14 +154,14 @@ Static Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Returns a value between 0 and 360. </p>
 <dl class="section return"><dt>Returns</dt><dd>A uniform random variate over [0, 360]</dd></dl>
-<p>Does not throw exceptions. </p>
+<dl class="section user"><dt>Exception Guarantee</dt><dd>Does not throw exceptions. </dd></dl>
 
 </div>
 </div>
@@ -189,7 +192,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -202,14 +205,14 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A log-uniform random variate in the interval [<code>a</code>, <code>b</code>]. The return value has the same units as <code>a</code> and <code>b</code>.</dd></dl>
-<dl class="section pre"><dt>Precondition</dt><dd>0 &lt; <code>a</code> &lt; <code>b</code> </dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd>0 &lt; <code>a</code> &le; <code>b</code> </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">System.ArgumentOutOfRangeException</td><td>Thrown if <code>a</code> &ge; <code>b</code>, or if either <code>or</code> <b>is</b> nonpositive</td></tr>
+    <tr><td class="paramname">System.ArgumentOutOfRangeException</td><td>Thrown if <code>a</code> &gt; <code>b</code>, or if either <code>a</code> or <code>b</code> is nonpositive</td></tr>
   </table>
   </dd>
 </dl>
-<p>This method is atomic </p>
+<dl class="section user"><dt>Exception Guarantee</dt><dd>This method is atomic </dd></dl>
 
 </div>
 </div>
@@ -230,12 +233,12 @@ Static Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Draws a value drawn from a Rayleigh distribution. </p>
+<p>Draws a value from a Rayleigh distribution. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">mean</td><td>The mean of the distribution. This is not the standard parametrization of the Rayleigh distribution, but it is easier to pick values for</td></tr>
@@ -243,14 +246,14 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A Rayleigh random variate. The return value has the same units as <code>mean</code> </dd></dl>
-<dl class="section pre"><dt>Precondition</dt><dd><code>mean</code> &gt; 0</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>mean</code> &ge; 0</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">System.ArgumentOutOfRangeException</td><td>Thrown if <code>a</code> &ge; <code>b</code> </td></tr>
+    <tr><td class="paramname">System.ArgumentOutOfRangeException</td><td>Thrown if <code>mean</code> &lt; 0</td></tr>
   </table>
   </dd>
 </dl>
-<p>This method is atomic </p>
+<dl class="section user"><dt>Exception Guarantee</dt><dd>This method is atomic </dd></dl>
 
 </div>
 </div>
@@ -270,14 +273,54 @@ Static Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Returns +1 or -1 with equal probability. </p>
 <dl class="section return"><dt>Returns</dt><dd>The value +1 or -1.</dd></dl>
-<p>Does not throw exceptions. </p>
+<dl class="section user"><dt>Exception Guarantee</dt><dd>Does not throw exceptions. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a93a0d6c7d2fb9c073d3fb1eea39f0402"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static T weightedSample&lt; T &gt; </td>
+          <td>(</td>
+          <td class="paramtype">System.Collections.Generic.IList&lt; Pair&lt; T, double &gt;&gt;&#160;</td>
+          <td class="paramname"><em>weightedChoices</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Randomly selects from discrete options with unequal weights. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The type of object to be selected</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">weightedChoices</td><td>A list of (<code>T</code>, double) tuples. The first value of each tuple represents one of the choices, the second the weight for that choice. The odds of selecting two choices equal the ratio of the weights between them.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The selected object.</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>The return value is in weightedChoices </dd></dl>
 
 </div>
 </div>
@@ -290,7 +333,7 @@ Static Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html">RandomDist</a></li>
-    <li class="footer">Generated on Wed Apr 9 2014 21:35:28 for Custom Asteroids by
+    <li class="footer">Generated on Thu Apr 10 2014 22:55:57 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

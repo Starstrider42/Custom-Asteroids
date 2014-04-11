@@ -3,6 +3,7 @@ var NAVTREE =
   [ "Custom Asteroids", "index.html", [
     [ "Custom Asteroids v0.1.0", "index.html", null ],
     [ "Version History", "changelog.html", null ],
+    [ "Todo List", "todo.html", null ],
     [ "Packages", null, [
       [ "Packages", "namespaces.html", "namespaces" ]
     ] ],
@@ -12,7 +13,8 @@ var NAVTREE =
       [ "Class Hierarchy", "hierarchy.html", "hierarchy" ],
       [ "Class Members", "functions.html", [
         [ "All", "functions.html", null ],
-        [ "Functions", "functions_func.html", null ]
+        [ "Functions", "functions_func.html", null ],
+        [ "Properties", "functions_prop.html", null ]
       ] ]
     ] ],
     [ "Files", null, [
@@ -23,7 +25,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_population_8cs.html"
+"_orbit_manager_8cs.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
