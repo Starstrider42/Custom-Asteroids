@@ -9,6 +9,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+// Is there a good way to sync version number between here, doxygen.cfg, the markdown source, and Git tags?
+[assembly:AssemblyVersion("0.1.0")]
+
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
@@ -126,12 +129,13 @@ namespace Starstrider42 {
 			private Population[] AsteroidSets = new Population[]{
 				/* In our own solar system, NEOs have a lifetime of about 10 million years, 
 				 * or 1/500 the lifetime of the solar system. Therefore, the NEO population 
-				 * should be about 1/500 as large as the main belt. But that's no fun...
+				 * should be about 1/500 as large as the main belt, assuming the belt has 
+				 * decayed only slowly since the LHB. But that's no fun...
 				 */
 				// NKO orbits based on NEO population from "Debiased Orbital and Absolute Magnitude 
 				//		Distribution of the Near-Earth Objects" Bottke et al. (2002), Icarus 156, 399
-				new Population("Near-Kerbin", 0.3,  6799920128, 52859363534, 0.5, 7.5), 
-				new Population("Main Belt",   1.0, 27292805500, 43324628162, 0.18, 7.5)
+				new Population("Near-Kerbin", "Sun", 0.3,  6799920128, 52859363534, 0.5, 7.5), 
+				new Population("Main Belt",   "Sun", 1.0, 27292805500, 43324628162, 0.18, 7.5)
 			};
 
 			/** Identifies the Custom Asteroids config file

@@ -122,9 +122,9 @@ Package Functions</h2></td></tr>
 <tr class="memitem:afddea4eab6725f7038ca52ee073743d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#afddea4eab6725f7038ca52ee073743d3">Population</a> ()</td></tr>
 <tr class="memdesc:afddea4eab6725f7038ca52ee073743d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#afddea4eab6725f7038ca52ee073743d3">More...</a><br/></td></tr>
 <tr class="separator:afddea4eab6725f7038ca52ee073743d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae737dbffa618a82bb7cd8463c315b00b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ae737dbffa618a82bb7cd8463c315b00b">Population</a> (string name, double rate, double aMin, double aMax, double eAvg, double iAvg)</td></tr>
-<tr class="memdesc:ae737dbffa618a82bb7cd8463c315b00b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a population with specific properties.  <a href="#ae737dbffa618a82bb7cd8463c315b00b">More...</a><br/></td></tr>
-<tr class="separator:ae737dbffa618a82bb7cd8463c315b00b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5693ad02dec3b18034ddddae27a4d1fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a5693ad02dec3b18034ddddae27a4d1fd">Population</a> (string name, string central, double rate, double aMin, double aMax, double eAvg, double iAvg)</td></tr>
+<tr class="memdesc:a5693ad02dec3b18034ddddae27a4d1fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a population with specific properties.  <a href="#a5693ad02dec3b18034ddddae27a4d1fd">More...</a><br/></td></tr>
+<tr class="separator:a5693ad02dec3b18034ddddae27a4d1fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac31d1558d9ea8fb716af8108a789dd1f"><td class="memItemLeft" align="right" valign="top">Orbit&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ac31d1558d9ea8fb716af8108a789dd1f">drawOrbit</a> ()</td></tr>
 <tr class="memdesc:ac31d1558d9ea8fb716af8108a789dd1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a random orbit consistent with the population properties.  <a href="#ac31d1558d9ea8fb716af8108a789dd1f">More...</a><br/></td></tr>
 <tr class="separator:ac31d1558d9ea8fb716af8108a789dd1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -158,11 +158,12 @@ Package Functions</h2></td></tr>
 
 <p>Default constructor. </p>
 <p>Without later modification, the object is not suitable for use</p>
+<dl class="section user"><dt>Exception Guarantee</dt><dd>Does not throw exceptions.</dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Required by interface of CustomNode.LoadObjectFromConfig() </dd></dl>
 
 </div>
 </div>
-<a class="anchor" id="ae737dbffa618a82bb7cd8463c315b00b"></a>
+<a class="anchor" id="a5693ad02dec3b18034ddddae27a4d1fd"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -174,6 +175,12 @@ Package Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">string&#160;</td>
           <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>central</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -222,6 +229,7 @@ Package Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the population. Currently unused. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">central</td><td>The name of the body the asteroids will orbit. Must EXACTLY match the name of a celestial object in KSP. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">rate</td><td>The desired rate at which asteroids appear in the population. Currently relative to the rates of all other populations. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">aMin,aMax</td><td>The minimum and maximum semimajor axes allowed in the population. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">eAvg,iAvg</td><td>The average eccentricity and (absolute value of) inclination of the population.</td></tr>
@@ -262,7 +270,7 @@ Package Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Move this test to the constructor, where it belongs.</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Use of reflection means there is no way to guarantee validity of <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> object at initialization time... can I avoid throwing exceptions from here?</dd></dl>
 <dl class="section user"><dt>Exception Guarantee</dt><dd>The program is in a consistent state in the event of an exception </dd></dl>
 
 </div>
@@ -303,7 +311,7 @@ Package Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html">Population</a></li>
-    <li class="footer">Generated on Fri Apr 11 2014 07:47:23 for Custom Asteroids by
+    <li class="footer">Generated on Fri Apr 11 2014 17:54:03 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

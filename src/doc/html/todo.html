@@ -104,8 +104,8 @@ $(document).ready(function(){initNavTree('todo.html','');});
 <div class="contents">
 <div class="textblock"><dl class="reflist">
 <dt><a class="anchor" id="_todo000002"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ac31d1558d9ea8fb716af8108a789dd1f">Population.drawOrbit</a>  ()</dt>
-<dd>Move this test to the constructor, where it belongs. </dd>
-<dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ae737dbffa618a82bb7cd8463c315b00b">Population.Population</a>  (string name, double rate, double aMin, double aMax, double eAvg, double iAvg)</dt>
+<dd>Use of reflection means there is no way to guarantee validity of Population object at initialization time... can I avoid throwing exceptions from here? </dd>
+<dt><a class="anchor" id="_todo000001"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a5693ad02dec3b18034ddddae27a4d1fd">Population.Population</a>  (string name, string central, double rate, double aMin, double aMax, double eAvg, double iAvg)</dt>
 <dd>Find a way to let constructor throw exceptions without breaking PopulationLoader </dd>
 </dl>
 </div></div><!-- contents -->
@@ -113,7 +113,7 @@ $(document).ready(function(){initNavTree('todo.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Apr 11 2014 07:47:23 for Custom Asteroids by
+    <li class="footer">Generated on Fri Apr 11 2014 17:54:03 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

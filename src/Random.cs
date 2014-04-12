@@ -32,7 +32,7 @@ namespace Starstrider42 {
 			 * 
 			 * @param[in] weightedChoices A list of (@p T, double) tuples. The first value of each tuple represents 
 			 * 		one of the choices, the second the weight for that choice. The odds of selecting two choices 
-			 * 		equal the ratio of the weights between them.
+			 * 		equals the ratio of the weights between them.
 			 * 
 			 * @return The selected object.
 			 * 
@@ -56,7 +56,7 @@ namespace Starstrider42 {
 					}
 				}
 
-				// Should only get here because of rounding error
+				// Should only get here because of rounding error when threshold = norm
 				return weightedChoices[weightedChoices.Count].First;
 			}
 

@@ -3,7 +3,7 @@ var NAVTREE =
   [ "Custom Asteroids", "index.html", [
     [ "Custom Asteroids v0.1.0", "index.html", null ],
     [ "Version History", "changelog.html", null ],
-    [ "Customizing Custom Asteroids", "newbelts.html", null ],
+    [ "Custom(izing) Asteroids", "newbelts.html", null ],
     [ "Todo List", "todo.html", null ],
     [ "Packages", null, [
       [ "Packages", "namespaces.html", "namespaces" ]
