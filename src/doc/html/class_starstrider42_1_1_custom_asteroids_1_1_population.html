@@ -28,9 +28,10 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.1.0-devel</span>
+   &#160;<span id="projectnumber">0.1.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -107,6 +108,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 
 <div class="header">
   <div class="summary">
+<a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pac-methods">Package Functions</a> &#124;
 <a href="class_starstrider42_1_1_custom_asteroids_1_1_population-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -117,10 +119,16 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 <p>Represents a set of asteroids with similar orbits.  
  <a href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#details">More...</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Public Member Functions</h2></td></tr>
+<tr class="memitem:aa73e7c4dd1df5fd5fbf81c7764ee1533"><td class="memItemLeft" align="right" valign="top">override string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#aa73e7c4dd1df5fd5fbf81c7764ee1533">ToString</a> ()</td></tr>
+<tr class="memdesc:aa73e7c4dd1df5fd5fbf81c7764ee1533"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string that represents the current object.  <a href="#aa73e7c4dd1df5fd5fbf81c7764ee1533">More...</a><br/></td></tr>
+<tr class="separator:aa73e7c4dd1df5fd5fbf81c7764ee1533"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-methods"></a>
 Package Functions</h2></td></tr>
 <tr class="memitem:afddea4eab6725f7038ca52ee073743d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#afddea4eab6725f7038ca52ee073743d3">Population</a> ()</td></tr>
-<tr class="memdesc:afddea4eab6725f7038ca52ee073743d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <a href="#afddea4eab6725f7038ca52ee073743d3">More...</a><br/></td></tr>
+<tr class="memdesc:afddea4eab6725f7038ca52ee073743d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a dummy population.  <a href="#afddea4eab6725f7038ca52ee073743d3">More...</a><br/></td></tr>
 <tr class="separator:afddea4eab6725f7038ca52ee073743d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5693ad02dec3b18034ddddae27a4d1fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a5693ad02dec3b18034ddddae27a4d1fd">Population</a> (string name, string central, double rate, double aMin, double aMax, double eAvg, double iAvg)</td></tr>
 <tr class="memdesc:a5693ad02dec3b18034ddddae27a4d1fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a population with specific properties.  <a href="#a5693ad02dec3b18034ddddae27a4d1fd">More...</a><br/></td></tr>
@@ -134,6 +142,7 @@ Package Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents a set of asteroids with similar orbits. </p>
+<dl class="section warning"><dt>Warning</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> objects are typically initialized using an external traversal, rather than a constructor. Therefore, traditional validity guarantees cannot be enforced. Instead, the <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> class makes heavier than usual use of defensive programming. </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="afddea4eab6725f7038ca52ee073743d3"></a>
 <div class="memitem">
@@ -156,10 +165,10 @@ Package Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Default constructor. </p>
-<p>Without later modification, the object is not suitable for use</p>
-<dl class="section user"><dt>Exception Guarantee</dt><dd>Does not throw exceptions.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>Required by interface of CustomNode.LoadObjectFromConfig() </dd></dl>
+<p>Creates a dummy population. </p>
+<dl class="section post"><dt>Postcondition</dt><dd>The object is initialized to a state in which it will not be expected to generate orbits. Any orbits that <em>are</em> generated will be located inside the Sun, causing the game to immediately delete the object with the orbit.</dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Required by interface of ConfigNode.LoadObjectFromConfig() </dd></dl>
 
 </div>
 </div>
@@ -229,14 +238,24 @@ Package Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the population. Currently unused. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">central</td><td>The name of the body the asteroids will orbit. Must EXACTLY match the name of a celestial object in KSP. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">central</td><td>The name of the body the asteroids will orbit. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">rate</td><td>The desired rate at which asteroids appear in the population. Currently relative to the rates of all other populations. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">aMin,aMax</td><td>The minimum and maximum semimajor axes allowed in the population. </td></tr>
     <tr><td class="paramdir">[in]</td><td class="paramname">eAvg,iAvg</td><td>The average eccentricity and (absolute value of) inclination of the population.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>Find a way to let constructor throw exceptions without breaking <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html" title="Stores raw asteroid data. ">PopulationLoader</a> </dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>centralBody</code> is the exact name of a celestial object in KSP. </dd>
+<dd>
+<code>rate</code> &ge; 0 </dd>
+<dd>
+0 &lt; <code>aMin</code> &le; <code>aMax</code> </dd>
+<dd>
+<code>eAvg</code> &ge; 0; </dd>
+<dd>
+<code>iAvg</code> &ge; 0;</dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Object construction is atomic.</dd></dl>
+<dl class="section note"><dt>Note</dt><dd>The current implementation does not throw exceptions, but this may change in future versions. </dd></dl>
 
 </div>
 </div>
@@ -266,12 +285,11 @@ Package Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The orbit of a randomly selected member of the population</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">System.ArgumentOutOfRangeException</td><td>Thrown if population has invalid parameters.</td></tr>
+    <tr><td class="paramname">System.InvalidOperationException</td><td>Thrown if population's parameter values cannot produce valid orbits.</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Use of reflection means there is no way to guarantee validity of <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> object at initialization time... can I avoid throwing exceptions from here?</dd></dl>
-<dl class="section user"><dt>Exception Guarantee</dt><dd>The program is in a consistent state in the event of an exception </dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>The program is in a consistent state in the event of an exception </dd></dl>
 
 </div>
 </div>
@@ -298,7 +316,25 @@ Package Functions</h2></td></tr>
 
 <p>Returns the rate at which asteroids are discovered in the population. </p>
 <dl class="section return"><dt>Returns</dt><dd>The rate relative to the rates of all other populations.</dd></dl>
-<dl class="section user"><dt>Exception Guarantee</dt><dd>Does not throw exceptions. </dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aa73e7c4dd1df5fd5fbf81c7764ee1533"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">override string ToString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a string that represents the current object. </p>
+<dl class="section see"><dt>See Also</dt><dd><a href="http://msdn.microsoft.com/en-us/library/system.object.tostring.aspx">Object.ToString()</a> </dd></dl>
 
 </div>
 </div>
@@ -311,7 +347,7 @@ Package Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html">Population</a></li>
-    <li class="footer">Generated on Fri Apr 11 2014 17:54:03 for Custom Asteroids by
+    <li class="footer">Generated on Sat Apr 12 2014 18:53:58 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -28,9 +28,10 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.1.0-devel</span>
+   &#160;<span id="projectnumber">0.1.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -164,8 +165,9 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
   </table>
   </dd>
 </dl>
-<dl class="section post"><dt>Postcondition</dt><dd>if <code>vessel</code> is an asteroid, its orbit is modified using <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html" title="Central class for controlling asteroid orbits. ">OrbitManager</a>. Otherwise, the function has no effect</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Unknown exception spec </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>if <code>vessel</code> is an asteroid, its orbit is modified using <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html" title="Central class for controlling asteroid orbits. ">OrbitManager</a>. Otherwise, the function has no effect. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>if <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html" title="Central class for controlling asteroid orbits. ">OrbitManager</a> cannot generate an appropriate orbit, the asteroid is destroyed</dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions </dd></dl>
 
 </div>
 </div>
@@ -185,7 +187,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 <p>This function is called when the object will be destroyed. </p>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">Unity Documentation</a></dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to OrbitManager for processing. ...">SpawnCatcher.CatchAsteroidSpawn()</a> will no longer be called whenever a new vessel is created</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Unknown exception spec </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd></dl>
 
 </div>
 </div>
@@ -205,7 +207,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 <p>Called on the frame when a script is enabled just before any of the Update methods is called the first time. </p>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html">Unity Documentation</a></dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to OrbitManager for processing. ...">SpawnCatcher.CatchAsteroidSpawn()</a> will henceforth be called whenever a new vessel is created</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>Unknown exception spec </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd></dl>
 
 </div>
 </div>
@@ -218,7 +220,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html">SpawnCatcher</a></li>
-    <li class="footer">Generated on Fri Apr 11 2014 17:54:03 for Custom Asteroids by
+    <li class="footer">Generated on Sat Apr 12 2014 18:53:59 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

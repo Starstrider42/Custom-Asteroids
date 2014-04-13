@@ -1,0 +1,14 @@
+Custom Asteroids Test Sequence
+============
+
+1. Copy the desired asteroids.cfg file (or lack thereof) to GameData/Starstrider42/CustomAsteroids.
+2. Start a game of KSP 0.23.5.
+3. Start a new sandbox game (overwriting if necessary).
+4. Immediately go into the Tracking Station and filter for only unknown objects
+5. While there are less than ~30 known asteroids
+    a. Track all unknown asteroids on the map.
+    b. Accelerate time to 1000×
+    c. Return to 1× when new asteroids appear.
+6. Check orbital distribution in game
+7. Exit the Tracking Station (to ensure the game is saved), then quit
+8. Search KSP_Data/output_log.txt for errors.

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['getspawnrate',['getSpawnRate',['../class_starstrider42_1_1_custom_asteroids_1_1_population.html#a4a02e283eafc18fe79cc9be62b3dcf3a',1,'Starstrider42::CustomAsteroids::Population']]],
-  ['gettotalrate',['getTotalRate',['../class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#ac197054cfd516d5ec2676ae0012d8961',1,'Starstrider42::CustomAsteroids::PopulationLoader']]]
+  ['first',['First',['../class_starstrider42_1_1_custom_asteroids_1_1_pair_3_01_t_00_01_u_01_4.html#a2552c392770a9e6ead8811bc5a31429b',1,'Starstrider42::CustomAsteroids::Pair&lt; T, U &gt;']]]
 ];

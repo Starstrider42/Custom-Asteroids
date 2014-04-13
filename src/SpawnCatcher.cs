@@ -24,7 +24,7 @@ namespace Starstrider42 {
 			 * 
 			 * @post SpawnCatcher.CatchAsteroidSpawn() will henceforth be called whenever a new vessel is created
 			 * 
-			 * @warning Unknown exception spec
+			 * @todo What exceptions are thrown by GameEvents.onVesselCreate.*?
 			 */
 			public void Start()
 			{
@@ -37,7 +37,7 @@ namespace Starstrider42 {
 			 * 
 			 * @post SpawnCatcher.CatchAsteroidSpawn() will no longer be called whenever a new vessel is created
 			 * 
-			 * @warning Unknown exception spec
+			 * @todo What exceptions are thrown by GameEvents.onVesselCreate.*?
 			 */
 			public void OnDestroy() {
 				// Keep things tidy, since I'm not sure when (or if) onVesselCreate gets automatically cleaned up
@@ -49,9 +49,10 @@ namespace Starstrider42 {
 			 * @param[in] vessel A newly created ship object
 			 * 
 			 * @post if @p vessel is an asteroid, its orbit is modified using OrbitManager. Otherwise, 
-			 * 		the function has no effect
+			 * 		the function has no effect.
+			 * @note if OrbitManager cannot generate an appropriate orbit, the asteroid is destroyed
 			 * 
-			 * @warning Unknown exception spec
+			 * @exceptsafe Does not throw exceptions
 			 */
 			public void CatchAsteroidSpawn(Vessel vessel) {
 				if (vessel.vesselType == VesselType.SpaceObject || vessel.vesselType == VesselType.Unknown) {
@@ -62,7 +63,13 @@ namespace Starstrider42 {
 					//vessel.DiscoveryInfo.SetLastObservedTime(Planetarium.GetUniversalTime());
 					//vessel.DiscoveryInfo.SetLevel(DiscoveryLevels.StateVectors | DiscoveryLevels.Name | DiscoveryLevels.Presence);
 
-					vessel.orbitDriver.orbit = OrbitManager.makeOrbit();
+					try {
+						vessel.orbitDriver.orbit = OrbitManager.makeOrbit();
+					} catch (System.InvalidOperationException e) {
+						Debug.LogException(e);
+						// Destroy the asteroid as a fallback option
+						vessel.orbitDriver.orbit = new Orbit(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, FlightGlobals.Bodies[0]);
+					}
 				}
 			}
 		}

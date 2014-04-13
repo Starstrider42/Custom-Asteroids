@@ -36,13 +36,36 @@ namespace Starstrider42 {
 			 * 
 			 * @return The selected object.
 			 * 
+			 * @pre @p weightedChoices contains at least one element
+			 * @pre For each element @p x of @p weightedChoices, @p x.Second is nonnegative.
+			 * @pre There exists an element @p x of @p weightedChoices where @p x.Second is positive.
+			 * 
 			 * @post The return value is in weightedChoices
+			 * 
+			 * @exception System.ArgumentException Thrown if @p weightedChoices is empty
+			 * @exception System.ArgumentOutOfRangeException Thrown if any weight is negative, or if no weight is positive
+			 * 
+			 * @exceptsafe The method is atomic.
 			 */
 			internal static T weightedSample<T>(System.Collections.Generic.IList<Pair<T,double>> weightedChoices) {
+				if (weightedChoices.Count == 0) {
+					throw new ArgumentException("RandomDist.weightedSample(): Cannot sample from an empty set", "weightedChoices");
+				}
 				double norm = 0.0;
 				foreach (Pair<T,double> choice in weightedChoices) {
+					if (choice.Second < 0) {
+						throw new ArgumentOutOfRangeException("weightedChoices",
+							"RandomDist.weightedSample(): The weight of any sample may not be negative (gave " 
+								+ choice.Second + " for " + choice.First + ")");
+					}
 					norm += choice.Second;
 				}
+				if (norm <= 0.0) {
+					throw new ArgumentOutOfRangeException("weightedChoices",
+						"RandomDist.weightedSample(): the weights of the samples may not all be zero");
+				}
+
+				// important: no exceptions beyond this point
 
 				// assert: r is in [0, norm]
 				double threshold = norm * UnityEngine.Random.value;
@@ -57,7 +80,7 @@ namespace Starstrider42 {
 				}
 
 				// Should only get here because of rounding error when threshold = norm
-				return weightedChoices[weightedChoices.Count].First;
+				return weightedChoices[weightedChoices.Count-1].First;
 			}
 
 			/** Returns +1 or -1 with equal probability
@@ -97,12 +120,13 @@ namespace Starstrider42 {
 			internal static double drawLogUniform(double a, double b) {
 				if (b < a) {
 					throw new ArgumentOutOfRangeException("a",
-						"In a log-uniform distribution, the first parameter must be no more than the second (gave a = " 
+						"RandomDist.drawLogUniform(): In a log-uniform distribution, the first parameter must be no more than the second (gave a = " 
 						+ a + ", b = " + b + ")");
 				}
 				if (a <= 0) {
 					throw new ArgumentOutOfRangeException("a",
-						"In a log-uniform distribution, all parameters must be positive (gave a = " + a + ", b = " + b + ")");
+						"RandomDist.drawLogUniform(): In a log-uniform distribution, all parameters must be positive (gave a = " 
+						+ a + ", b = " + b + ")");
 				}
 				// IMPORTANT: don't let anything throw beyond this point
 				// Note: System.Math.Log() does not throw even on invalid input
@@ -131,7 +155,7 @@ namespace Starstrider42 {
 			internal static double drawRayleigh(double mean) {
 				if (mean < 0.0) {
 					throw new ArgumentOutOfRangeException("mean",
-						"A Rayleigh distribution cannot have a negative mean (gave " + mean + ")");
+						"RandomDist.drawRayleigh(): A Rayleigh distribution cannot have a negative mean (gave " + mean + ")");
 				}
 				double sigmaSquared = mean * mean * 2.0 / Math.PI;
 				// IMPORTANT: don't let anything throw beyond this point

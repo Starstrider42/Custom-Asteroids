@@ -1,5 +1,8 @@
 var hierarchy =
 [
+    [ "InvalidOperationException", null, [
+      [ "OrbitManager.BadPopulationException", "class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager_1_1_bad_population_exception.html", null ]
+    ] ],
     [ "MonoBehaviour", null, [
       [ "SpawnCatcher", "class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html", null ]
     ] ],

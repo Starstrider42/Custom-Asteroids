@@ -28,9 +28,10 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
+  <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.1.0-devel</span>
+   &#160;<span id="projectnumber">0.1.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -161,7 +162,7 @@ Static Package Functions</h2></td></tr>
 
 <p>Returns a value between 0 and 360. </p>
 <dl class="section return"><dt>Returns</dt><dd>A uniform random variate over [0, 360]</dd></dl>
-<dl class="section user"><dt>Exception Guarantee</dt><dd>Does not throw exceptions. </dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions. </dd></dl>
 
 </div>
 </div>
@@ -212,7 +213,7 @@ Static Package Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Exception Guarantee</dt><dd>This method is atomic </dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>This method is atomic </dd></dl>
 
 </div>
 </div>
@@ -253,7 +254,7 @@ Static Package Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section user"><dt>Exception Guarantee</dt><dd>This method is atomic </dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>This method is atomic </dd></dl>
 
 </div>
 </div>
@@ -280,7 +281,7 @@ Static Package Functions</h2></td></tr>
 
 <p>Returns +1 or -1 with equal probability. </p>
 <dl class="section return"><dt>Returns</dt><dd>The value +1 or -1.</dd></dl>
-<dl class="section user"><dt>Exception Guarantee</dt><dd>Does not throw exceptions. </dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions. </dd></dl>
 
 </div>
 </div>
@@ -320,7 +321,20 @@ Static Package Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The selected object.</dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd>The return value is in weightedChoices </dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>weightedChoices</code> contains at least one element </dd>
+<dd>
+For each element <code>x</code> of <code>weightedChoices</code>, <code>x.Second</code> is nonnegative. </dd>
+<dd>
+There exists an element <code>x</code> of <code>weightedChoices</code> where <code>x.Second</code> is positive.</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>The return value is in weightedChoices</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentException</td><td>Thrown if <code>weightedChoices</code> is empty </td></tr>
+    <tr><td class="paramname">System.ArgumentOutOfRangeException</td><td>Thrown if any weight is negative, or if no weight is positive</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>The method is atomic. </dd></dl>
 
 </div>
 </div>
@@ -333,7 +347,7 @@ Static Package Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html">RandomDist</a></li>
-    <li class="footer">Generated on Fri Apr 11 2014 17:54:03 for Custom Asteroids by
+    <li class="footer">Generated on Sat Apr 12 2014 18:53:58 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
