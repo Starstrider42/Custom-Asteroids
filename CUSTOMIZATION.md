@@ -15,11 +15,11 @@ The current fields in each `POPULATION` block are the following:
     asteroid has a 23% chance (0.3/(0.3 + 1.0)) of belonging to the Near-Kerbin population, and a 77% 
     chance of belonging to the Main Belt population; replacing the numbers with 3 and 10 won't change 
     those odds. In the future, spawnRate may control the number of asteroids discovered per day.
-* `smaMin`: the smallest semimajor axis an asteroid from this population may have. Currently a hard limit. 
-    Must be a positive number.
-* `smaMax`: the largest semimajor axis an asteroid may have. Must be a positive number.
+* `smaMin`: the smallest semimajor axis an asteroid from this population may have, in meters. Currently a 
+    hard limit. Must be a positive number.
+* `smaMax`: the largest semimajor axis an asteroid may have, in meters. Must be a positive number.
 * `eccAvg`: the average eccentricity of an asteroid in this population. Any specific asteroid may have 
     any eccentricity; it is possible, though very unlikely, that an asteroid will even appear on an 
     unbound orbit. May be zero.
-* `incAvg`: the average inclination of an asteroid in this population. As with eccentricities, you 
-    may occasionally get some extremely inclined orbits. May be zero.
+* `incAvg`: the average inclination of an asteroid in this population, in degrees. As with eccentricities, 
+    you may occasionally get some extremely inclined orbits. May be zero.
