@@ -44,13 +44,13 @@ namespace Starstrider42 {
 				GameEvents.onVesselCreate.Remove(CatchAsteroidSpawn);
 			}
 
-			/** Selects newly created asteroids and forwards them to OrbitManager for processing
+			/** Selects newly created asteroids and forwards them to AsteroidManager for processing
 			 * 
 			 * @param[in] vessel A newly created ship object
 			 * 
-			 * @post if @p vessel is an asteroid, its orbit is modified using OrbitManager. Otherwise, 
+			 * @post if @p vessel is an asteroid, its orbit is modified using AsteroidManager. Otherwise, 
 			 * 		the function has no effect.
-			 * @note if OrbitManager cannot generate an appropriate orbit, the asteroid is destroyed
+			 * @note if AsteroidManager cannot generate an appropriate orbit, the asteroid is destroyed
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
@@ -64,7 +64,7 @@ namespace Starstrider42 {
 					//vessel.DiscoveryInfo.SetLevel(DiscoveryLevels.StateVectors | DiscoveryLevels.Name | DiscoveryLevels.Presence);
 
 					try {
-						vessel.orbitDriver.orbit = OrbitManager.makeOrbit();
+						vessel.orbitDriver.orbit = AsteroidManager.makeOrbit();
 					} catch (System.InvalidOperationException e) {
 						Debug.LogException(e);
 						// Destroy the asteroid as a fallback option

@@ -16,8 +16,10 @@ namespace Starstrider42 {
 		 * @warning Population objects are typically initialized using an external traversal, rather than a 
 		 * 		constructor. Therefore, traditional validity guarantees cannot be enforced. Instead, the 
 		 * 		Population class makes heavier than usual use of defensive programming.
+		 * 
+		 * @note To avoid breaking the persistence code, Population may not have subclasses
 		 */
-		internal class Population
+		internal sealed class Population
 		{
 			/** Creates a dummy population
 			 * 

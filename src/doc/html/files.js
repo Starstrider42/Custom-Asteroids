@@ -1,8 +1,8 @@
 var files =
 [
-    [ "OrbitManager.cs", "_orbit_manager_8cs.html", [
-      [ "OrbitManager", "class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html", "class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager" ],
-      [ "BadPopulationException", "class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager_1_1_bad_population_exception.html", "class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager_1_1_bad_population_exception" ],
+    [ "AsteroidManager.cs", "_asteroid_manager_8cs.html", [
+      [ "AsteroidManager", "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html", "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager" ],
+      [ "BadPopulationException", "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html", "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception" ],
       [ "PopulationLoader", "class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html", "class_starstrider42_1_1_custom_asteroids_1_1_population_loader" ]
     ] ],
     [ "Population.cs", "_population_8cs.html", [

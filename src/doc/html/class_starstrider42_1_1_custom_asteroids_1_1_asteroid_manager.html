@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Custom Asteroids: Member List</title>
+<title>Custom Asteroids: AsteroidManager Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.1.0</span>
+   &#160;<span id="projectnumber">0.2.0-devel</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -89,7 +89,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html','');});
+$(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -107,20 +107,76 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 </div>
 
 <div class="header">
+  <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#pac-static-methods">Static Package Functions</a> &#124;
+<a href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">OrbitManager Member List</div>  </div>
+<div class="title">AsteroidManager Class Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html">OrbitManager</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html#a0c2e2535b09bb318bff8b6991e96832d">makeOrbit</a>()</td><td class="entry"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_orbit_manager.html">OrbitManager</a></td><td class="entry"><span class="mlabel">package</span><span class="mlabel">static</span></td></tr>
-</table></div><!-- contents -->
+<p>Central class for controlling asteroid orbits.  
+ <a href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#details">More...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html">BadPopulationException</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-static-methods"></a>
+Static Package Functions</h2></td></tr>
+<tr class="memitem:a0c2e2535b09bb318bff8b6991e96832d"><td class="memItemLeft" align="right" valign="top">static Orbit&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0c2e2535b09bb318bff8b6991e96832d">makeOrbit</a> ()</td></tr>
+<tr class="memdesc:a0c2e2535b09bb318bff8b6991e96832d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a random orbit, based on the settings loaded to Custom Asteroids.  <a href="#a0c2e2535b09bb318bff8b6991e96832d">More...</a><br/></td></tr>
+<tr class="separator:a0c2e2535b09bb318bff8b6991e96832d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Central class for controlling asteroid orbits. </p>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a0c2e2535b09bb318bff8b6991e96832d"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Orbit makeOrbit </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates a random orbit, based on the settings loaded to Custom Asteroids. </p>
+<dl class="section return"><dt>Returns</dt><dd>A randomly generated orbit in one of the asteroid populations.</dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.InvalidOperationException</td><td>Thrown if there are no populations from which to generate an orbit </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html">Starstrider42.CustomAsteroids.AsteroidManager.BadPopulationException</a></td><td>Thrown if a population exists, but cannot generate valid orbits</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>The program is in a consistent state in the event of an exception </dd></dl>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li><a class="el" href="_asteroid_manager_8cs.html">AsteroidManager.cs</a></li>
+</ul>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Apr 12 2014 18:53:58 for Custom Asteroids by
+    <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html">AsteroidManager</a></li>
+    <li class="footer">Generated on Thu Apr 17 2014 18:33:47 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

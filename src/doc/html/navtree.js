@@ -26,7 +26,7 @@ var NAVTREE =
 
 var NAVTREEINDEX =
 [
-"_orbit_manager_8cs.html"
+"_asteroid_manager_8cs.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

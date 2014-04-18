@@ -10,20 +10,20 @@ using System.Reflection;
 using UnityEngine;
 
 // Is there a good way to sync version number between here, doxygen.cfg, the markdown source, and Git tags?
-[assembly:AssemblyVersion("0.1.0")]
+[assembly:AssemblyVersion("0.2.0")]
 
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
 		/** Central class for controlling asteroid orbits
 		 */
-		internal static class OrbitManager {
-			static OrbitManager() {
+		internal static class AsteroidManager {
+			static AsteroidManager() {
 				try {
 					allowedPops = PopulationLoader.Load();
 					totalRate = allowedPops.getTotalRate();
 				} catch (Exception) {
-					// Ensure the contents of OrbitManager are predictable even in the event of an exception
+					// Ensure the contents of AsteroidManager are predictable even in the event of an exception
 					// Though an exception thrown by a static constructor is basically unrecoverable...
 					allowedPops = null;
 					totalRate = 0.0;
@@ -40,7 +40,7 @@ namespace Starstrider42 {
 			 * 
 			 * @exception System.InvalidOperationException Thrown if there are no populations from which 
 			 * 		to generate an orbit
-			 * @exception Starstrider42.CustomAsteroids.OrbitManager.BadPopulationException Thrown if a 
+			 * @exception Starstrider42.CustomAsteroids.AsteroidManager.BadPopulationException Thrown if a 
 			 * 		population exists, but cannot generate valid orbits
 			 * 
 			 * @exceptsafe The program is in a consistent state in the event of an exception
@@ -118,11 +118,14 @@ namespace Starstrider42 {
 					Debug.LogException(e);
 					AsteroidSets = new Population[0];
 				}
+
+				VersionNumber = latestVersion();
 			}
 
 			/** Stores current Custom Asteroids settings in a config file
 			 * 
 			 * @post The current settings are stored to the config file
+			 * @post The current Custom Asteroids version is stored to the config file
 			 * 
 			 * @todo Identify exception conditions
 			 * 
@@ -139,6 +142,9 @@ namespace Starstrider42 {
 					System.IO.File.Copy(popList(), backup(), true);
 				}
 				// assert: popList() unchanged, and popList() and backup() are identical
+
+				// File may have been loaded with a previous version
+				VersionNumber = latestVersion();
 
 				ConfigNode allData = new ConfigNode();
 				ConfigNode.CreateConfigFromObject(this, allData);
@@ -169,11 +175,23 @@ namespace Starstrider42 {
 
 					if (allData != null) {
 						ConfigNode.LoadObjectFromConfig(allPops, allData);
+						if (!allData.HasNode("VersionNumber")) {
+							allPops.VersionNumber = "0.1.0";
+						}
 					} else {
-						// Make a copy for next time
-						// Default constructor is responsible for ensuring allPops is valid
+						allPops.VersionNumber = "";
+					}
+						
+					if (allPops.VersionNumber != latestVersion()) {
+						// Config file is either missing or out of date, make a new one
+						// Any information loaded from config file will be preserved
 						try {
-							Debug.Log("CustomAsteroids: creating settings file...");
+							if (allPops.VersionNumber.Length == 0) {
+								Debug.Log("CustomAsteroids: no config file found at " + popList() + "; creating new one");
+							} else {
+								Debug.Log("CustomAsteroids: loaded config file from version " + allPops.VersionNumber +
+									"; updating to version " + latestVersion());
+							}
 							allPops.Save();
 						} catch (Exception e) {
 							// First priority, just in case Debug.Log*() produce I/O exceptions themselves
@@ -234,10 +252,6 @@ namespace Starstrider42 {
 				return total;
 			}
 
-			[Persistent(collectionIndex="POPULATION")]
-			// Giving a variable an upper-case name because it looks better in the .cfg file
-			private Population[] AsteroidSets;
-
 			/** Identifies the Custom Asteroids config file
 			 * 
 			 * @return An absolute path to the config file
@@ -257,6 +271,24 @@ namespace Starstrider42 {
 			private static string backup() {
 				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/asteroids.backup";
 			}
+
+			/** Returns the mod's current version number
+			 * 
+			 * @return a version number in major.minor.patch form
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private static string latestVersion() {
+				return Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+			}
+
+			/////////////////////////////////////////////////////////
+			// Config options
+			// Giving variables upper-case names because it looks better in the .cfg file
+			[Persistent(collectionIndex="POPULATION")]
+			private Population[] AsteroidSets;
+
+			[Persistent] private string VersionNumber;
 		}
 	}
 }
