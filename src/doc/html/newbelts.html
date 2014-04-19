@@ -110,17 +110,17 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <li><code>name</code>: a descriptive name. At present, this is not used in-game, but this may change in future versions.</li>
 <li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the name of an in-game object.</li>
 <li><code>spawnRate</code>: the relative odds that a newly spawned asteroid will belong to that population. Must be a positive number. At present, the absolute scale does not matter. For example, in the default file an asteroid has a 23% chance (0.3/(0.3 + 1.0)) of belonging to the Near-Kerbin population, and a 77% chance of belonging to the Main Belt population; replacing the numbers with 3 and 10 won't change those odds. In the future, spawnRate may control the number of asteroids discovered per day.</li>
-<li><code>smaMin</code>: the smallest semimajor axis an asteroid from this population may have. Currently a hard limit. Must be a positive number.</li>
-<li><code>smaMax</code>: the largest semimajor axis an asteroid may have. Must be a positive number.</li>
+<li><code>smaMin</code>: the smallest semimajor axis an asteroid from this population may have, in meters. Currently a hard limit. Must be a positive number.</li>
+<li><code>smaMax</code>: the largest semimajor axis an asteroid may have, in meters. Must be a positive number.</li>
 <li><code>eccAvg</code>: the average eccentricity of an asteroid in this population. Any specific asteroid may have any eccentricity; it is possible, though very unlikely, that an asteroid will even appear on an unbound orbit. May be zero.</li>
-<li><code>incAvg</code>: the average inclination of an asteroid in this population. As with eccentricities, you may occasionally get some extremely inclined orbits. May be zero. </li>
+<li><code>incAvg</code>: the average inclination of an asteroid in this population, in degrees. As with eccentricities, you may occasionally get some extremely inclined orbits. May be zero. </li>
 </ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Apr 17 2014 18:33:47 for Custom Asteroids by
+    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

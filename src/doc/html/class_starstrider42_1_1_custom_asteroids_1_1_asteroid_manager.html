@@ -126,14 +126,14 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-static-methods"></a>
 Static Package Functions</h2></td></tr>
-<tr class="memitem:a0c2e2535b09bb318bff8b6991e96832d"><td class="memItemLeft" align="right" valign="top">static Orbit&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0c2e2535b09bb318bff8b6991e96832d">makeOrbit</a> ()</td></tr>
-<tr class="memdesc:a0c2e2535b09bb318bff8b6991e96832d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a random orbit, based on the settings loaded to Custom Asteroids.  <a href="#a0c2e2535b09bb318bff8b6991e96832d">More...</a><br/></td></tr>
-<tr class="separator:a0c2e2535b09bb318bff8b6991e96832d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe7415209f0021dffcae49f3c2c57161"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#abe7415209f0021dffcae49f3c2c57161">editAsteroid</a> (Vessel asteroid)</td></tr>
+<tr class="memdesc:abe7415209f0021dffcae49f3c2c57161"><td class="mdescLeft">&#160;</td><td class="mdescRight">Customizes an asteroid, based on the settings loaded to Custom asteroids.  <a href="#abe7415209f0021dffcae49f3c2c57161">More...</a><br/></td></tr>
+<tr class="separator:abe7415209f0021dffcae49f3c2c57161"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Central class for controlling asteroid orbits. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="a0c2e2535b09bb318bff8b6991e96832d"></a>
+<a class="anchor" id="abe7415209f0021dffcae49f3c2c57161"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -141,9 +141,10 @@ Static Package Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static Orbit makeOrbit </td>
+          <td class="memname">static void editAsteroid </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">Vessel&#160;</td>
+          <td class="paramname"><em>asteroid</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -154,12 +155,19 @@ Static Package Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Generates a random orbit, based on the settings loaded to Custom Asteroids. </p>
-<dl class="section return"><dt>Returns</dt><dd>A randomly generated orbit in one of the asteroid populations.</dd></dl>
+<p>Customizes an asteroid, based on the settings loaded to Custom asteroids. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">asteroid</td><td>The asteroid to be modified</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>asteroid</code> is an asteroid object in-game</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd><code>asteroid</code> has properties consistent with membership in a randomly chosen population</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname">System.InvalidOperationException</td><td>Thrown if there are no populations from which to generate an orbit </td></tr>
-    <tr><td class="paramname"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html">Starstrider42.CustomAsteroids.AsteroidManager.BadPopulationException</a></td><td>Thrown if a population exists, but cannot generate valid orbits</td></tr>
+    <tr><td class="paramname">System.InvalidOperationException</td><td>Thrown if there are no populations in which to place the asteroid </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html">Starstrider42.CustomAsteroids.AsteroidManager.BadPopulationException</a></td><td>Thrown if a population exists, but cannot generate valid data</td></tr>
   </table>
   </dd>
 </dl>
@@ -176,7 +184,7 @@ Static Package Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html">AsteroidManager</a></li>
-    <li class="footer">Generated on Thu Apr 17 2014 18:33:47 for Custom Asteroids by
+    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

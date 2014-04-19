@@ -165,8 +165,8 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
   </table>
   </dd>
 </dl>
-<dl class="section post"><dt>Postcondition</dt><dd>if <code>vessel</code> is an asteroid, its orbit is modified using <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html" title="Central class for controlling asteroid orbits. ">AsteroidManager</a>. Otherwise, the function has no effect. </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>if <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html" title="Central class for controlling asteroid orbits. ">AsteroidManager</a> cannot generate an appropriate orbit, the asteroid is destroyed</dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>if <code>vessel</code> is an asteroid, its properties are modified using <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html" title="Central class for controlling asteroid orbits. ">AsteroidManager</a>. Otherwise, the function has no effect. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>if <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html" title="Central class for controlling asteroid orbits. ">AsteroidManager</a> cannot generate new data for the asteroid, the asteroid is destroyed. This policy is intended to minimize side effects while alerting the player to the presence of a bug.</dd></dl>
 <dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions </dd></dl>
 
 </div>
@@ -220,7 +220,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html">SpawnCatcher</a></li>
-    <li class="footer">Generated on Thu Apr 17 2014 18:33:47 for Custom Asteroids by
+    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

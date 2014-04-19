@@ -7,7 +7,7 @@ var NAVTREEINDEX0 =
 "annotated.html":[5,0],
 "changelog.html":[1],
 "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html":[5,0,0,0,0],
-"class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0c2e2535b09bb318bff8b6991e96832d":[5,0,0,0,0,1],
+"class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#abe7415209f0021dffcae49f3c2c57161":[5,0,0,0,0,1],
 "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html":[5,0,0,0,0,0],
 "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html#a000cf5647f8d34e59098ab448cca3c49":[5,0,0,0,0,0,1],
 "class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html#a21c7dcfc189fc5082775757c675d8cbe":[5,0,0,0,0,0,2],

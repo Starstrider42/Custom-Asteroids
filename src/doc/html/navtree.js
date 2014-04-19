@@ -1,7 +1,7 @@
 var NAVTREE =
 [
   [ "Custom Asteroids", "index.html", [
-    [ "Custom Asteroids v0.1.0", "index.html", null ],
+    [ "Custom Asteroids v0.2.0", "index.html", null ],
     [ "Version History", "changelog.html", null ],
     [ "Custom(izing) Asteroids", "newbelts.html", null ],
     [ "Todo List", "todo.html", null ],

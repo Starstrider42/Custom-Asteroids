@@ -104,6 +104,17 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Custom Biomes conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. Since Custom Biomes does not expose public functions, the <a class="el" href="newbelts.html">format of `asteroids.cfg`</a> will be considered the API for the purpose of versioning.</p>
+<h2>Version 0.2.0 (in development) </h2>
+<h3>Changes</h3>
+<ul>
+<li>Added units to documentation</li>
+<li>Reorganized code to support more general asteroid modifications in future releases.</li>
+</ul>
+<h3>New Features</h3>
+<ul>
+<li>Custom Asteroids will now try to upgrade <code>asteroid.cfg</code> files belonging to a previous version, inserting default values for any new parameters. This may have unintended effects if the user has upgraded to a non-backwards-compatible version.</li>
+</ul>
+<h3>Bug Fixes</h3>
 <h2>Version 0.1.0 </h2>
 <ul>
 <li>Initial Release </li>
@@ -113,7 +124,7 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Thu Apr 17 2014 18:33:47 for Custom Asteroids by
+    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

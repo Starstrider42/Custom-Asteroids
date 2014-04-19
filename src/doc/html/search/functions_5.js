@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['makeorbit',['makeOrbit',['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0c2e2535b09bb318bff8b6991e96832d',1,'Starstrider42::CustomAsteroids::AsteroidManager']]]
+  ['load',['Load',['../class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8',1,'Starstrider42::CustomAsteroids::PopulationLoader']]]
 ];

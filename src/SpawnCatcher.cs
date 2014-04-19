@@ -48,9 +48,11 @@ namespace Starstrider42 {
 			 * 
 			 * @param[in] vessel A newly created ship object
 			 * 
-			 * @post if @p vessel is an asteroid, its orbit is modified using AsteroidManager. Otherwise, 
+			 * @post if @p vessel is an asteroid, its properties are modified using AsteroidManager. Otherwise, 
 			 * 		the function has no effect.
-			 * @note if AsteroidManager cannot generate an appropriate orbit, the asteroid is destroyed
+			 * @note if AsteroidManager cannot generate new data for the asteroid, the asteroid is destroyed. 
+			 * 		This policy is intended to minimize side effects while alerting the player to the 
+			 * 		presence of a bug.
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
@@ -64,7 +66,7 @@ namespace Starstrider42 {
 					//vessel.DiscoveryInfo.SetLevel(DiscoveryLevels.StateVectors | DiscoveryLevels.Name | DiscoveryLevels.Presence);
 
 					try {
-						vessel.orbitDriver.orbit = AsteroidManager.makeOrbit();
+						AsteroidManager.editAsteroid(vessel);
 					} catch (System.InvalidOperationException e) {
 						Debug.LogException(e);
 						// Destroy the asteroid as a fallback option

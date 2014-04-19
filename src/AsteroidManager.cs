@@ -34,25 +34,32 @@ namespace Starstrider42 {
 			private static PopulationLoader allowedPops;
 			private static double totalRate;
 
-			/** Generates a random orbit, based on the settings loaded to Custom Asteroids
+			/** Customizes an asteroid, based on the settings loaded to Custom asteroids
 			 * 
-			 * @return A randomly generated orbit in one of the asteroid populations.
+			 * @param[in,out] asteroid The asteroid to be modified
 			 * 
-			 * @exception System.InvalidOperationException Thrown if there are no populations from which 
-			 * 		to generate an orbit
+			 * @pre @p asteroid is an asteroid object in-game
+			 * 
+			 * @post @p asteroid has properties consistent with membership in a randomly 
+			 * 		chosen population
+			 * 
+			 * @exception System.InvalidOperationException Thrown if there are no populations in 
+			 * 		which to place the asteroid
 			 * @exception Starstrider42.CustomAsteroids.AsteroidManager.BadPopulationException Thrown if a 
-			 * 		population exists, but cannot generate valid orbits
+			 * 		population exists, but cannot generate valid data
 			 * 
 			 * @exceptsafe The program is in a consistent state in the event of an exception
 			 */
-			internal static Orbit makeOrbit() {
+			internal static void editAsteroid(Vessel asteroid) {
 				Population newPop = allowedPops.drawPopulation();
+
 				try {
-					return newPop.drawOrbit();
+					asteroid.orbitDriver.orbit = newPop.drawOrbit();
 				} catch (InvalidOperationException e) {
 					throw new BadPopulationException (newPop, 
 						"CustomAsteroids: Selected invalid population " + newPop, e);
 				}
+
 			}
 
 			internal class BadPopulationException : System.InvalidOperationException {
@@ -101,11 +108,10 @@ namespace Starstrider42 {
 			 */
 			internal PopulationLoader() {
 				try {
-					AsteroidSets = new Population[]{
+					asteroidSets = new Population[]{
 						/* In our own solar system, NEOs have a lifetime of about 10 million years, 
 						 * or 1/500 the lifetime of the solar system. Therefore, the NEO population 
-						 * should be about 1/500 as large as the main belt, assuming the belt has 
-						 * decayed only slowly since the LHB. But that's no fun...
+						 * should be much smaller than the main belt. But that's no fun...
 						 */
 						// NKO orbits based on NEO population from "Debiased Orbital and Absolute Magnitude 
 						//		Distribution of the Near-Earth Objects", Bottke et al. (2002), Icarus 156, 399
@@ -116,10 +122,10 @@ namespace Starstrider42 {
 				} catch (Exception e) {
 					Debug.LogError("CustomAsteroids: PopulationLoader default initialization failed");
 					Debug.LogException(e);
-					AsteroidSets = new Population[0];
+					asteroidSets = new Population[0];
 				}
 
-				VersionNumber = latestVersion();
+				versionNumber = latestVersion();
 			}
 
 			/** Stores current Custom Asteroids settings in a config file
@@ -143,13 +149,18 @@ namespace Starstrider42 {
 				}
 				// assert: popList() unchanged, and popList() and backup() are identical
 
-				// File may have been loaded with a previous version
-				VersionNumber = latestVersion();
+				// File may have been loaded from a previous version
+				string trueVersion = versionNumber;
+				try {
+					versionNumber = latestVersion();
 
-				ConfigNode allData = new ConfigNode();
-				ConfigNode.CreateConfigFromObject(this, allData);
-				allData.Save(popList());
-				Debug.Log("CustomAsteroids: settings saved");
+					ConfigNode allData = new ConfigNode();
+					ConfigNode.CreateConfigFromObject(this, allData);		// Only overload that works!
+					allData.Save(popList());
+					Debug.Log("CustomAsteroids: settings saved");
+				} finally {
+					versionNumber = trueVersion;
+				}
 			}
 
 			/** Factory method obtaining Custom Asteroids settings from a config file
@@ -175,21 +186,22 @@ namespace Starstrider42 {
 
 					if (allData != null) {
 						ConfigNode.LoadObjectFromConfig(allPops, allData);
+						// Backward-compatible with initial release
 						if (!allData.HasNode("VersionNumber")) {
-							allPops.VersionNumber = "0.1.0";
+							allPops.versionNumber = "0.1.0";
 						}
 					} else {
-						allPops.VersionNumber = "";
+						allPops.versionNumber = "";
 					}
 						
-					if (allPops.VersionNumber != latestVersion()) {
+					if (allPops.versionNumber != latestVersion()) {
 						// Config file is either missing or out of date, make a new one
 						// Any information loaded from config file will be preserved
 						try {
-							if (allPops.VersionNumber.Length == 0) {
+							if (allPops.versionNumber.Length == 0) {
 								Debug.Log("CustomAsteroids: no config file found at " + popList() + "; creating new one");
 							} else {
-								Debug.Log("CustomAsteroids: loaded config file from version " + allPops.VersionNumber +
+								Debug.Log("CustomAsteroids: loaded config file from version " + allPops.versionNumber +
 									"; updating to version " + latestVersion());
 							}
 							allPops.Save();
@@ -206,7 +218,6 @@ namespace Starstrider42 {
 					return allPops;
 				// No idea what kinds of exceptions are thrown by ConfigNode
 				} catch (Exception e) {
-					Debug.LogException(e);
 					throw new TypeInitializationException("Starstrider42.CustomAsteroids.PopulationLoader", e);
 				}
 			}
@@ -227,7 +238,7 @@ namespace Starstrider42 {
 				try {
 					// A typedef! A typedef! My kerbdom for a typedef!
 					List<Pair<Population, double>> bins = new List<Pair<Population, double>>();
-					foreach (Population x in AsteroidSets) {
+					foreach (Population x in asteroidSets) {
 						bins.Add(new Pair<Population, double>(x, x.getSpawnRate()));
 					}
 
@@ -246,7 +257,7 @@ namespace Starstrider42 {
 			 */
 			internal double getTotalRate() {
 				double total = 0.0;
-				foreach (Population x in AsteroidSets) {
+				foreach (Population x in asteroidSets) {
 					total += x.getSpawnRate();
 				}
 				return total;
@@ -274,7 +285,7 @@ namespace Starstrider42 {
 
 			/** Returns the mod's current version number
 			 * 
-			 * @return a version number in major.minor.patch form
+			 * @return A version number in major.minor.patch form
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
@@ -285,10 +296,11 @@ namespace Starstrider42 {
 			/////////////////////////////////////////////////////////
 			// Config options
 			// Giving variables upper-case names because it looks better in the .cfg file
-			[Persistent(collectionIndex="POPULATION")]
-			private Population[] AsteroidSets;
+			[Persistent(name="AsteroidSets",collectionIndex="POPULATION")]
+			private Population[] asteroidSets;
 
-			[Persistent] private string VersionNumber;
+			[Persistent(name="VersionNumber")]
+			private string versionNumber;
 		}
 	}
 }

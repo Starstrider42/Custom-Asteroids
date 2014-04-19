@@ -1,4 +1,4 @@
-Custom Asteroids v0.1.0                       {#mainpage}
+Custom Asteroids v0.2.0                       {#mainpage}
 ============
 
 Custom Asteroids is a mod for [Kerbal Space Program](http://www.kerbalspaceprogram.com/) that expands the asteroid functionality introduced in version 0.23.5 of the game. It is designed to be easily and naturally extended by players.
