@@ -60,6 +60,14 @@ namespace Starstrider42 {
 						"CustomAsteroids: Selected invalid population " + newPop, e);
 				}
 
+				if (allowedPops.getRenameOption()) {
+					string asteroidId = asteroid.GetName();
+					if (asteroidId.IndexOf("Ast. ") >= 0) {
+						// Keep only the ID number
+						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
+						asteroid.vesselName = newPop.getName() + " " + asteroidId;
+					} 	// if asteroid name doesn't match expected format, leave it as-is
+				}
 			}
 
 			internal class BadPopulationException : System.InvalidOperationException {
@@ -115,8 +123,8 @@ namespace Starstrider42 {
 						 */
 						// NKO orbits based on NEO population from "Debiased Orbital and Absolute Magnitude 
 						//		Distribution of the Near-Earth Objects", Bottke et al. (2002), Icarus 156, 399
-						new Population("Near-Kerbin", "Sun", 0.3,  6799920128, 52859363534, 0.5, 7.5), 
-						new Population("Main Belt",   "Sun", 1.0, 27292805500, 43324628162, 0.18, 7.5)
+						new Population("Near-Kerbin Ast.", "Sun", 0.3,  6799920128, 52859363534, 0.5, 7.5), 
+						new Population("Main Belt Ast.",   "Sun", 1.0, 27292805500, 43324628162, 0.18, 7.5)
 					};
 				// ConfigNode makes an initialization failure recoverable
 				} catch (Exception e) {
@@ -125,7 +133,8 @@ namespace Starstrider42 {
 					asteroidSets = new Population[0];
 				}
 
-				versionNumber = latestVersion();
+				versionNumber   = latestVersion();
+				renameAsteroids = false;
 			}
 
 			/** Stores current Custom Asteroids settings in a config file
@@ -187,7 +196,7 @@ namespace Starstrider42 {
 					if (allData != null) {
 						ConfigNode.LoadObjectFromConfig(allPops, allData);
 						// Backward-compatible with initial release
-						if (!allData.HasNode("VersionNumber")) {
+						if (!allData.HasValue("VersionNumber")) {
 							allPops.versionNumber = "0.1.0";
 						}
 					} else {
@@ -263,6 +272,16 @@ namespace Starstrider42 {
 				return total;
 			}
 
+			/** Returns whether or not asteroids may be renamed by their population
+			 * 
+			 * @return True if renaming allowed, false otherwise.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal bool getRenameOption() {
+				return renameAsteroids;
+			}
+
 			/** Identifies the Custom Asteroids config file
 			 * 
 			 * @return An absolute path to the config file
@@ -293,11 +312,28 @@ namespace Starstrider42 {
 				return Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
 			}
 
+			/** Debug function for traversing node tree
+			 * 
+			 * @post The current node and all nodes beneath it are printed, in depth-first order
+			 */
+			private static void printNode(ConfigNode node) {
+				Debug.Log("printNode: NODE = " + node.name);
+				foreach (ConfigNode.Value x in node.values) {
+					Debug.Log("printNode: " + x.name + " -> " + x.value);
+				}
+				foreach (ConfigNode x in node.nodes) {
+					printNode(x);
+				}
+			}
+
 			/////////////////////////////////////////////////////////
 			// Config options
 			// Giving variables upper-case names because it looks better in the .cfg file
 			[Persistent(name="AsteroidSets",collectionIndex="POPULATION")]
 			private Population[] asteroidSets;
+
+			[Persistent(name="RenameAsteroids")]
+			private bool renameAsteroids;
 
 			[Persistent(name="VersionNumber")]
 			private string versionNumber;
