@@ -36,12 +36,13 @@ namespace Starstrider42 {
 				this.centralBody  = "Sun";
 				this.spawnRate    = 0.0;			// Safeguard: don't make asteroids until the values are set
 
-				this.orbitSize    = new ValueRange(ValueRange.Distribution.LogUniform);
+				this.orbitSize    = new  SizeRange(ValueRange.Distribution.LogUniform, SizeRange.SizeType.SemimajorAxis);
 				this.eccentricity = new ValueRange(ValueRange.Distribution.Rayleigh, min: 0.0, max: 1.0);
 				this.inclination  = new ValueRange(ValueRange.Distribution.Rayleigh);
 				this.periapsis    = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
 				this.ascNode      = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
-				this.orbitPhase   = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
+				this.orbitPhase   = new PhaseRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0, 
+					type: PhaseRange.PhaseType.MeanAnomaly, epoch: PhaseRange.EpochType.GameStart);
 			}
 
 			/** Generates a random orbit consistent with the population properties
@@ -65,8 +66,12 @@ namespace Starstrider42 {
 				Debug.Log("CustomAsteroids: drawing orbit from " + name);
 
 				try {
-					// Unambiguous properties
+					// Properties with only one reasonable parametrization
 					double e = eccentricity.draw();
+					if (e < 0.0) {
+						throw new InvalidOperationException("CustomAsteroids: cannot have negative eccentricity (generated " 
+							+ e + ")");
+					}
 					// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
 					// So it's ok to just have positive inclinations
 					double i = inclination.draw();
@@ -74,9 +79,68 @@ namespace Starstrider42 {
 					double aPe = periapsis.draw();		// argument of periapsis
 					double lAn = ascNode.draw();		// longitude of ascending node
 
-					// Properties with multiple parametrizations
-					double a   = orbitSize.draw();
-					double mEp = orbitPhase.draw();		// mean anomaly at epoch?
+					// Semimajor axis
+					double a;
+					double size = orbitSize.draw();
+					switch (orbitSize.getParam()) {
+					case SizeRange.SizeType.SemimajorAxis:
+						a = size;
+						break;
+					case SizeRange.SizeType.Periapsis:
+						a = size / (1.0 - e);
+						break;
+					case SizeRange.SizeType.Apoapsis:
+						a = size / (1.0 + e);
+						break;
+					default:
+						throw new InvalidOperationException("CustomAsteroids: cannot describe orbit size using type " 
+							+ orbitSize.getParam());
+					}
+
+					// Mean anomaly at given epoch
+					double mEp, epoch;
+					double phase = orbitPhase.draw();
+					switch (orbitPhase.getParam()) {
+					case PhaseRange.PhaseType.MeanAnomaly:
+						// Mean anomaly is the ONLY orbital angle that needs to be given in radians
+						mEp = Math.PI/180.0 * phase;
+						break;
+					case PhaseRange.PhaseType.MeanLongitude:
+						// I'm defining longitude in the reference plane, not in the asteroid's orbital plane
+						// Cos[l] == (Cos[Ω] Cos[θ + ω] - Sin[Ω] Sin[θ + ω] Cos[i])/Sqrt[Cos[θ + ω]^2 + Cos[i]^2 Sin[θ + ω]^2];
+						// Sin[l] == (Sin[Ω] Cos[θ + ω] + Cos[Ω] Sin[θ + ω] Cos[i])/Sqrt[Cos[θ + ω]^2 + Cos[i]^2 Sin[θ + ω]^2];
+						// Let's hope I translated the Mathematica solution correctly
+						// Why doesn't KSP.Orbit have a function for this?
+						double   iRad =     i * Math.PI/180.0;
+						double aPeRad =   aPe * Math.PI/180.0;
+						double lAnRad =   lAn * Math.PI/180.0;
+						double  phRad = phase * Math.PI/180.0;
+						/** @todo Confirm or correct that this condition determines the sign of mEp
+						 */
+						mEp = (Math.Sin(phRad-lAnRad-aPeRad*Math.Cos(iRad)) >= 0 ? 1 : -1) * 
+							Math.Acos(2.0 * (Math.Cos(iRad) * Math.Cos(aPeRad) * Math.Cos(phRad - lAnRad) 
+									+ Math.Sin(aPeRad) * Math.Sin(phRad - lAnRad))
+								/ Math.Sqrt(3.0 + Math.Cos(2.0*iRad) 
+									- 2.0 * Math.Cos(2.0 * (phRad - lAnRad)) * Math.Sin(iRad) * Math.Sin(iRad)) );
+						// Inclination is the hard part... what if we assume it's zero?
+						/*mEp = (Math.Sin(phRad-lAnRad-aPeRad) >= 0 ? 1 : -1) * 
+							Math.Acos((Math.Cos(aPeRad) * Math.Cos(phRad - lAnRad) + Math.Sin(aPeRad) * Math.Sin(phRad - lAnRad)) );*/
+						break;
+					default:
+						throw new InvalidOperationException("CustomAsteroids: cannot describe orbit position using type " 
+							+ orbitSize.getParam());
+					}
+					switch (orbitPhase.getEpoch()) {
+					case PhaseRange.EpochType.GameStart:
+						epoch = 0.0;
+						break;
+					case PhaseRange.EpochType.Now:
+						epoch = Planetarium.GetUniversalTime();
+						break;
+					default:
+						throw new InvalidOperationException("CustomAsteroids: cannot describe orbit position using type " 
+							+ orbitSize.getParam());
+					}
 
 					// Fix accidentally hyperbolic orbits
 					if (a * (1.0-e) < 0.0) {
@@ -87,7 +151,7 @@ namespace Starstrider42 {
 						+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp);
 
 					// Does Orbit(...) throw exceptions?
-					Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, Planetarium.GetUniversalTime(), orbitee);
+					Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, epoch, orbitee);
 					newOrbit.UpdateFromUT(Planetarium.GetUniversalTime());
 
 					return newOrbit;
@@ -117,6 +181,17 @@ namespace Starstrider42 {
 			////////////////////////////////////////////////////////
 			// Population properties
 
+			[Persistent] private string name;
+			[Persistent] private string centralBody;
+			[Persistent] private double spawnRate;
+			[Persistent] private  SizeRange orbitSize;
+			[Persistent] private ValueRange eccentricity;
+			[Persistent] private ValueRange inclination;
+			[Persistent] private ValueRange periapsis;
+			[Persistent] private ValueRange ascNode;
+			[Persistent] private PhaseRange orbitPhase;
+
+
 			/** Represents the set of values an orbital element may assume
 			 * 
 			 * The same consistency caveats as for Population apply here.
@@ -132,7 +207,7 @@ namespace Starstrider42 {
 				 * @exceptsafe Does not throw exceptions
 				 */
 				internal ValueRange(Distribution dist, double min = 0.0, double max = 1.0, 
-							double avg = 0.0, double stddev = 0.0) {
+					double avg = 0.0, double stddev = 0.0) {
 					this.dist   = dist;
 					this.min    = min;
 					this.max    = max;
@@ -160,24 +235,99 @@ namespace Starstrider42 {
 					}
 				}
 
+				/** Defines the type of probability distribution from which the value is drawn
+				 */
 				internal enum Distribution {Uniform, LogUniform, Rayleigh};
 
-				[Persistent] private Distribution dist;
-				[Persistent] private double min;
-				[Persistent] private double max;
-				[Persistent] private double avg;
-				[Persistent] private double stddev;
+				// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these members -- even though ConfigNodes seem to completely ignore permissions in all other cases
+				[Persistent] protected Distribution dist;
+				[Persistent] protected double min;
+				[Persistent] protected double max;
+				[Persistent] protected double avg;
+				[Persistent] protected double stddev;
 			}
 
-			[Persistent] private string name;
-			[Persistent] private string centralBody;
-			[Persistent] private double spawnRate;
-			[Persistent] private ValueRange orbitSize;
-			[Persistent] private ValueRange eccentricity;
-			[Persistent] private ValueRange inclination;
-			[Persistent] private ValueRange periapsis;
-			[Persistent] private ValueRange ascNode;
-			[Persistent] private ValueRange orbitPhase;
+			private class SizeRange : ValueRange {
+				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
+				 * 
+				 * @param[in] type The description of orbit size that is used
+				 * @param[in] dist The distribution from which the value will be drawn
+				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
+				 * @param[in] avg The mean value returned. May be unused.
+				 * @param[in] stddev The standard deviation of values returned. May be unused.
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
+				internal SizeRange(Distribution dist, SizeType type = SizeType.SemimajorAxis, 
+						double min = 0.0, double max = 1.0, double avg = 0.0, double stddev = 0.0) 
+						: base(dist, min, max, avg, stddev) {
+					this.type = type;
+				}
+
+				/** Returns the parametrization used by this ValueRange
+				 * 
+				 * @return The orbit size parameter represented by this object.
+				 * 
+				 * @exceptsafe Does not throw exceptions.
+				 */
+				internal SizeType getParam() {
+					return type;
+				}
+
+				/** Defines the parametrization of orbit size that is used
+				 */
+				internal enum SizeType {SemimajorAxis, Periapsis, Apoapsis};
+
+				[Persistent] private SizeType type;
+			}
+
+			private class PhaseRange : ValueRange {
+				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
+				 * 
+				 * @param[in] type The description of orbit position that is used
+				 * @param[in] dist The distribution from which the value will be drawn
+				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
+				 * @param[in] avg The mean value returned. May be unused.
+				 * @param[in] stddev The standard deviation of values returned. May be unused.
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
+				internal PhaseRange(Distribution dist, 
+						PhaseType type = PhaseType.MeanAnomaly, EpochType epoch = EpochType.GameStart, 
+						double min = 0.0, double max = 1.0, double avg = 0.0, double stddev = 0.0) 
+						: base(dist, min, max, avg, stddev) {
+					this.type = type;
+					this.epoch = epoch;
+				}
+
+				/** Returns the parametrization used by this ValueRange
+				 * 
+				 * @return The orbit position parameter represented by this object.
+				 * 
+				 * @exceptsafe Does not throw exceptions.
+				 */
+				internal PhaseType getParam() {
+					return type;
+				}
+
+				/** Returns the epoch at which the phase is evaluated
+				 * 
+				 * @return The epoch at which the orbital position is specified
+				 * 
+				 * @exceptsafe Does not throw exceptions.
+				 */
+				internal EpochType getEpoch() {
+					return epoch;
+				}
+
+				/** Defines the parametrization of orbit size that is used
+				 */
+				internal enum PhaseType {MeanLongitude, MeanAnomaly};
+				internal enum EpochType {GameStart, Now};
+
+				[Persistent] private PhaseType type;
+				[Persistent] private EpochType epoch;
+			}
 		}
 	}
 }

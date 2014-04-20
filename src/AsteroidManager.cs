@@ -139,6 +139,9 @@ namespace Starstrider42 {
 					foreach (UrlDir.UrlConfig curSet in configList) {
 						foreach (ConfigNode curNode in curSet.config.nodes) {
 							if (curNode.name == "ASTEROIDGROUP") {
+								#if DEBUG
+								Debug.Log("Customasteroids: ConfigNode '" + curNode + "' loaded");
+								#endif
 								Population newPop = new Population();
 								ConfigNode.LoadObjectFromConfig(newPop, curNode);
 								allPops.asteroidSets.Add(newPop);
