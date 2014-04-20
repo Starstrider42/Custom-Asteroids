@@ -2,7 +2,7 @@ Version History                         {#changelog}
 ============
 
 Custom Biomes conforms to version 2.0.0 of the [Semantic Versioning specification](http://semver.org/spec/v2.0.0.html). 
-All version numbers are to be interpreted as described therein. Since Custom Biomes does not expose public functions, the [format of `asteroids.cfg`](@ref newbelts) will be considered the API for the purpose of versioning.
+All version numbers are to be interpreted as described therein. Since Custom Biomes does not expose public functions, the [format of asteroid population files](@ref newbelts) will be considered the API for the purpose of versioning.
 
 Version 0.2.0 (in development)
 ------------
@@ -14,7 +14,7 @@ Version 0.2.0 (in development)
 
 ### New Features 
 
-* Custom Asteroids will now try to upgrade `asteroid.cfg` files belonging to a previous version, inserting default values for any new parameters. This may have unintended effects if the user has upgraded to a non-backwards-compatible version.
+* Custom Asteroids will now scan the KSP install for asteroid configuration files. This should make it easier to personalize asteroid sets without conflicting with the mod install.
 
 ### Bug Fixes 
 

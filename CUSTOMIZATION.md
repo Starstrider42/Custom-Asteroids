@@ -1,11 +1,11 @@
 Custom(izing) Asteroids                         {#newbelts}
 ============
 
-Look for a file named `asteroids.cfg` in `GameData/Starstrider42/CustomAsteroids`. If it is missing, it will be automatically generated the next time you play KSP.
+Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is `GameData/Starstrider42/CustomAsteroids/Basic Asteroids.cfg`. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.
 
-`asteroids.cfg` defines where asteroids (or comets, or other small bodies) appear in the game. Each `POPULATION` block represents a single group of orbits. At present, you can't force a population to only give you certain sizes or types of asteroids. There is no limit to the number of `POPULATION` blocks you can add.
+Within each file, each `ASTEROIDGROUP` block represents a single group of orbits. At present, you can't force a population to only give you certain sizes or types of asteroids. There is no limit to the number of `ASTEROIDGROUP` blocks you can place in a file.
 
-The current fields in each `POPULATION` block are the following:
+The current fields in each `ASTEROIDGROUP` block are the following:
 
 * `name`: a descriptive name. At present, this is not used in-game, but this may change in future versions.
 * `centralBody`: the name of the object the asteroids will orbit. Must exactly match the name of an 

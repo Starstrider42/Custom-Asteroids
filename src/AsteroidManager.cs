@@ -99,68 +99,14 @@ namespace Starstrider42 {
 		 * @todo Clean up this class
 		 */
 		internal class PopulationLoader {
-			/** Sets the asteroid model to its default settings, if possible
+			/** Creates an uninitialized solar system
+			 * 
+			 * @post No asteroids will be created
 			 * 
 			 * @exceptsafe Does not throw exceptions.
-			 * 
-			 * @note The initialized object may not contain any Population objects, 
-			 * 		if their initializations failed.
 			 */
 			internal PopulationLoader() {
-				try {
-					asteroidSets = new Population[]{
-						/* In our own solar system, NEOs have a lifetime of about 10 million years, 
-						 * or 1/500 the lifetime of the solar system. Therefore, the NEO population 
-						 * should be much smaller than the main belt. But that's no fun...
-						 */
-						// NKO orbits based on NEO population from "Debiased Orbital and Absolute Magnitude 
-						//		Distribution of the Near-Earth Objects", Bottke et al. (2002), Icarus 156, 399
-						new Population("Near-Kerbin", "Sun", 0.3,  6799920128, 52859363534, 0.5, 7.5), 
-						new Population("Main Belt",   "Sun", 1.0, 27292805500, 43324628162, 0.18, 7.5)
-					};
-				// ConfigNode makes an initialization failure recoverable
-				} catch (Exception e) {
-					Debug.LogError("CustomAsteroids: PopulationLoader default initialization failed");
-					Debug.LogException(e);
-					asteroidSets = new Population[0];
-				}
-
-				versionNumber = latestVersion();
-			}
-
-			/** Stores current Custom Asteroids settings in a config file
-			 * 
-			 * @post The current settings are stored to the config file
-			 * @post The current Custom Asteroids version is stored to the config file
-			 * 
-			 * @todo Identify exception conditions
-			 * 
-			 * @exceptsafe The program is in a consistent state in the event of an exception
-			 * 
-			 * @warning A backup system attempts to ensure that the config file does not get corrupted in the 
-			 * 		event of an I/O error, but it is not foolproof.
-			 */
-			internal void Save() {
-				// Require a successful backup before proceeding with the save
-				if (System.IO.File.Exists(popList())) {
-					// File.Move() may be faster, but it requires you to manually delete the backup file first
-					// Atomicity requires backing up the backup before deleting it, which quickly gets messy
-					System.IO.File.Copy(popList(), backup(), true);
-				}
-				// assert: popList() unchanged, and popList() and backup() are identical
-
-				// File may have been loaded from a previous version
-				string trueVersion = versionNumber;
-				try {
-					versionNumber = latestVersion();
-
-					ConfigNode allData = new ConfigNode();
-					ConfigNode.CreateConfigFromObject(this, allData);		// Only overload that works!
-					allData.Save(popList());
-					Debug.Log("CustomAsteroids: settings saved");
-				} finally {
-					versionNumber = trueVersion;
-				}
+				asteroidSets = new List<Population>();
 			}
 
 			/** Factory method obtaining Custom Asteroids settings from a config file
@@ -181,38 +127,32 @@ namespace Starstrider42 {
 			internal static PopulationLoader Load() {
 				Debug.Log("CustomAsteroids: loading settings...");
 				try {
-					ConfigNode allData = ConfigNode.Load(popList());
+					// UrlConfig x;
+					// x.parent.fullPath;		// Name of file to write to
+					// x.config					// AsteroidSet node
+
+					// Start with an empty population list
 					PopulationLoader allPops = new PopulationLoader();
 
-					if (allData != null) {
-						ConfigNode.LoadObjectFromConfig(allPops, allData);
-						// Backward-compatible with initial release
-						if (!allData.HasNode("VersionNumber")) {
-							allPops.versionNumber = "0.1.0";
-						}
-					} else {
-						allPops.versionNumber = "";
-					}
-						
-					if (allPops.versionNumber != latestVersion()) {
-						// Config file is either missing or out of date, make a new one
-						// Any information loaded from config file will be preserved
-						try {
-							if (allPops.versionNumber.Length == 0) {
-								Debug.Log("CustomAsteroids: no config file found at " + popList() + "; creating new one");
-							} else {
-								Debug.Log("CustomAsteroids: loaded config file from version " + allPops.versionNumber +
-									"; updating to version " + latestVersion());
+					// Search for populations in all config files
+					UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("AsteroidSets");
+					foreach (UrlDir.UrlConfig curSet in configList) {
+						foreach (ConfigNode curNode in curSet.config.nodes) {
+							if (curNode.name == "ASTEROIDGROUP") {
+								Population newPop = new Population();
+								ConfigNode.LoadObjectFromConfig(newPop, curNode);
+								allPops.asteroidSets.Add(newPop);
 							}
-							allPops.Save();
-						} catch (Exception e) {
-							// First priority, just in case Debug.Log*() produce I/O exceptions themselves
-							ScreenMessages.PostScreenMessage("WARNING: could not save Custom Asteroids settings, please check " 
-								+ popList() + " before starting a new game", 5.0f, ScreenMessageStyle.UPPER_CENTER);
-							Debug.LogError("CustomAsteroids: settings could not be saved");
-							Debug.LogException(e);
+							// ignore any other nodes present
 						}
 					}
+
+					#if DEBUG
+					foreach (Population x in allPops.asteroidSets) {
+						Debug.Log("Customasteroids: Population '" + x + "' loaded");
+					}
+					#endif
+
 					Debug.Log("CustomAsteroids: settings loaded");
 
 					return allPops;
@@ -269,38 +209,16 @@ namespace Starstrider42 {
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
-			private static string popList() {
-				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/asteroids.cfg";
-			}
-
-			/** Identifies the backup Custom Asteroids config file
-			 * 
-			 * @return An absolute path to the backup file
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			private static string backup() {
-				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/asteroids.backup";
-			}
-
-			/** Returns the mod's current version number
-			 * 
-			 * @return A version number in major.minor.patch form
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			private static string latestVersion() {
-				return Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+			private static string optionList() {
+				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/Custom Asteroids Settings.cfg";
 			}
 
 			/////////////////////////////////////////////////////////
 			// Config options
 			// Giving variables upper-case names because it looks better in the .cfg file
-			[Persistent(name="AsteroidSets",collectionIndex="POPULATION")]
-			private Population[] asteroidSets;
 
-			[Persistent(name="VersionNumber")]
-			private string versionNumber;
+			//[Persistent(name="AsteroidSets",collectionIndex="ASTEROIDGROUP")]
+			private List<Population> asteroidSets;
 		}
 	}
 }
