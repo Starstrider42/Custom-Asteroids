@@ -32,44 +32,16 @@ namespace Starstrider42 {
 			 * @note Required by interface of ConfigNode.LoadObjectFromConfig()
 			 */
 			internal Population() {
-				this.name        = "INVALID";
-				this.centralBody = "Sun";
-				this.spawnRate = 0.0;			// Safeguard: don't make asteroids until the values are set sensibly
-				this.smaMin    = 1.0;
-				this.smaMax    = 1.0;
-				this.eccAvg    = 0.0;
-				this.incAvg    = 0.0;
-			}
+				this.name         = "INVALID";
+				this.centralBody  = "Sun";
+				this.spawnRate    = 0.0;			// Safeguard: don't make asteroids until the values are set
 
-			/** Creates a population with specific properties
-			 * 
-			 * @param[in] name The name of the population. Currently unused.
-			 * @param[in] central The name of the body the asteroids will orbit.
-			 * @param[in] rate The desired rate at which asteroids appear in the population. Currently relative to 
-			 * 		the rates of all other populations.
-			 * @param[in] aMin,aMax The minimum and maximum semimajor axes allowed in the population.
-			 * @param[in] eAvg, iAvg The average eccentricity and (absolute value of) inclination of the population.
-			 * 
-			 * @pre @p centralBody is the exact name of a celestial object in KSP.
-			 * @pre @p rate &ge; 0
-			 * @pre 0 < @p aMin &le; @p aMax
-			 * @pre @p eAvg &ge; 0;
-			 * @pre @p iAvg &ge; 0;
-			 * 
-			 * @exceptsafe Object construction is atomic.
-			 * 
-			 * @note The current implementation does not throw exceptions, but this may change in future versions.
-			 */
-			internal Population(string name, string central, 
-					double rate, double aMin, double aMax, double eAvg, double iAvg) {
-				// Don't bother testing preconditions, since I have to check again in DrawOrbit()
-				this.name        = name;
-				this.centralBody = central;
-				this.spawnRate   = rate;
-				this.smaMin      = aMin;
-				this.smaMax      = aMax;
-				this.eccAvg      = eAvg;
-				this.incAvg      = iAvg;
+				this.orbitSize    = new ValueRange(ValueRange.Distribution.LogUniform);
+				this.eccentricity = new ValueRange(ValueRange.Distribution.Rayleigh, min: 0.0, max: 1.0);
+				this.inclination  = new ValueRange(ValueRange.Distribution.Rayleigh);
+				this.periapsis    = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
+				this.ascNode      = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
+				this.orbitPhase   = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
 			}
 
 			/** Generates a random orbit consistent with the population properties
@@ -93,15 +65,26 @@ namespace Starstrider42 {
 				Debug.Log("CustomAsteroids: drawing orbit from " + name);
 
 				try {
-					double a = RandomDist.drawLogUniform(smaMin, smaMax);
-					double e = RandomDist.drawRayleigh(eccAvg);
-					// Explicit sign is redundant with 180-degree shift in longitude of ascending node
-					double i = /*RandomDist.drawSign() * */ RandomDist.drawRayleigh(incAvg);
-					double aPe = RandomDist.drawAngle();		// argument of periapsis
-					double lAn = RandomDist.drawAngle();		// longitude of ascending node
-					double mEp = RandomDist.drawAngle();		// mean anomaly at epoch?
+					// Unambiguous properties
+					double e = eccentricity.draw();
+					// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
+					// So it's ok to just have positive inclinations
+					double i = inclination.draw();
 
-					Debug.Log("CustomAsteroids: new orbit at " + a + " m, e = " + e + ", i = " + i);
+					double aPe = periapsis.draw();		// argument of periapsis
+					double lAn = ascNode.draw();		// longitude of ascending node
+
+					// Properties with multiple parametrizations
+					double a   = orbitSize.draw();
+					double mEp = orbitPhase.draw();		// mean anomaly at epoch?
+
+					// Fix accidentally hyperbolic orbits
+					if (a * (1.0-e) < 0.0) {
+						a = -a;
+					}
+
+					Debug.Log("CustomAsteroids: new orbit at " + a + " m, e = " + e + ", i = " + i 
+						+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp);
 
 					// Does Orbit(...) throw exceptions?
 					Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, Planetarium.GetUniversalTime(), orbitee);
@@ -131,13 +114,70 @@ namespace Starstrider42 {
 				return name;
 			}
 
+			////////////////////////////////////////////////////////
+			// Population properties
+
+			/** Represents the set of values an orbital element may assume
+			 * 
+			 * The same consistency caveats as for Population apply here.
+			 */
+			private class ValueRange {
+				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
+				 * 
+				 * @param[in] dist The distribution from which the value will be drawn
+				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
+				 * @param[in] avg The mean value returned. May be unused.
+				 * @param[in] stddev The standard deviation of values returned. May be unused.
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
+				internal ValueRange(Distribution dist, double min = 0.0, double max = 1.0, 
+							double avg = 0.0, double stddev = 0.0) {
+					this.dist   = dist;
+					this.min    = min;
+					this.max    = max;
+					this.avg    = avg;
+					this.stddev = stddev;
+				}
+
+				/** Generates a random number consistent with the distribution
+				 * 
+				 * @except System.InvalidOperationException Thrown if the parameters are inappropriate 
+				 * 		for the distribution, or if the distribution is invalid.
+				 * 
+				 * @exceptsafe This method is atomic
+				 */
+				internal double draw() {
+					switch (dist) {
+					case Distribution.Uniform: 
+						return RandomDist.drawUniform(min, max);
+					case Distribution.LogUniform: 
+						return RandomDist.drawLogUniform(min, max);
+					case Distribution.Rayleigh: 
+						return RandomDist.drawRayleigh(avg);
+					default: 
+						throw new System.InvalidOperationException("Invalid distribution specified, code " + dist);
+					}
+				}
+
+				internal enum Distribution {Uniform, LogUniform, Rayleigh};
+
+				[Persistent] private Distribution dist;
+				[Persistent] private double min;
+				[Persistent] private double max;
+				[Persistent] private double avg;
+				[Persistent] private double stddev;
+			}
+
 			[Persistent] private string name;
 			[Persistent] private string centralBody;
 			[Persistent] private double spawnRate;
-			[Persistent] private double smaMin;
-			[Persistent] private double smaMax;
-			[Persistent] private double eccAvg;
-			[Persistent] private double incAvg;
+			[Persistent] private ValueRange orbitSize;
+			[Persistent] private ValueRange eccentricity;
+			[Persistent] private ValueRange inclination;
+			[Persistent] private ValueRange periapsis;
+			[Persistent] private ValueRange ascNode;
+			[Persistent] private ValueRange orbitPhase;
 		}
 	}
 }

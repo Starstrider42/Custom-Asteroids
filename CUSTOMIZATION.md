@@ -1,7 +1,7 @@
 Custom(izing) Asteroids                         {#newbelts}
 ============
 
-Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is `GameData/Starstrider42/CustomAsteroids/Basic Asteroids.cfg`. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.
+Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is `GameData/Starstrider42/CustomAsteroids/config/Basic Asteroids.cfg`. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.
 
 Within each file, each `ASTEROIDGROUP` block represents a single group of orbits. At present, you can't force a population to only give you certain sizes or types of asteroids. There is no limit to the number of `ASTEROIDGROUP` blocks you can place in a file.
 

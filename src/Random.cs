@@ -24,6 +24,8 @@ namespace Starstrider42 {
 		}
 
 		/** Contains static methods for random number distributions
+		 * 
+		 * @todo Move methods into Population.ValueRange, as appropriate
 		 */
 		internal static class RandomDist {
 			/** Randomly selects from discrete options with unequal weights
@@ -100,7 +102,35 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions.
 			 */
 			internal static double drawAngle() {
-				return UnityEngine.Random.Range(0.0f, 360.0f);
+				return drawUniform(0.0, 360.0);
+			}
+
+			/** Draws a value from a uniform distribution
+			 * 
+			 * @param[in] a,b The endpoints of the range containing the random variate.
+			 * 
+			 * @return A uniform random variate in the interval [@p a, @p b]. The return value has 
+			 * 	the same units as @p a and @p b.
+			 * 
+			 * @pre @p a &le; @p b
+			 * 
+			 * @exception System.ArgumentOutOfRangeException Thrown if @p a > @p b
+			 * 
+			 * @exceptsafe This method is atomic
+			 */
+			internal static double drawUniform(double a, double b) {
+				if (b < a) {
+					throw new ArgumentOutOfRangeException("a",
+						"RandomDist.drawLogUniform(): In a uniform distribution, the first parameter must be no more than the second (gave a = " 
+						+ a + ", b = " + b + ")");
+				}
+				// IMPORTANT: don't let anything throw beyond this point
+
+				/* Why the HELL does UnityEngine.Random use single precision?
+				 * Alas, using System.Random (a linear congruential generator, of all things) 
+				 *	might be an even greater evil. I'd rather take the chance that the Unity developers 
+				 *	chose a sensible implementation; why else would they have their own class? */
+				return UnityEngine.Random.Range((float) a,(float) b);
 			}
 
 			/** Draws a value from a log-uniform distribution
