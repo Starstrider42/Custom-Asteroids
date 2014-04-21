@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0-devel</span>
+   &#160;<span id="projectnumber">0.2.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -103,24 +103,60 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <div class="title">Custom(izing) Asteroids </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Look for a file named <code>asteroids.cfg</code> in <code>GameData/Starstrider42/CustomAsteroids</code>. If it is missing, it will be automatically generated the next time you play KSP.</p>
-<p><code>asteroids.cfg</code> defines where asteroids (or comets, or other small bodies) appear in the game. Each <code>POPULATION</code> block represents a single group of orbits. At present, you can't force a population to only give you certain sizes or types of asteroids. There is no limit to the number of <code>POPULATION</code> blocks you can add.</p>
-<p>The current fields in each <code>POPULATION</code> block are the following:</p>
+<div class="textblock"><p>Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is <code>GameData/Starstrider42/CustomAsteroids/config/Basic Asteroids.cfg</code>. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.</p>
+<p>Within each file, each <code>ASTEROIDGROUP</code> block represents a single group of orbits. At present, you can't force a group to only give you certain sizes or types of asteroids. There is no limit to the number of <code>ASTEROIDGROUP</code> blocks you can place in a file.</p>
+<h2>Basic Usage </h2>
+<p>The most frequently used fields in each <code>ASTEROIDGROUP</code> block are the following:</p>
 <ul>
 <li><code>name</code>: a descriptive name. At present, this is not used in-game, but this may change in future versions.</li>
-<li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the name of an in-game object.</li>
-<li><code>spawnRate</code>: the relative odds that a newly spawned asteroid will belong to that population. Must be a positive number. At present, the absolute scale does not matter. For example, in the default file an asteroid has a 23% chance (0.3/(0.3 + 1.0)) of belonging to the Near-Kerbin population, and a 77% chance of belonging to the Main Belt population; replacing the numbers with 3 and 10 won't change those odds. In the future, spawnRate may control the number of asteroids discovered per day.</li>
-<li><code>smaMin</code>: the smallest semimajor axis an asteroid from this population may have, in meters. Currently a hard limit. Must be a positive number.</li>
-<li><code>smaMax</code>: the largest semimajor axis an asteroid may have, in meters. Must be a positive number.</li>
-<li><code>eccAvg</code>: the average eccentricity of an asteroid in this population. Any specific asteroid may have any eccentricity; it is possible, though very unlikely, that an asteroid will even appear on an unbound orbit. May be zero.</li>
-<li><code>incAvg</code>: the average inclination of an asteroid in this population, in degrees. As with eccentricities, you may occasionally get some extremely inclined orbits. May be zero. </li>
+<li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the name of an in-game celestial body.</li>
+<li><code>spawnRate</code>: the relative odds that a newly spawned asteroid will belong to that group. Must be a nonnegative number. For forward compatibility, this number should be given as asteroids detected per day, but, at present, only the ratio to all the other <code>spawnRate</code> values matters.</li>
+<li><code>orbitSize</code>: a block describing how far from <code>centralBody</code> the asteroid's orbit is found. Parameters:<ul>
+<li><code>type</code>: Describes which orbital element is constrained by <code>min</code> and <code>max</code>. Allowed values are SemimajorAxis, Periapsis, or Apoapsis.</li>
+<li><code>min</code>: The smallest value an asteroid from this group may have, in meters.</li>
+<li><code>max</code>: The largest value an asteroid from this group may have.</li>
+</ul>
+</li>
+<li><code>eccentricity</code>: a block describing what eccentricities an asteroid from the group may have.<ul>
+<li><code>avg</code>: the average eccentricity of an asteroid in this population. Must be a nonnegative number. Any specific asteroid may have any eccentricity; it is even possible, though very unlikely, that an asteroid will even appear on an unbound orbit.</li>
+</ul>
+</li>
+<li><code>inclination</code>: a block describing what inclinations an asteroid from the group may have.<ul>
+<li><code>avg</code>: the average inclination of an asteroid in this population, in degrees. Should be a nonnegative number. As with eccentricities, you may occasionally get some extreme values. Should be a nonnegative number.</li>
+</ul>
+</li>
+</ul>
+<h2>Advanced Usage </h2>
+<p>Each <code>ASTEROIDGROUP</code> block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:</p>
+<ul>
+<li><code>dist</code>: the distribution from which the parameter will be drawn. Allowed values are Uniform, LogUniform, or Rayleigh.</li>
+<li><code>min</code>: the minimum value of the parameter. Currently used by Uniform and LogUniform.</li>
+<li><code>max</code>: the maximum value of the parameter. Currently used by Uniform and LogUniform.</li>
+<li><code>avg</code>: the average value of the parameter. Currently used by Rayleigh.</li>
+<li><code>stddev</code>: the standard deviation of the parameter. Currently unused.</li>
+</ul>
+<p>The six orbital elements are:</p>
+<ul>
+<li><code>orbitSize</code>: one of three parameters describing the size of the orbit, in meters. This is the only orbital element that must <em>always</em> be given. Distribution defaults to LogUniform if unspecified. The <code>orbitSize</code> node also has an additional option:<ul>
+<li><code>type</code>: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.</li>
+</ul>
+</li>
+<li><code>eccentricity</code>: the eccentricity of the orbit. If omitted, defaults to circular orbits. Distribution defaults to Rayleigh if unspecified. If the distribution is changed to one that uses <code>min</code> and <code>max</code>, these values default to the 0-1 range.</li>
+<li><code>inclination</code>: the inclination of the orbit, in degrees. If omitted, defaults to uninclined orbits. Distribution defaults to Rayleigh if unspecified.</li>
+<li><code>periapsis</code>: the argument of periapsis, in degrees. If omitted, allows any angle. Distribution defaults to Uniform if unspecified.</li>
+<li><code>ascNode</code>: the longitude of the ascending node, in degrees. If omitted, allows any angle. Distribution defaults to Uniform if unspecified.</li>
+<li><code>orbitPhase</code>: one of two parameters describing the asteroid's position along its orbit, in degrees. If omitted, allows any angle. Distribution defaults to Uniform if unspecified. The <code>orbitPhase</code> node also has two additional options:<ul>
+<li><code>type</code>: the convention for measuring the asteroid's progress along its orbit. May be MeanAnomaly (value proportional to time since periapsis) or MeanLongitude (value proportional to time since zero phase angle). Defaults to MeanAnomaly.</li>
+<li><code>epoch</code>: the time at which the mean anomaly or mean longitude is measured. May be GameStart or Now. Defaults to GameStart. <b>WARNING:</b> GameStart does not work correctly with Real Solar System. This issue will hopefully be fixed in the next version. </li>
+</ul>
+</li>
 </ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
+    <li class="footer">Generated on Sun Apr 20 2014 17:34:06 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

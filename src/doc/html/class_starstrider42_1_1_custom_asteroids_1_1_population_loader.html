@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0-devel</span>
+   &#160;<span id="projectnumber">0.2.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -122,11 +122,8 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-methods"></a>
 Package Functions</h2></td></tr>
 <tr class="memitem:a92bcb892dcd1ae593841dd3a0a050cf9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a92bcb892dcd1ae593841dd3a0a050cf9">PopulationLoader</a> ()</td></tr>
-<tr class="memdesc:a92bcb892dcd1ae593841dd3a0a050cf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the asteroid model to its default settings, if possible.  <a href="#a92bcb892dcd1ae593841dd3a0a050cf9">More...</a><br/></td></tr>
+<tr class="memdesc:a92bcb892dcd1ae593841dd3a0a050cf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates an uninitialized solar system.  <a href="#a92bcb892dcd1ae593841dd3a0a050cf9">More...</a><br/></td></tr>
 <tr class="separator:a92bcb892dcd1ae593841dd3a0a050cf9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5df140c1ee51aadf7fe88ce3fb9cac33"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a5df140c1ee51aadf7fe88ce3fb9cac33">Save</a> ()</td></tr>
-<tr class="memdesc:a5df140c1ee51aadf7fe88ce3fb9cac33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores current Custom Asteroids settings in a config file.  <a href="#a5df140c1ee51aadf7fe88ce3fb9cac33">More...</a><br/></td></tr>
-<tr class="separator:a5df140c1ee51aadf7fe88ce3fb9cac33"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9176f2d40c4cca2e5a8f179dd70b2c10"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html">Population</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a9176f2d40c4cca2e5a8f179dd70b2c10">drawPopulation</a> ()</td></tr>
 <tr class="memdesc:a9176f2d40c4cca2e5a8f179dd70b2c10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Randomly selects an asteroid population.  <a href="#a9176f2d40c4cca2e5a8f179dd70b2c10">More...</a><br/></td></tr>
 <tr class="separator:a9176f2d40c4cca2e5a8f179dd70b2c10"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -166,9 +163,9 @@ Static Package Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the asteroid model to its default settings, if possible. </p>
-<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>The initialized object may not contain any <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> objects, if their initializations failed. </dd></dl>
+<p>Creates an uninitialized solar system. </p>
+<dl class="section post"><dt>Postcondition</dt><dd>No asteroids will be created</dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions. </dd></dl>
 
 </div>
 </div>
@@ -265,39 +262,8 @@ Static Package Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section user"><dt>Exception Safety</dt><dd>The program is in a consistent state in the event of an exception</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>Can I make <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8" title="Factory method obtaining Custom Asteroids settings from a config file. ">Load()</a> atomic?</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>How to allow backward compatibility if the config file changes? </dd></dl>
-
-</div>
-</div>
-<a class="anchor" id="a5df140c1ee51aadf7fe88ce3fb9cac33"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void Save </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">package</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Stores current Custom Asteroids settings in a config file. </p>
-<dl class="section post"><dt>Postcondition</dt><dd>The current settings are stored to the config file </dd>
-<dd>
-The current Custom Asteroids version is stored to the config file</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Identify exception conditions</dd></dl>
-<dl class="section user"><dt>Exception Safety</dt><dd>The program is in a consistent state in the event of an exception</dd></dl>
-<dl class="section warning"><dt>Warning</dt><dd>A backup system attempts to ensure that the config file does not get corrupted in the event of an I/O error, but it is not foolproof. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">Todo:</a></b></dt><dd>Can I make <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8" title="Factory method obtaining Custom Asteroids settings from a config file. ">Load()</a> atomic?</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>How to allow backward compatibility if the config file changes? </dd></dl>
 
 </div>
 </div>
@@ -310,7 +276,7 @@ The current Custom Asteroids version is stored to the config file</dd></dl>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html">PopulationLoader</a></li>
-    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
+    <li class="footer">Generated on Sun Apr 20 2014 17:34:06 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

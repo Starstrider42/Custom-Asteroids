@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0-devel</span>
+   &#160;<span id="projectnumber">0.2.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -108,6 +108,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pac-methods">Package Functions</a> &#124;
 <a href="class_starstrider42_1_1_custom_asteroids_1_1_population-members.html">List of all members</a>  </div>
@@ -130,9 +131,6 @@ Package Functions</h2></td></tr>
 <tr class="memitem:afddea4eab6725f7038ca52ee073743d3"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#afddea4eab6725f7038ca52ee073743d3">Population</a> ()</td></tr>
 <tr class="memdesc:afddea4eab6725f7038ca52ee073743d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a dummy population.  <a href="#afddea4eab6725f7038ca52ee073743d3">More...</a><br/></td></tr>
 <tr class="separator:afddea4eab6725f7038ca52ee073743d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5693ad02dec3b18034ddddae27a4d1fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a5693ad02dec3b18034ddddae27a4d1fd">Population</a> (string name, string central, double rate, double aMin, double aMax, double eAvg, double iAvg)</td></tr>
-<tr class="memdesc:a5693ad02dec3b18034ddddae27a4d1fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a population with specific properties.  <a href="#a5693ad02dec3b18034ddddae27a4d1fd">More...</a><br/></td></tr>
-<tr class="separator:a5693ad02dec3b18034ddddae27a4d1fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac31d1558d9ea8fb716af8108a789dd1f"><td class="memItemLeft" align="right" valign="top">Orbit&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ac31d1558d9ea8fb716af8108a789dd1f">drawOrbit</a> ()</td></tr>
 <tr class="memdesc:ac31d1558d9ea8fb716af8108a789dd1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a random orbit consistent with the population properties.  <a href="#ac31d1558d9ea8fb716af8108a789dd1f">More...</a><br/></td></tr>
 <tr class="separator:ac31d1558d9ea8fb716af8108a789dd1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -173,93 +171,6 @@ Package Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a5693ad02dec3b18034ddddae27a4d1fd"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html">Population</a> </td>
-          <td>(</td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">string&#160;</td>
-          <td class="paramname"><em>central</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>rate</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>aMin</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>aMax</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>eAvg</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>iAvg</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">package</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Creates a population with specific properties. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">name</td><td>The name of the population. Currently unused. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">central</td><td>The name of the body the asteroids will orbit. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">rate</td><td>The desired rate at which asteroids appear in the population. Currently relative to the rates of all other populations. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">aMin,aMax</td><td>The minimum and maximum semimajor axes allowed in the population. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">eAvg,iAvg</td><td>The average eccentricity and (absolute value of) inclination of the population.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section pre"><dt>Precondition</dt><dd><code>centralBody</code> is the exact name of a celestial object in KSP. </dd>
-<dd>
-<code>rate</code> &ge; 0 </dd>
-<dd>
-0 &lt; <code>aMin</code> &le; <code>aMax</code> </dd>
-<dd>
-<code>eAvg</code> &ge; 0; </dd>
-<dd>
-<code>iAvg</code> &ge; 0;</dd></dl>
-<dl class="section user"><dt>Exception Safety</dt><dd>Object construction is atomic.</dd></dl>
-<dl class="section note"><dt>Note</dt><dd>The current implementation does not throw exceptions, but this may change in future versions. </dd></dl>
-
-</div>
-</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="ac31d1558d9ea8fb716af8108a789dd1f"></a>
 <div class="memitem">
@@ -291,6 +202,7 @@ Package Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section user"><dt>Exception Safety</dt><dd>The program is in a consistent state in the event of an exception </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Confirm or correct that this condition determines the sign of mEp </dd></dl>
 
 </div>
 </div>
@@ -348,7 +260,7 @@ Package Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html">Population</a></li>
-    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
+    <li class="footer">Generated on Sun Apr 20 2014 17:34:06 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

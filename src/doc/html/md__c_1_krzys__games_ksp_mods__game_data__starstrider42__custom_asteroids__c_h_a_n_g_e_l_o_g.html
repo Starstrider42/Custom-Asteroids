@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Custom Asteroids: Todo List</title>
+<title>Custom Asteroids: Version History</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">0.2.0-devel</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -81,7 +81,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <script type="text/javascript">
-$(document).ready(function(){initNavTree('todo.html','');});
+$(document).ready(function(){initNavTree('md__c_1_krzys__games_ksp_mods__game_data__starstrider42__custom_asteroids__c_h_a_n_g_e_l_o_g.html','');});
 </script>
 <div id="doc-content">
 <!-- window showing the filter options -->
@@ -100,31 +100,31 @@ $(document).ready(function(){initNavTree('todo.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">Todo List </div>  </div>
+<div class="title">Version History </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><dl class="reflist">
-<dt><a class="anchor" id="_todo000004"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ac31d1558d9ea8fb716af8108a789dd1f">Population.drawOrbit</a>  ()</dt>
-<dd>Confirm or correct that this condition determines the sign of mEp  </dd>
-<dt><a class="anchor" id="_todo000001"></a>Class <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html">PopulationLoader</a>  </dt>
-<dd>Clean up this class  </dd>
-<dt><a class="anchor" id="_todo000002"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8">PopulationLoader.Load</a>  ()</dt>
-<dd><p class="startdd">Can I make Load() atomic?</p>
-<p class="enddd">How to allow backward compatibility if the config file changes?  </p>
-</dd>
-<dt><a class="anchor" id="_todo000005"></a>Class <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html">RandomDist</a>  </dt>
-<dd>Move methods into Population.ValueRange, as appropriate  </dd>
-<dt><a class="anchor" id="_todo000007"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ac54ce402cec4f1d67a1cef4db841d26d">SpawnCatcher.OnDestroy</a>  ()</dt>
-<dd>What exceptions are thrown by GameEvents.onVesselCreate.*?  </dd>
-<dt><a class="anchor" id="_todo000006"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#a07aaf1227e4d645f15e0a964f54ef291">SpawnCatcher.Start</a>  ()</dt>
-<dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd>
-</dl>
+<div class="textblock"><p>Custom Biomes conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. Since Custom Biomes does not expose public functions, the format of asteroid population files will be considered the API for the purpose of versioning.</p>
+<h2>Version 0.2.0 (in development) </h2>
+<h3>Changes</h3>
+<ul>
+<li>Added units to documentation</li>
+<li>Reorganized code to support more general asteroid modifications in future releases.</li>
+</ul>
+<h3>New Features</h3>
+<ul>
+<li>Custom Asteroids will now try to upgrade <code>asteroid.cfg</code> files belonging to a previous version, inserting default values for any new parameters. This may have unintended effects if the user has upgraded to a non-backwards-compatible version.</li>
+</ul>
+<h3>Bug Fixes</h3>
+<h2>Version 0.1.0 </h2>
+<ul>
+<li>Initial Release </li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Apr 20 2014 17:34:06 for Custom Asteroids by
+    <li class="footer">Generated on Sat Apr 19 2014 19:15:55 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

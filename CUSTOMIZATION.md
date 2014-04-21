@@ -46,7 +46,7 @@ The six orbital elements are:
     only orbital element that must *always* be given. Distribution defaults to LogUniform if 
     unspecified. The `orbitSize` node also has an additional option:
     - `type`: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.
-* `eccentricity`: the eccentricity of the orbit. IF omitted, defaults to circular orbits. Distribution 
+* `eccentricity`: the eccentricity of the orbit. If omitted, defaults to circular orbits. Distribution 
     defaults to Rayleigh if unspecified. If the distribution is changed to one that uses `min` and 
     `max`, these values default to the 0-1 range.
 * `inclination`: the inclination of the orbit, in degrees. If omitted, defaults to uninclined orbits. 

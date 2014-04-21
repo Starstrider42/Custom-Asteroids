@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0-devel</span>
+   &#160;<span id="projectnumber">0.2.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -129,6 +129,9 @@ Static Package Functions</h2></td></tr>
 <tr class="memitem:a10669ac0d0fc3d51c9d7fdba6d147eff"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a10669ac0d0fc3d51c9d7fdba6d147eff">drawAngle</a> ()</td></tr>
 <tr class="memdesc:a10669ac0d0fc3d51c9d7fdba6d147eff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a value between 0 and 360.  <a href="#a10669ac0d0fc3d51c9d7fdba6d147eff">More...</a><br/></td></tr>
 <tr class="separator:a10669ac0d0fc3d51c9d7fdba6d147eff"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3db0f1f00236ab9036004d1947153dee"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a3db0f1f00236ab9036004d1947153dee">drawUniform</a> (double a, double b)</td></tr>
+<tr class="memdesc:a3db0f1f00236ab9036004d1947153dee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a value from a uniform distribution.  <a href="#a3db0f1f00236ab9036004d1947153dee">More...</a><br/></td></tr>
+<tr class="separator:a3db0f1f00236ab9036004d1947153dee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a551fae8a8b2bd3280dd6e9491102f924"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a551fae8a8b2bd3280dd6e9491102f924">drawLogUniform</a> (double a, double b)</td></tr>
 <tr class="memdesc:a551fae8a8b2bd3280dd6e9491102f924"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draws a value from a log-uniform distribution.  <a href="#a551fae8a8b2bd3280dd6e9491102f924">More...</a><br/></td></tr>
 <tr class="separator:a551fae8a8b2bd3280dd6e9491102f924"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,6 +141,7 @@ Static Package Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains static methods for random number distributions. </p>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Move methods into Population.ValueRange, as appropriate </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="a10669ac0d0fc3d51c9d7fdba6d147eff"></a>
 <div class="memitem">
@@ -285,6 +289,57 @@ Static Package Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a3db0f1f00236ab9036004d1947153dee"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double drawUniform </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Draws a value from a uniform distribution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">a,b</td><td>The endpoints of the range containing the random variate.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A uniform random variate in the interval [<code>a</code>, <code>b</code>]. The return value has the same units as <code>a</code> and <code>b</code>.</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>a</code> &le; <code>b</code> </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">System.ArgumentOutOfRangeException</td><td>Thrown if <code>a</code> &gt; <code>b</code> </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>This method is atomic </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a93a0d6c7d2fb9c073d3fb1eea39f0402"></a>
 <div class="memitem">
 <div class="memproto">
@@ -347,7 +402,7 @@ There exists an element <code>x</code> of <code>weightedChoices</code> where <co
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html">RandomDist</a></li>
-    <li class="footer">Generated on Fri Apr 18 2014 18:58:26 for Custom Asteroids by
+    <li class="footer">Generated on Sun Apr 20 2014 17:34:06 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
