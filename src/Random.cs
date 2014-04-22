@@ -24,8 +24,6 @@ namespace Starstrider42 {
 		}
 
 		/** Contains static methods for random number distributions
-		 * 
-		 * @todo Move methods into Population.ValueRange, as appropriate
 		 */
 		internal static class RandomDist {
 			/** Randomly selects from discrete options with unequal weights

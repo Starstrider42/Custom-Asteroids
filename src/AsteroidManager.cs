@@ -121,8 +121,6 @@ namespace Starstrider42 {
 			 * @exceptsafe The program is in a consistent state in the event of an exception
 			 * 
 			 * @todo Can I make Load() atomic?
-			 * 
-			 * @todo How to allow backward compatibility if the config file changes?
 			 */
 			internal static PopulationLoader Load() {
 				Debug.Log("CustomAsteroids: loading settings...");
