@@ -24,7 +24,7 @@ The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 * `eccentricity`: a block describing what eccentricities an asteroid from the group may have.
     - `avg`: the average eccentricity of an asteroid in this population. Must be a nonnegative number. 
         Any specific asteroid may have any eccentricity; it is even possible, though very unlikely, 
-        that an asteroid will even appear on an unbound orbit.
+        that an asteroid will appear on an unbound orbit.
 * `inclination`: a block describing what inclinations an asteroid from the group may have.
     - `avg`: the average inclination of an asteroid in this population, in degrees. Should be a 
         nonnegative number. As with eccentricities, you may occasionally get some extreme values. 
