@@ -5,6 +5,7 @@
  */
 
 using System;
+using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
@@ -53,6 +54,8 @@ namespace Starstrider42 {
 			 * 		valid orbits.
 			 * 
 			 * @exceptsafe The program is in a consistent state in the event of an exception
+			 * 
+			 * @todo Break up this function
 			 */
 			internal Orbit drawOrbit() {
 				// Would like to only calculate this once, but I don't know for sure that this object will 
@@ -90,6 +93,10 @@ namespace Starstrider42 {
 						a = size / (1.0 - e);
 						break;
 					case SizeRange.SizeType.Apoapsis:
+						if (e > 1.0) {
+							throw new InvalidOperationException("CustomAsteroids: cannot constrain apoapsis on unbound orbits (eccentricity " 
+							+ e + ")");
+						}
 						a = size / (1.0 + e);
 						break;
 					default:
@@ -106,25 +113,7 @@ namespace Starstrider42 {
 						mEp = Math.PI/180.0 * phase;
 						break;
 					case PhaseRange.PhaseType.MeanLongitude:
-						// I'm defining longitude in the reference plane, not in the asteroid's orbital plane
-						// Cos[l] == (Cos[Ω] Cos[θ + ω] - Sin[Ω] Sin[θ + ω] Cos[i])/Sqrt[Cos[θ + ω]^2 + Cos[i]^2 Sin[θ + ω]^2];
-						// Sin[l] == (Sin[Ω] Cos[θ + ω] + Cos[Ω] Sin[θ + ω] Cos[i])/Sqrt[Cos[θ + ω]^2 + Cos[i]^2 Sin[θ + ω]^2];
-						// Let's hope I translated the Mathematica solution correctly
-						// Why doesn't KSP.Orbit have a function for this?
-						double   iRad =     i * Math.PI/180.0;
-						double aPeRad =   aPe * Math.PI/180.0;
-						double lAnRad =   lAn * Math.PI/180.0;
-						double  phRad = phase * Math.PI/180.0;
-						/** @todo Confirm or correct that this condition determines the sign of mEp
-						 */
-						mEp = (Math.Sin(phRad-lAnRad-aPeRad*Math.Cos(iRad)) >= 0 ? 1 : -1) * 
-							Math.Acos(2.0 * (Math.Cos(iRad) * Math.Cos(aPeRad) * Math.Cos(phRad - lAnRad) 
-									+ Math.Sin(aPeRad) * Math.Sin(phRad - lAnRad))
-								/ Math.Sqrt(3.0 + Math.Cos(2.0*iRad) 
-									- 2.0 * Math.Cos(2.0 * (phRad - lAnRad)) * Math.Sin(iRad) * Math.Sin(iRad)) );
-						// Inclination is the hard part... what if we assume it's zero?
-						/*mEp = (Math.Sin(phRad-lAnRad-aPeRad) >= 0 ? 1 : -1) * 
-							Math.Acos((Math.Cos(aPeRad) * Math.Cos(phRad - lAnRad) + Math.Sin(aPeRad) * Math.Sin(phRad - lAnRad)) );*/
+						mEp = Math.PI/180.0 * longToAnomaly(phase, i, aPe, lAn);
 						break;
 					default:
 						throw new InvalidOperationException("CustomAsteroids: cannot describe orbit position using type " 
@@ -132,7 +121,7 @@ namespace Starstrider42 {
 					}
 					switch (orbitPhase.getEpoch()) {
 					case PhaseRange.EpochType.GameStart:
-						epoch = 0.0;
+						epoch = getStartUt();
 						break;
 					case PhaseRange.EpochType.Now:
 						epoch = Planetarium.GetUniversalTime();
@@ -148,7 +137,7 @@ namespace Starstrider42 {
 					}
 
 					Debug.Log("CustomAsteroids: new orbit at " + a + " m, e = " + e + ", i = " + i 
-						+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp);
+						+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp + " at epoch " + epoch);
 
 					// Does Orbit(...) throw exceptions?
 					Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, epoch, orbitee);
@@ -176,6 +165,82 @@ namespace Starstrider42 {
 			 */
 			public override string ToString() {
 				return name;
+			}
+
+			/** Converts an anomaly to an orbital longitude
+			 * 
+			 * @param[in] anom The angle between the periapsis point and a position in the planet's orbital 
+			 * 		plane. May be mean, eccentric, or true anomaly.
+			 * 
+			 * @return The angle between the reference direction (coordinate x-axis) and the projection 
+			 * 		of a position onto the x-y plane. Will be mean, eccentric, or true longitude, corresponding 
+			 * 		to the type of longitude provided.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private static double anomalyToLong(double anom, double i, double aPe, double lAn) {
+				// Why doesn't KSP.Orbit have a function for this?
+				// Cos[l-Ω] ==        Cos[θ+ω]/Sqrt[Cos[θ+ω]^2 + Cos[i]^2 Sin[θ+ω]^2]
+				// Sin[l-Ω] == Cos[i] Sin[θ+ω]/Sqrt[Cos[θ+ω]^2 + Cos[i]^2 Sin[θ+ω]^2]
+				double   iRad =    i * Math.PI/180.0;
+				double aPeRad =  aPe * Math.PI/180.0;
+				double lAnRad =  lAn * Math.PI/180.0;
+				double  anRad = anom * Math.PI/180.0;
+
+				double sincos  = Math.Cos(iRad) * Math.Sin(anRad + aPe);
+				double cosOnly = Math.Cos(anRad + aPe);
+				double cos     =                  Math.Cos(anRad + aPe)/Math.Sqrt(cosOnly*cosOnly + sincos*sincos);
+				double sin     = Math.Cos(iRad) * Math.Sin(anRad + aPe)/Math.Sqrt(cosOnly*cosOnly + sincos*sincos);
+				return 180.0/Math.PI * (Math.Atan2(sin, cos) + lAnRad);
+			}
+
+			/** Converts an orbital longitude to an anomaly
+			 * 
+			 * @param[in] longitude The angle between the reference direction (coordinate x-axis) and the projection 
+			 * 		of a position onto the x-y plane, in degrees. May be mean, eccentric, or true longitude.
+			 * 
+			 * @return The angle between the periapsis point and a position in the planet's orbital plane, in degrees. 
+			 * 		Will be mean, eccentric, or true anomaly, corresponding to the type of longitude provided.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private static double longToAnomaly(double longitude, double i, double aPe, double lAn) {
+				// Why doesn't KSP.Orbit have a function for this?
+				// Cos[θ+ω] == Cos[i] Cos[l-Ω]/Sqrt[1 - Sin[i]^2 Cos[l-Ω]^2]
+				// Sin[θ+ω] ==        Sin[l-Ω]/Sqrt[1 - Sin[i]^2 Cos[l-Ω]^2]
+				double   iRad =         i * Math.PI/180.0;
+				double aPeRad =       aPe * Math.PI/180.0;
+				double lAnRad =       lAn * Math.PI/180.0;
+				double   lRad = longitude * Math.PI/180.0;
+
+				double sincos = Math.Sin(iRad) * Math.Cos(lRad - lAnRad);
+				double cos    = Math.Cos(iRad) * Math.Cos(lRad - lAnRad)/Math.Sqrt(1 - sincos*sincos);
+				double sin    =                  Math.Sin(lRad - lAnRad)/Math.Sqrt(1 - sincos*sincos);
+				return 180.0/Math.PI * (Math.Atan2(sin, cos) - aPeRad);
+			}
+
+			/** Returns the time at the start of the game
+			 * 
+			 * @return If playing stock KSP, returns 0 UT. If playing Real Solar System, returns 
+			 * 		`RealSolarSystem.cfg/REALSOLARSYSTEM.Epoch`
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private static double getStartUt() {
+				double epoch = 0.0;
+
+				// Even if the RSS config file exists, ignore it if the mod itself is inactive
+				if (AssemblyLoader.loadedAssemblies.Any (assemb => assemb.assembly.GetName().Name == "RealSolarSystem")) {
+					UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("REALSOLARSYSTEM");
+					if (configList.Length >= 1) {
+						string epochSearch = configList[0].config.GetValue("Epoch");
+						if (!Double.TryParse(epochSearch, out epoch)) {
+							epoch = 0.0;
+						}
+					}
+				}
+
+				return epoch;
 			}
 
 			////////////////////////////////////////////////////////

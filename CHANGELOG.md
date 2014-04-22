@@ -15,8 +15,9 @@ Version 0.2.0
 ### New Features 
 
 * Custom Asteroids will now scan the KSP install for asteroid configuration files. This should make it easier to personalize asteroid sets without conflicting with the mod install.
+* Completely new configuration file format. The distributions assumed for each orbital element are no longer hardcoded.
 * Custom Asteroids can now control all six orbital elements.
-* Orbit size can be set by constraining semimajor axis, periapsis, or apoapsis. Orbit phase can be set by constraining mean anomaly or mean longitude.
+* Orbit size can be set by constraining semimajor axis, periapsis, or apoapsis. Orbit phase can be set by constraining mean anomaly or mean longitude. These two options give configuration-writers more control over where asteroids will and won't appear.
 
 ### Bug Fixes 
 

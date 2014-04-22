@@ -62,5 +62,4 @@ The six orbital elements are:
         (value proportional to time since periapsis) or MeanLongitude (value proportional to time since 
         zero phase angle). Defaults to MeanAnomaly.
     - `epoch`: the time at which the mean anomaly or mean longitude is measured. May be GameStart or 
-        Now. Defaults to GameStart. **WARNING:** GameStart does not work correctly with Real Solar 
-        System. This issue will hopefully be fixed in the next version.
+        Now. Defaults to GameStart.
