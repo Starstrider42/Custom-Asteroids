@@ -60,6 +60,14 @@ namespace Starstrider42 {
 						"CustomAsteroids: Selected invalid population " + newPop, e);
 				}
 
+				if (allowedPops.getRenameOption()) {
+					string asteroidId = asteroid.GetName();
+					if (asteroidId.IndexOf("Ast. ") >= 0) {
+						// Keep only the ID number
+						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
+						asteroid.vesselName = newPop.getName() + " " + asteroidId;
+					} 	// if asteroid name doesn't match expected format, leave it as-is
+				}
 			}
 
 			internal class BadPopulationException : System.InvalidOperationException {
@@ -107,6 +115,33 @@ namespace Starstrider42 {
 			 */
 			internal PopulationLoader() {
 				asteroidSets = new List<Population>();
+
+				versionNumber   = latestVersion();
+				renameAsteroids = false;
+			}
+
+			/** Stores current Custom Asteroids options in a config file
+			 * 
+			 * @post The current settings are stored to the config file
+			 * @post The current Custom Asteroids version is stored to the config file
+			 * 
+			 * @todo Identify exception conditions
+			 * 
+			 * @exceptsafe The program is in a consistent state in the event of an exception
+			 */
+			internal void Save() {
+				// File may have been loaded from a previous version
+				string trueVersion = versionNumber;
+				try {
+					versionNumber = latestVersion();
+
+					ConfigNode allData = new ConfigNode();
+					ConfigNode.CreateConfigFromObject(this, allData);		// Only overload that works!
+					allData.Save(optionList());
+					Debug.Log("CustomAsteroids: settings saved");
+				} finally {
+					versionNumber = trueVersion;
+				}
 			}
 
 			/** Factory method obtaining Custom Asteroids settings from a config file
@@ -121,9 +156,10 @@ namespace Starstrider42 {
 			 * @exceptsafe The program is in a consistent state in the event of an exception
 			 * 
 			 * @todo Can I make Load() atomic?
+			 * 
+			 * @todo Break up this function
 			 */
 			internal static PopulationLoader Load() {
-				Debug.Log("CustomAsteroids: loading settings...");
 				try {
 					// UrlConfig x;
 					// x.parent.fullPath;		// Name of file to write to
@@ -131,6 +167,40 @@ namespace Starstrider42 {
 
 					// Start with an empty population list
 					PopulationLoader allPops = new PopulationLoader();
+
+					// Load options
+					Debug.Log("CustomAsteroids: loading settings...");
+
+					ConfigNode allOptions = ConfigNode.Load(optionList());
+					if (allOptions != null) {
+						ConfigNode.LoadObjectFromConfig(allPops, allOptions);
+						// Backward-compatible with initial release
+						if (!allOptions.HasValue("VersionNumber")) {
+							allPops.versionNumber = "0.1.0";
+						}
+					} else {
+						allPops.versionNumber = "";
+					}
+
+					if (allPops.versionNumber != latestVersion()) {
+						// Config file is either missing or out of date, make a new one
+						// Any information loaded from config file will be preserved
+						try {
+							allPops.Save();
+							if (allPops.versionNumber.Length == 0) {
+								Debug.Log("CustomAsteroids: no config file found at " + optionList() + "; creating new one");
+							} else {
+								Debug.Log("CustomAsteroids: loaded config file from version " + allPops.versionNumber +
+									"; updating to version " + latestVersion());
+							}
+						} catch (Exception e) {
+							// First priority, just in case Debug.Log*() produce I/O exceptions themselves
+							Debug.LogError("CustomAsteroids: settings could not be saved");
+							Debug.LogException(e);
+						}
+					}
+
+					Debug.Log("CustomAsteroids: settings loaded");
 
 					// Search for populations in all config files
 					UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("AsteroidSets");
@@ -153,8 +223,6 @@ namespace Starstrider42 {
 						Debug.Log("Customasteroids: Population '" + x + "' loaded");
 					}
 					#endif
-
-					Debug.Log("CustomAsteroids: settings loaded");
 
 					return allPops;
 				// No idea what kinds of exceptions are thrown by ConfigNode
@@ -189,8 +257,7 @@ namespace Starstrider42 {
 				}
 			}
 
-			/** Returns the total spawn rate of all asteroid populations. Currently only needed 
-			 * 		for normalizing the asteroid selection.
+			/** Returns the total spawn rate of all asteroid populations.
 			 * 
 			 * @return The sum of all spawn rates for all populations.
 			 * 
@@ -204,6 +271,16 @@ namespace Starstrider42 {
 				return total;
 			}
 
+			/** Returns whether or not asteroids may be renamed by their population
+			 * 
+			 * @return True if renaming allowed, false otherwise.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal bool getRenameOption() {
+				return renameAsteroids;
+			}
+
 			/** Identifies the Custom Asteroids config file
 			 * 
 			 * @return An absolute path to the config file
@@ -211,15 +288,44 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			private static string optionList() {
-				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/Custom Asteroids Settings.cfg";
+				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg";
 			}
+
+			/** Returns the mod's current version number
+			 *
+			 * @return A version number in major.minor.patch form
+			 *
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private static string latestVersion() {
+				return Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+			}
+
+			/** Debug function for traversing node tree
+			 * 
+			 * @post The current node and all nodes beneath it are printed, in depth-first order
+			 */
+			private static void printNode(ConfigNode node) {
+				Debug.Log("printNode: NODE = " + node.name);
+				foreach (ConfigNode.Value x in node.values) {
+					Debug.Log("printNode: " + x.name + " -> " + x.value);
+				}
+				foreach (ConfigNode x in node.nodes) {
+					printNode(x);
+				}
+			}
+
+			private List<Population> asteroidSets;
 
 			/////////////////////////////////////////////////////////
 			// Config options
 			// Giving variables upper-case names because it looks better in the .cfg file
 
-			//[Persistent(name="AsteroidSets",collectionIndex="ASTEROIDGROUP")]
-			private List<Population> asteroidSets;
+			[Persistent(name="RenameAsteroids")]
+			private bool renameAsteroids;
+
+			[Persistent(name="VersionNumber")]
+			private string versionNumber;
 		}
 	}
 }

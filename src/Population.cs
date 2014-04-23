@@ -164,6 +164,16 @@ namespace Starstrider42 {
 			 * @see [Object.ToString()](http://msdn.microsoft.com/en-us/library/system.object.tostring.aspx)
 			 */
 			public override string ToString() {
+				return getName();
+			}
+
+			/** Returns the name of the population
+			 * 
+			 * @return A human-readable string identifying the population. May not be unique.
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			public string getName() {
 				return name;
 			}
 
