@@ -137,7 +137,11 @@ namespace Starstrider42 {
 
 					ConfigNode allData = new ConfigNode();
 					ConfigNode.CreateConfigFromObject(this, allData);		// Only overload that works!
-					allData.Save(optionList());
+
+					// Create directories if necessary
+					System.IO.FileInfo outFile = new System.IO.FileInfo(optionList());
+					System.IO.Directory.CreateDirectory(outFile.DirectoryName);
+					allData.Save(outFile.FullName);
 					Debug.Log("CustomAsteroids: settings saved");
 				} finally {
 					versionNumber = trueVersion;
