@@ -27,8 +27,7 @@ The most frequently used fields in each `ASTEROIDGROUP` block are the following:
         that an asteroid will appear on an unbound orbit.
 * `inclination`: a block describing what inclinations an asteroid from the group may have.
     - `avg`: the average inclination of an asteroid in this population, in degrees. Should be a 
-        nonnegative number. As with eccentricities, you may occasionally get some extreme values. 
-        Should be a nonnegative number.
+        nonnegative number. As with eccentricities, you may occasionally get some extreme values.
 
 Advanced Usage
 ------------
