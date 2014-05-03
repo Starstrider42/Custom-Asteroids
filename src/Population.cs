@@ -7,6 +7,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Starstrider42 {
@@ -60,15 +61,11 @@ namespace Starstrider42 {
 			internal Orbit drawOrbit() {
 				// Would like to only calculate this once, but I don't know for sure that this object will 
 				//		be initialized after FlightGlobals
-				CelestialBody orbitee  = FlightGlobals.Bodies.Find(body => body.name == this.centralBody);
-				if (orbitee == null) {
-					throw new InvalidOperationException("CustomAsteroids: could not find celestial body named " 
-						+ this.centralBody);
-				}
-
-				Debug.Log("CustomAsteroids: drawing orbit from " + name);
-
 				try {
+					CelestialBody orbitee  = getPlanetByName(this.centralBody);
+
+					Debug.Log("CustomAsteroids: drawing orbit from " + name);
+
 					// Properties with only one reasonable parametrization
 					double e = eccentricity.draw();
 					if (e < 0.0) {
@@ -144,7 +141,7 @@ namespace Starstrider42 {
 					newOrbit.UpdateFromUT(Planetarium.GetUniversalTime());
 
 					return newOrbit;
-				} catch (ArgumentOutOfRangeException e) {
+				} catch (ArgumentException e) {
 					throw new InvalidOperationException("CustomAsteroids: could not create orbit", e);
 				}
 			}
@@ -229,6 +226,29 @@ namespace Starstrider42 {
 				return 180.0/Math.PI * (Math.Atan2(sin, cos) - aPeRad);
 			}
 
+			/** Searches for a celestial body
+			 * 
+			 * @param[in] name The exact, case-sensitive name of the celestial body to recover
+			 * 
+			 * @return The celestial body named @p name
+			 * 
+			 * @pre All loaded celestial bodies have unique names
+			 * 
+			 * @exception ArgumentException Thrown if no planet named @p name exists
+			 * 
+			 * @exceptsafe This method is atomic
+			 */
+			private static CelestialBody getPlanetByName(string name) {
+				// Would like to only calculate this once, but I don't know for sure that this object will 
+				//		be initialized after FlightGlobals
+				CelestialBody theBody = FlightGlobals.Bodies.Find(body => body.name == name);
+				if (theBody == null) {
+					throw new ArgumentException("CustomAsteroids: could not find celestial body named " + name, 
+						"name");
+				}
+				return theBody;
+			}
+
 			/** Returns the time at the start of the game
 			 * 
 			 * @return If playing stock KSP, returns 0 UT. If playing Real Solar System, returns 
@@ -271,23 +291,27 @@ namespace Starstrider42 {
 			 * 
 			 * The same consistency caveats as for Population apply here.
 			 */
-			private class ValueRange {
+			private class ValueRange : IPersistenceLoad {
 				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
 				 * 
 				 * @param[in] dist The distribution from which the value will be drawn
 				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
 				 * @param[in] avg The mean value returned. May be unused.
-				 * @param[in] stddev The standard deviation of values returned. May be unused.
+				 * @param[in] stdDev The standard deviation of values returned. May be unused.
 				 * 
 				 * @exceptsafe Does not throw exceptions
 				 */
 				internal ValueRange(Distribution dist, double min = 0.0, double max = 1.0, 
-					double avg = 0.0, double stddev = 0.0) {
-					this.dist   = dist;
-					this.min    = min;
-					this.max    = max;
-					this.avg    = avg;
-					this.stddev = stddev;
+					double avg = 0.0, double stdDev = 0.0) {
+					this.dist      = dist;
+					this.rawMin    = min.ToString();
+					this.min       = min;
+					this.rawMax    = max.ToString();
+					this.max       = max;
+					this.rawAvg    = avg.ToString();
+					this.avg       = avg;
+					this.rawStdDev = stdDev.ToString();
+					this.stdDev    = stdDev;
 				}
 
 				/** Generates a random number consistent with the distribution
@@ -310,101 +334,147 @@ namespace Starstrider42 {
 					}
 				}
 
-				/** Defines the type of probability distribution from which the value is drawn
+				/** Callback used by ConfigNode.LoadObjectFromConfig()
 				 */
-				internal enum Distribution {Uniform, LogUniform, Rayleigh};
-
-				// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these 
-				//	members -- even though ConfigNodes seem to completely ignore permissions in all other cases
-				[Persistent] protected Distribution dist;
-				[Persistent] protected FlexibleValue min;
-				[Persistent] protected double max;
-				[Persistent] protected double avg;
-				[Persistent] protected double stddev;
-			}
-
-			/** Represents a value that may be given either in an absolute sense, or relative to 
-			 * 		a known celestial body.
-			 */
-			private class FlexibleValue : IPersistenceLoad {
-				/** Initializes the object to have a fixed value
-				 * 
-				 * @param[in] value The desired value to store
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 */
-				public FlexibleValue(double value) {
-					unparsedValue = value.ToString();
-					parsedValue   = value;
+				void IPersistenceLoad.PersistenceLoad() {
+					parseAll();
 				}
 
-				/** Allows doubles to be used in place of FlexibleValues
-				 */
-				public static implicit operator FlexibleValue(double d) {
-					return new FlexibleValue(d);
-				}
-
-				/** Allows FlexibleValues to be used in place of doubles
-				 */
-				public static implicit operator double(FlexibleValue f) {
-					return f.get();
-				}
-
-				/** Carries out the details of loading this object from a ConfigNode
+				/** Ensures that any abstract entries in the config file are properly interpreted
 				 * 
-				 * @pre this.unparsedValue contains a representation the desired object value
+				 * @pre @p this.rawMin, @p this.rawMax, @p this.rawAvg, and @p this.rawStdDev contain a 
+				 * 	representation of the desired object value
 				 * 
 				 * @warning Class invariant should not be assumed to hold true prior to calling PersistenceLoad()
 				 * 
 				 * @exception TypeInitializationException Thrown if the ConfigNode could not be interpreted 
-				 * 		as a floating-point value
+				 * 		as a set of floating-point values
 				 * 
 				 * @exceptsafe The program is in a consistent state in the event of an exception
 				 */
-				void IPersistenceLoad.PersistenceLoad() {
+				protected virtual void parseAll() {
 					try {
-						Debug.Log("CustomAsteroids: Testing PersistenceLoad()");
-						if (!Double.TryParse(unparsedValue, out parsedValue)) {
-							throw new TypeInitializationException("Starstrider42.CustomAsteroids.Population.FlexibleValue", null);
-						}
-					} catch (TypeInitializationException) {
+						min    = parseOrbitalElement(rawMin   );
+						max    = parseOrbitalElement(rawMax   );
+						avg    = parseOrbitalElement(rawAvg   );
+						stdDev = parseOrbitalElement(rawStdDev);
+					} catch (ArgumentException e) {
 						// Enforce basic exception guarantee, albeit clumsily
-						// FlexibleValue.set() does not throw
-						this.set(0.0);
-						throw;
+						// Double.ToString() does not throw
+						rawMin    = min.ToString();
+						rawMax    = max.ToString();
+						rawAvg    = avg.ToString();
+						rawStdDev = stdDev.ToString();
+						throw new TypeInitializationException("Starstrider42.CustomAsteroids.Population.ValueRange", e);
 					}
 				}
 
-				/** Changes the object to represent a particular value
+				/** Converts an arbitrary string representation of an orbital element to a specific value
 				 * 
-				 * @param[in] value The desired value to store
+				 * @param[in] rawValue A string representing the value.
 				 * 
-				 * @post `this.get()` returns @p value
-				 * @post `ConfigNode.CreateConfigFromObject(this)` includes a representation of @p value
+				 * @return The value represented by @p rawValue.
 				 * 
-				 * @exceptsafe Does not throw exceptions
+				 * @pre rawValue has one of the following formats:
+				 * 		- a string representation of a floating-point number
+				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where <Planet> is the 
+				 * 			name of a loaded celestial body, <stat> is one of (sma, per, apo, ecc, inc, ape, lan), 
+				 * 			and <value> is a string representation of a floating-point number
+				 * 
+				 * @exception ArgumentException Thrown if @p rawValue could not be interpreted as a floating-point value
+				 * 
+				 * @exceptsafe This method is atomic.
 				 */
-				internal void set(double value) {
-					unparsedValue = value.ToString();
-					parsedValue   = value;
+				protected static double parseOrbitalElement(string rawValue) {
+					double retVal;
+
+					// Try a Ratio declaration
+					GroupCollection parsed = ratioDecl.Match(rawValue).Groups;
+					if (parsed[0].Success) {
+						double ratio;
+						if (!Double.TryParse(parsed["ratio"].ToString(), out ratio)) {
+							throw new ArgumentException ("Cannot parse '" + parsed["ratio"] + "' as a floating point number");
+						}
+						retVal = getPlanetProperty(parsed["planet"].ToString(), parsed["prop"].ToString()) * ratio;
+					
+					// Finally, try a floating-point literal
+					} else if (!Double.TryParse(rawValue, out retVal)) {
+						throw new ArgumentException ("Cannot parse '" + rawValue + "' as a floating point number", "rawValue");
+					}
+					return retVal;
 				}
 
-				/** Returns the floating-point representation of this value
+				/** Returns the desired property of a known celestial body
 				 * 
-				 * @return The value of this object
+				 * @param[in] planet The exact, case-sensitive name of the celestial body
+				 * @param[in] property The short name of the property to recover. Must be one 
+				 * 		of ("sma", "per", "apo", "ecc", "inc", "ape", "lan")
 				 * 
-				 * @exceptsafe Does not throw exceptions
+				 * @return The value of @p property appropriate for @p planet
+				 * 
+				 * @pre All loaded celestial bodies have unique names
+				 * 
+				 * @exception ArgumentException Thrown if no planet named @p name exists, or if 
+				 * 		@p property does not have one of the allowed values
+				 * 
+				 * @exceptsafe This method is atomic
 				 */
-				internal double get() {
-					return parsedValue;
+				protected static double getPlanetProperty(string planet, string property) {
+					CelestialBody body = Population.getPlanetByName(planet);
+
+					switch (property.ToLower()) {
+					case "sma": 
+						return body.GetOrbit().semiMajorAxis;
+					case "per": 
+						return body.GetOrbit().PeR;
+					case "apo": 
+						return body.GetOrbit().ApR;
+					case "ecc": 
+						return body.GetOrbit().eccentricity;
+					case "inc": 
+						return body.GetOrbit().inclination;
+					case "ape": 
+						return body.GetOrbit().argumentOfPeriapsis;
+					case "lan": 
+						return body.GetOrbit().LAN;
+					default:
+						throw new ArgumentException("CustomAsteroids: celestial bodies do not have a " + property + " value", 
+							"property");
+					}
 				}
 
-				/** @class FlexibleValue
-				 * @invariant @p parsedValue is numerically equivalent to @p unparsedValue; @p unparsedValue 
-				 * 		may be a symbolic or abstract representation of @p parsedValue
+				/** Defines the type of probability distribution from which the value is drawn
 				 */
-				[Persistent] private string unparsedValue;
-				             private double   parsedValue;
+				internal enum Distribution {Uniform, LogUniform, Rayleigh};
+
+				// Unfortunately, planet name can have pretty much any character
+				private static Regex ratioDecl = new Regex(
+					"Ratio\\(\\s*(?<planet>.+)\\s*\\.\\s*(?<prop>sma|per|apo|ecc|inc|ape|lan)\\s*,\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
+					RegexOptions.IgnoreCase);
+
+				// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these 
+				//	members -- even though ConfigNodes seem to completely ignore permissions in all other cases
+				[Persistent] protected Distribution dist;
+
+				/** @class ValueRange
+				 * @invariant @p min is numerically equivalent to @p rawMin
+				 * @invariant @p max is numerically equivalent to @p rawMax
+				 * @invariant @p avg is numerically equivalent to @p rawAvg
+				 * @invariant @p stdDev is numerically equivalent to @p rawStdDev
+				 * 
+				 * @todo Find a way to make values private!
+				 */
+				[Persistent(name="min")] protected string rawMin;
+				protected double min;
+
+				[Persistent(name="max")] protected string rawMax;
+				protected double max;
+
+				[Persistent(name="avg")] protected string rawAvg;
+				protected double avg;
+
+				[Persistent(name="stddev")] protected string rawStdDev;
+				protected double stdDev;
 			}
 
 			/** 
@@ -436,6 +506,85 @@ namespace Starstrider42 {
 				internal SizeType getParam() {
 					return type;
 				}
+
+				/** Ensures that any abstract entries in the config file are properly interpreted
+				 * 
+				 * @pre @p this.rawMin, @p this.rawMax, @p this.rawAvg, and @p this.rawStdDev contain a 
+				 * 	representation of the desired object value
+				 * 
+				 * @warning Class invariant should not be assumed to hold true prior to calling PersistenceLoad()
+				 * 
+				 * @exception TypeInitializationException Thrown if the ConfigNode could not be interpreted 
+				 * 		as a set of floating-point values
+				 * 
+				 * @exceptsafe The program is in a consistent state in the event of an exception
+				 */
+				protected override void parseAll() {
+					try {
+						min    = parseOrbitSize(     rawMin   );
+						max    = parseOrbitSize(     rawMax   );
+						avg    = parseOrbitSize(     rawAvg   );
+						stdDev = parseOrbitalElement(rawStdDev);
+					} catch (ArgumentException e) {
+						// Enforce basic exception guarantee, albeit clumsily
+						// Double.ToString() does not throw
+						rawMin    = min.ToString();
+						rawMax    = max.ToString();
+						rawAvg    = avg.ToString();
+						rawStdDev = stdDev.ToString();
+						throw new TypeInitializationException("Starstrider42.CustomAsteroids.Population.ValueRange", e);
+					}
+				}
+
+				/** Converts an arbitrary string representation of an orbit size to a specific value
+				 * 
+				 * @param[in] rawValue A string representing the value.
+				 * 
+				 * @return The value represented by @p rawValue.
+				 * 
+				 * @pre rawValue has one of the following formats:
+				 * 		- a string representation of a floating-point number
+				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where <Planet> is the 
+				 * 			name of a loaded celestial body, <stat> is one of (sma, per, apo, ecc, inc, ape, lan), 
+				 * 			and <value> is a string representation of a floating-point number
+				 * 		- a string of the format "Resonance(<Planet>, <m>:<n>)", where <Planet> is the 
+				 * 			name of a loaded celestial body, and <m> and <n> are string representations 
+				 * 			of positive integers. In keeping with standard astronomical convention, m > n means 
+				 * 			an orbit inside that of <Planet>, while m < n means an exterior orbit
+				 * 
+				 * @exception ArgumentException Thrown if @p rawValue could not be interpreted as a floating-point value
+				 * 
+				 * @exceptsafe This method is atomic.
+				 */
+				protected static double parseOrbitSize(string rawValue) {
+				// Try a Ratio declaration
+				GroupCollection parsed = mmrDecl.Match(rawValue).Groups;
+				if (parsed[0].Success) {
+					int m, n;
+					if (!Int32.TryParse(parsed["m"].ToString(), out m)) {
+						throw new ArgumentException("Cannot parse '" + parsed["m"] + "' as an integer");
+					}
+					if (!Int32.TryParse(parsed["n"].ToString(), out n)) {
+						throw new ArgumentException("Cannot parse '" + parsed["n"] + "' as an integer");
+					}
+					if (m <= 0 || n <= 0) {
+						throw new ArgumentException("Mean-motion resonance must have positive integers (gave " 
+							+ m + ":" + n + ")");
+					}
+
+					return getPlanetProperty(parsed["planet"].ToString(), "sma") 
+						* Math.Pow((double)n/(double)m, 2.0/3.0);
+
+					// Try the remaining options
+					} else {
+						return parseOrbitalElement(rawValue);
+					}
+				}
+
+				// Unfortunately, planet name can have pretty much any character
+				private static Regex mmrDecl = new Regex(
+					"Resonance\\(\\s*(?<planet>.+)\\s*,\\s*(?<m>\\d+)\\s*:\\s*(?<n>\\d+)\\s*\\)", 
+					RegexOptions.IgnoreCase);
 
 				/** Defines the parametrization of orbit size that is used
 				 */
