@@ -10,7 +10,7 @@ Basic Usage
 
 The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 
-* `name`: a descriptive name. At present, this is not used in-game, but this may change in future versions.
+* `name`: a descriptive name. If `RenameAsteroids = True` is set in the settings file, this name will replace the generic "Ast." in the asteroids' name.
 * `centralBody`: the name of the object the asteroids will orbit. Must exactly match the name of an 
     in-game celestial body.
 * `spawnRate`: the relative odds that a newly spawned asteroid will belong to that group. Must be a 
