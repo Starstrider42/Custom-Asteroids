@@ -306,7 +306,7 @@ namespace Starstrider42 {
 					case Distribution.Rayleigh: 
 						return RandomDist.drawRayleigh(avg);
 					default: 
-						throw new System.InvalidOperationException("Invalid distribution specified, code " + dist);
+						throw new InvalidOperationException("Invalid distribution specified, code " + dist);
 					}
 				}
 
@@ -314,14 +314,102 @@ namespace Starstrider42 {
 				 */
 				internal enum Distribution {Uniform, LogUniform, Rayleigh};
 
-				// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these members -- even though ConfigNodes seem to completely ignore permissions in all other cases
+				// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these 
+				//	members -- even though ConfigNodes seem to completely ignore permissions in all other cases
 				[Persistent] protected Distribution dist;
-				[Persistent] protected double min;
+				[Persistent] protected FlexibleValue min;
 				[Persistent] protected double max;
 				[Persistent] protected double avg;
 				[Persistent] protected double stddev;
 			}
 
+			/** Represents a value that may be given either in an absolute sense, or relative to 
+			 * 		a known celestial body.
+			 */
+			private class FlexibleValue : IPersistenceLoad {
+				/** Initializes the object to have a fixed value
+				 * 
+				 * @param[in] value The desired value to store
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
+				public FlexibleValue(double value) {
+					unparsedValue = value.ToString();
+					parsedValue   = value;
+				}
+
+				/** Allows doubles to be used in place of FlexibleValues
+				 */
+				public static implicit operator FlexibleValue(double d) {
+					return new FlexibleValue(d);
+				}
+
+				/** Allows FlexibleValues to be used in place of doubles
+				 */
+				public static implicit operator double(FlexibleValue f) {
+					return f.get();
+				}
+
+				/** Carries out the details of loading this object from a ConfigNode
+				 * 
+				 * @pre this.unparsedValue contains a representation the desired object value
+				 * 
+				 * @warning Class invariant should not be assumed to hold true prior to calling PersistenceLoad()
+				 * 
+				 * @exception TypeInitializationException Thrown if the ConfigNode could not be interpreted 
+				 * 		as a floating-point value
+				 * 
+				 * @exceptsafe The program is in a consistent state in the event of an exception
+				 */
+				void IPersistenceLoad.PersistenceLoad() {
+					try {
+						Debug.Log("CustomAsteroids: Testing PersistenceLoad()");
+						if (!Double.TryParse(unparsedValue, out parsedValue)) {
+							throw new TypeInitializationException("Starstrider42.CustomAsteroids.Population.FlexibleValue", null);
+						}
+					} catch (TypeInitializationException) {
+						// Enforce basic exception guarantee, albeit clumsily
+						// FlexibleValue.set() does not throw
+						this.set(0.0);
+						throw;
+					}
+				}
+
+				/** Changes the object to represent a particular value
+				 * 
+				 * @param[in] value The desired value to store
+				 * 
+				 * @post `this.get()` returns @p value
+				 * @post `ConfigNode.CreateConfigFromObject(this)` includes a representation of @p value
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
+				internal void set(double value) {
+					unparsedValue = value.ToString();
+					parsedValue   = value;
+				}
+
+				/** Returns the floating-point representation of this value
+				 * 
+				 * @return The value of this object
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
+				internal double get() {
+					return parsedValue;
+				}
+
+				/** @class FlexibleValue
+				 * @invariant @p parsedValue is numerically equivalent to @p unparsedValue; @p unparsedValue 
+				 * 		may be a symbolic or abstract representation of @p parsedValue
+				 */
+				[Persistent] private string unparsedValue;
+				             private double   parsedValue;
+			}
+
+			/** 
+			 * @todo I don't think that SizeRange is a subtype of ValueRange in the Liskov sense... check!
+			 */
 			private class SizeRange : ValueRange {
 				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
 				 * 
@@ -356,6 +444,9 @@ namespace Starstrider42 {
 				[Persistent] private SizeType type;
 			}
 
+			/** 
+			 * @todo I don't think that PhaseRange is a subtype of ValueRange in the Liskov sense... check!
+			 */
 			private class PhaseRange : ValueRange {
 				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
 				 * 
