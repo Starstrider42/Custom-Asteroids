@@ -40,11 +40,29 @@ Each `ASTEROIDGROUP` block has six subfields corresponding to orbital parameters
 * `avg`: the average value of the parameter. Currently used by Rayleigh.
 * `stddev`: the standard deviation of the parameter. Currently unused.
 
+Allowed values of `min`, `max`, `avg`, and `stddev` are:
+* A floating-point number, giving the exact value (in appropriate units) for the parameter
+* A string of the form "Ratio(<planet>.<stat>, <value>)", where &lt;planet&gt; is the name of a celestial body, &lt;value&gt; is a floating-point multiplier, and &lt;stat&gt; is one of 
+    - sma: the semimajor axis of &lt;planet&gt;, in meters
+    - per: the periapsis of &lt;planet&gt;, in meters
+    - apo: the apoapsis of &lt;planet&gt;, in meters
+    - ecc: the eccentricity of &lt;planet&gt;
+    - inc: the inclination of &lt;planet&gt;, in degrees
+    - ape: the argument of periapsis of &lt;planet&gt;, in degrees
+    - lpe: the longitude of periapsis of &lt;planet&gt;, in degrees
+    - lan: the longitude of ascending node of &lt;planet&gt;, in degrees
+    - mna0: the mean anomaly (at game start) of &lt;planet&gt;, in degrees
+    - mnl0: the mean longitude (at game start) of &lt;planet&gt;, in degrees
+
+  For example, the string `Ratio(Jool.sma, 0.5)` means "half of Jool's semimajor axis, in meters".
+* A string of the form "Offset(<planet>.<stat>, <value>)", where &lt;planet&gt; and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to the celestial body's orbital element (units determined by &lt;stat&gt;). For example, the string `Offset(Duna.per, -50000000)` means "50,000,000 meters less than Duna's periapsis", or just beyond its sphere of influence.
+
 The six orbital elements are:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 
     only orbital element that must *always* be given. Distribution defaults to LogUniform if 
-    unspecified. The `orbitSize` node also has an additional option:
+    unspecified. The `orbitSize` node also has two additional options:
     - `type`: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.
+    - The `min`, `max`, and `avg` fields of `orbitSize` may take a string of the form "Resonance(<planet>, <m>:<n>)", where &lt;planet&gt; is the name of a celestial body, and &lt;m&gt; and &lt;n&gt; are positive integers. The string will be interpreted as the semimajor axis needed to get an m:n mean-motion resonance with &lt;planet&gt;. For example, the string `Resonance(Jool, 2:3)` gives the semimajor axis to complete 2 orbits for every 3 orbits of Jool -- in other words, the semimajor axis of Eeloo.
 * `eccentricity`: the eccentricity of the orbit. If omitted, defaults to circular orbits. Distribution 
     defaults to Rayleigh if unspecified. If the distribution is changed to one that uses `min` and 
     `max`, these values default to the 0-1 range.

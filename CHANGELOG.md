@@ -12,6 +12,7 @@ Next Version (in development)
 ### New Features 
 
 * Asteroids can now be labeled by the group they belong to. This option is off by default, but may be toggled by setting `RenameAsteroids = True` in `GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg`.
+* Asteroid orbital elements can now be expressed in terms of the orbital elements of planets or moons. This reduces the amount of math the config-writer has to do, and makes config files more compatible with other solar system mods.
 
 ### Bug Fixes 
 

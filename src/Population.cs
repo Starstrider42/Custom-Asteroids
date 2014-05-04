@@ -378,8 +378,10 @@ namespace Starstrider42 {
 				 * @pre rawValue has one of the following formats:
 				 * 		- a string representation of a floating-point number
 				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where <Planet> is the 
-				 * 			name of a loaded celestial body, <stat> is one of (sma, per, apo, ecc, inc, ape, lan), 
+				 * 			name of a loaded celestial body, <stat> is one of (sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), 
 				 * 			and <value> is a string representation of a floating-point number
+				 * 		- a string of the format "Offset(<Planet>.<stat>, <value>)", where <Planet>, <stat>, 
+				 * 			and <value> are as above.
 				 * 
 				 * @exception ArgumentException Thrown if @p rawValue could not be interpreted as a floating-point value
 				 * 
@@ -389,13 +391,22 @@ namespace Starstrider42 {
 					double retVal;
 
 					// Try a Ratio declaration
-					GroupCollection parsed = ratioDecl.Match(rawValue).Groups;
-					if (parsed[0].Success) {
+					if (ratioDecl.Match(rawValue).Groups[0].Success) {
+						GroupCollection parsed = ratioDecl.Match(rawValue).Groups;
 						double ratio;
 						if (!Double.TryParse(parsed["ratio"].ToString(), out ratio)) {
 							throw new ArgumentException ("Cannot parse '" + parsed["ratio"] + "' as a floating point number");
 						}
 						retVal = getPlanetProperty(parsed["planet"].ToString(), parsed["prop"].ToString()) * ratio;
+					
+					// Try an Offset declaration
+					} else if (sumDecl.Match(rawValue).Groups[0].Success) {
+						GroupCollection parsed = sumDecl.Match(rawValue).Groups;
+						double delta;
+						if (!Double.TryParse(parsed["incr"].ToString(), out delta)) {
+							throw new ArgumentException ("Cannot parse '" + parsed["incr"] + "' as a floating point number");
+						}
+						retVal = getPlanetProperty(parsed["planet"].ToString(), parsed["prop"].ToString()) + delta;
 					
 					// Finally, try a floating-point literal
 					} else if (!Double.TryParse(rawValue, out retVal)) {
@@ -408,9 +419,10 @@ namespace Starstrider42 {
 				 * 
 				 * @param[in] planet The exact, case-sensitive name of the celestial body
 				 * @param[in] property The short name of the property to recover. Must be one 
-				 * 		of ("sma", "per", "apo", "ecc", "inc", "ape", "lan")
+				 * 		of ("sma", "per", "apo", "ecc", "inc", "ape", "lan", "mna0", or "mnl0").
 				 * 
-				 * @return The value of @p property appropriate for @p planet
+				 * @return The value of @p property appropriate for @p planet. Distances are given 
+				 * 		in meters, angles are given in degrees.
 				 * 
 				 * @pre All loaded celestial bodies have unique names
 				 * 
@@ -420,23 +432,31 @@ namespace Starstrider42 {
 				 * @exceptsafe This method is atomic
 				 */
 				protected static double getPlanetProperty(string planet, string property) {
-					CelestialBody body = Population.getPlanetByName(planet);
+					Orbit orbit = Population.getPlanetByName(planet).GetOrbit();
 
 					switch (property.ToLower()) {
 					case "sma": 
-						return body.GetOrbit().semiMajorAxis;
+						return orbit.semiMajorAxis;
 					case "per": 
-						return body.GetOrbit().PeR;
+						return orbit.PeR;
 					case "apo": 
-						return body.GetOrbit().ApR;
+						return orbit.ApR;
 					case "ecc": 
-						return body.GetOrbit().eccentricity;
+						return orbit.eccentricity;
 					case "inc": 
-						return body.GetOrbit().inclination;
+						return orbit.inclination;
 					case "ape": 
-						return body.GetOrbit().argumentOfPeriapsis;
+						return orbit.argumentOfPeriapsis;
+					case "lpe": 
+						// Ignore inclination: http://en.wikipedia.org/wiki/Longitude_of_periapsis
+						return orbit.LAN + orbit.argumentOfPeriapsis;
 					case "lan": 
-						return body.GetOrbit().LAN;
+						return orbit.LAN;
+					case "mna0":
+						return orbit.meanAnomalyAtEpoch * 180.0/Math.PI;
+					case "mnl0":
+						return Population.anomalyToLong(orbit.meanAnomalyAtEpoch * 180.0/Math.PI, 
+							orbit.inclination, orbit.argumentOfPeriapsis, orbit.LAN);
 					default:
 						throw new ArgumentException("CustomAsteroids: celestial bodies do not have a " + property + " value", 
 							"property");
@@ -448,9 +468,14 @@ namespace Starstrider42 {
 				internal enum Distribution {Uniform, LogUniform, Rayleigh};
 
 				// Unfortunately, planet name can have pretty much any character
-				private static Regex ratioDecl = new Regex(
-					"Ratio\\(\\s*(?<planet>.+)\\s*\\.\\s*(?<prop>sma|per|apo|ecc|inc|ape|lan)\\s*,\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
-					RegexOptions.IgnoreCase);
+				private static Regex ratioDecl = new Regex("Ratio\\(\\s*(?<planet>.+)\\s*\\.\\s*" 
+					+ "(?<prop>sma|per|apo|ecc|inc|ape|lpe|lan|(mna|mnl)0)\\s*," 
+					+ "\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
+					RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+				private static Regex sumDecl = new Regex("Offset\\(\\s*(?<planet>.+)\\s*\\.\\s*" 
+					+ "(?<prop>sma|per|apo|ecc|inc|ape|lpe|lan|(mna|mnl)0)\\s*," 
+					+ "\\s*(?<incr>[-+.e\\d]+)\\s*\\)", 
+					RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
 				// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these 
 				//	members -- even though ConfigNodes seem to completely ignore permissions in all other cases
