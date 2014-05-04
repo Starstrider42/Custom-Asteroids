@@ -81,6 +81,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul class="tablist">
       <li><a href="functions.html"><span>All</span></a></li>
       <li><a href="functions_func.html"><span>Functions</span></a></li>
+      <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_enum.html"><span>Enumerations</span></a></li>
       <li class="current"><a href="functions_prop.html"><span>Properties</span></a></li>
     </ul>
   </div>
@@ -104,7 +106,7 @@ $(document).ready(function(){initNavTree('functions_prop.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -116,10 +118,10 @@ $(document).ready(function(){initNavTree('functions_prop.html','');});
 <div class="contents">
 &#160;<ul>
 <li>First
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_pair_3_01_t_00_01_u_01_4.html#a2552c392770a9e6ead8811bc5a31429b">Pair&lt; T, U &gt;</a>
+: <a class="el" href="class_starstrider42_1_1_pair_3_01_t_00_01_u_01_4.html#a2552c392770a9e6ead8811bc5a31429b">Pair&lt; T, U &gt;</a>
 </li>
 <li>Second
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_pair_3_01_t_00_01_u_01_4.html#abf406b9a194f0bcb9b120ce150774fce">Pair&lt; T, U &gt;</a>
+: <a class="el" href="class_starstrider42_1_1_pair_3_01_t_00_01_u_01_4.html#abf406b9a194f0bcb9b120ce150774fce">Pair&lt; T, U &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->
@@ -127,7 +129,7 @@ $(document).ready(function(){initNavTree('functions_prop.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Apr 26 2014 13:52:39 for Custom Asteroids by
+    <li class="footer">Generated on Sat May 3 2014 21:16:25 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

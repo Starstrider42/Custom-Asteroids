@@ -1,6 +1,6 @@
 /** Determines which asteroid gets which orbit
- * @file Population.cs
- * @author Starstrider42
+ * @file AsteroidManager.cs
+ * @author %Starstrider42
  * @date Created April 10, 2014
  */
 
@@ -31,7 +31,12 @@ namespace Starstrider42 {
 				}
 			}
 
+			/** Singleton object responsible for handling Custom Asteroids configurations */
 			private static PopulationLoader allowedPops;
+			/** Stores rate at which asteroids should be created
+			 * 
+			 * @note Provided for forward compatibility; currently has no effect.
+			 */
 			private static double totalRate;
 
 			/** Customizes an asteroid, based on the settings loaded to Custom asteroids
@@ -45,7 +50,7 @@ namespace Starstrider42 {
 			 * 
 			 * @exception System.InvalidOperationException Thrown if there are no populations in 
 			 * 		which to place the asteroid
-			 * @exception Starstrider42.CustomAsteroids.AsteroidManager.BadPopulationException Thrown if a 
+			 * @exception AsteroidManager.BadPopulationException Thrown if a 
 			 * 		population exists, but cannot generate valid data
 			 * 
 			 * @exceptsafe The program is in a consistent state in the event of an exception
@@ -70,32 +75,89 @@ namespace Starstrider42 {
 				}
 			}
 
+			/** Exception indicating that a Population is in an invalid state
+			 */
 			internal class BadPopulationException : System.InvalidOperationException {
+				/** Constructs an exception with no specific information
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
 				public BadPopulationException() : base() {
 					badPop = null;
 				}
 
+				/** Constructs an exception with a reference to the invalid Population
+				 *
+				 * @param[in] which The population that triggered the exception
+				 *
+				 * @post getPop() = @p which
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
 				public BadPopulationException(Population which) : base() {
 					badPop = which;
 				}
 
+				/** Constructs an exception with a reference to the invalid Population
+				 *
+				 * @param[in] which The population that triggered the exception
+				 * @param[in] message A description of the detected problem
+				 *
+				 * @post getPop() = @p which
+				 * @post @p base.Message = @p message
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 * 
+				 * @see [InvalidOperationException(string)](http://msdn.microsoft.com/en-us/library/7yaybx04%28v=vs.90%29.aspx)
+				 */
 				public BadPopulationException(Population which, string message) : base(message) {
 					badPop = which;
 				}
 
+				/** Constructs an exception with a reference to the invalid Population
+				 *
+				 * @param[in] which The population that triggered the exception
+				 * @param[in] message A description of the detected problem
+				 * @param[in] inner The exception thrown when the problem was detected
+				 *
+				 * @post getPop() = @p which
+				 * @post @p base.Message = @p message
+				 * @post @p base.InnerException = @p inner
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 * 
+				 * @see [InvalidOperationException(string, Exception)](http://msdn.microsoft.com/en-us/library/x4zw1bf5%28v=vs.90%29.aspx)
+				 */
 				public BadPopulationException(Population which, string message, Exception inner) 
 					: base(message, inner) {
 					badPop = which;
 				}
 
+				/** Constructs an exception with a reference to the invalid Population
+				 *
+				 * @param[in] info The object that holds the serialized object data.
+				 * @param[in] context The contextual information about the source or destination. 
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 * 
+				 * @see [InvalidOperationException(SerializationInfo, StreamingContext)](http://msdn.microsoft.com/en-us/library/x5c916ac%28v=vs.90%29.aspx)
+				 */
 				protected BadPopulationException(System.Runtime.Serialization.SerializationInfo info, 
 						System.Runtime.Serialization.StreamingContext context)
 					: base(info, context) {}
 
+				/** Provides the invalid Population that triggered the exception
+				 *
+				 * @return A reference to the faulty object, or `null` if no 
+				 *	object was stored.
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
 				public Population getPop() {
 					return badPop;
 				}
 
+				/** The invalid Population that triggered the exception */
 				private Population badPop;
 			}
 		}
@@ -117,7 +179,7 @@ namespace Starstrider42 {
 				asteroidSets = new List<Population>();
 
 				versionNumber   = latestVersion();
-				renameAsteroids = false;
+				renameAsteroids = true;
 			}
 
 			/** Stores current Custom Asteroids options in a config file
@@ -154,7 +216,7 @@ namespace Starstrider42 {
 			 * 		settings from the Custom Asteroids config file, or the default settings 
 			 * 		if no such file exists.
 			 * 
-			 * @exception Throws System.TypeInitializationException if the PopulationLoader object 
+			 * @exception System.TypeInitializationException Thrown if the PopulationLoader object 
 			 * 		could not be constructed
 			 * 
 			 * @exceptsafe The program is in a consistent state in the event of an exception
@@ -248,7 +310,7 @@ namespace Starstrider42 {
 			 * @return A reference to the selected population
 			 * 
 			 * @exception System.InvalidOperationException Thrown if there are no populations from 
-			 * 		which to choose one, or if all spawn rates are zero, or if any rate is negative
+			 * 		which to choose, or if all spawn rates are zero, or if any rate is negative
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
@@ -311,6 +373,8 @@ namespace Starstrider42 {
 			}
 
 			/** Debug function for traversing node tree
+			 *
+			 * @param[in] node The top-level node of the tree to be printed
 			 * 
 			 * @post The current node and all nodes beneath it are printed, in depth-first order
 			 */
@@ -324,15 +388,21 @@ namespace Starstrider42 {
 				}
 			}
 
+			/** The set of loaded asteroid Population objects
+			 *
+			 * @note Initialized via ConfigNode
+			 */
 			private List<Population> asteroidSets;
 
 			/////////////////////////////////////////////////////////
 			// Config options
 			// Giving variables upper-case names because it looks better in the .cfg file
 
+			/** Whether or not make asteroid names match their population */
 			[Persistent(name="RenameAsteroids")]
 			private bool renameAsteroids;
 
+			/** The plugin version for which the settings file was written */
 			[Persistent(name="VersionNumber")]
 			private string versionNumber;
 		}

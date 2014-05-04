@@ -13,7 +13,7 @@ Custom Asteroids is released under the MIT License. A copy of the license can be
 
 Credits
 ------------
-Custom Asteroids is mainly created and maintained by %Starstrider42. Contact him by [private message](http://forum.kerbalspaceprogram.com/private.php?do=newpm&u=106949) or report an issue on [Github](https://github.com/Starstrider42/Custom-Asteroids/issues).
+Custom Asteroids is created and maintained by %Starstrider42. Contact him by [private message](http://forum.kerbalspaceprogram.com/private.php?do=newpm&u=106949) or report an issue on [Github](https://github.com/Starstrider42/Custom-Asteroids/issues).
 
 xEvilReeperx deserves full credit for figuring out how to manipulate asteroids from within a plugin, making Custom Asteroids possible. Many thanks also to Trueborn for developing Custom Biomes, which in addition to filling a huge gap in the game inspired this mod.
 

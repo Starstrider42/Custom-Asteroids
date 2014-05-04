@@ -1,7 +1,9 @@
 ﻿/** Code for generating asteroid orbits
  * @file Population.cs
- * @author Starstrider42
+ * @author %Starstrider42
  * @date Created April 9, 2014
+ *
+ * @todo Refactor this file
  */
 
 using System;
@@ -157,8 +159,10 @@ namespace Starstrider42 {
 			}
 
 			/** Returns a string that represents the current object.
+			 *
+			 * @return A simple string identifying the object
 			 * 
-			 * @see [Object.ToString()](http://msdn.microsoft.com/en-us/library/system.object.tostring.aspx)
+			 * @see [Object.ToString()](http://msdn.microsoft.com/en-us/library/system.object.tostring%28v=vs.90%29.aspx)
 			 */
 			public override string ToString() {
 				return getName();
@@ -178,6 +182,9 @@ namespace Starstrider42 {
 			 * 
 			 * @param[in] anom The angle between the periapsis point and a position in the planet's orbital 
 			 * 		plane. May be mean, eccentric, or true anomaly.
+			 * @param[in] i The inclination of the planet's orbital plane
+			 * @param[in] aPe The argument of periapsis of the planet's orbit
+			 * @param[in] lAn The longitude of ascending node of this planet's orbital plane
 			 * 
 			 * @return The angle between the reference direction (coordinate x-axis) and the projection 
 			 * 		of a position onto the x-y plane. Will be mean, eccentric, or true longitude, corresponding 
@@ -205,6 +212,9 @@ namespace Starstrider42 {
 			 * 
 			 * @param[in] longitude The angle between the reference direction (coordinate x-axis) and the projection 
 			 * 		of a position onto the x-y plane, in degrees. May be mean, eccentric, or true longitude.
+			 * @param[in] i The inclination of the planet's orbital plane
+			 * @param[in] aPe The argument of periapsis of the planet's orbit
+			 * @param[in] lAn The longitude of ascending node of this planet's orbital plane
 			 * 
 			 * @return The angle between the periapsis point and a position in the planet's orbital plane, in degrees. 
 			 * 		Will be mean, eccentric, or true anomaly, corresponding to the type of longitude provided.
@@ -276,14 +286,23 @@ namespace Starstrider42 {
 			////////////////////////////////////////////////////////
 			// Population properties
 
+			/** The name of asteroids belonging to this population */
 			[Persistent] private string name;
+			/** The name of the celestial object orbited by the asteroids */
 			[Persistent] private string centralBody;
+			/** The rate, in asteroids per day, at which asteroids are discovered */
 			[Persistent] private double spawnRate;
+			/** The size (range) of orbits in this population */
 			[Persistent] private  SizeRange orbitSize;
+			/** The eccentricity (range) of orbits in this population */
 			[Persistent] private ValueRange eccentricity;
+			/** The inclination (range) of orbits in this population */
 			[Persistent] private ValueRange inclination;
+			/** The argument/longitude of periapsis (range) of orbits in this population */
 			[Persistent] private ValueRange periapsis;
+			/** The longitude of ascending node (range) of orbits in this population */
 			[Persistent] private ValueRange ascNode;
+			/** The range of positions along the orbit for asteroids in this population */
 			[Persistent] private PhaseRange orbitPhase;
 
 
@@ -292,12 +311,14 @@ namespace Starstrider42 {
 			 * The same consistency caveats as for Population apply here.
 			 */
 			private class ValueRange : IPersistenceLoad {
-				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
+				/** Assigns situation-specific default values to the ValueRange
 				 * 
 				 * @param[in] dist The distribution from which the value will be drawn
 				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
 				 * @param[in] avg The mean value returned. May be unused.
 				 * @param[in] stdDev The standard deviation of values returned. May be unused.
+				 *
+				 * @post The given values will be used by draw() unless they are specifically overridden by a ConfigNode.
 				 * 
 				 * @exceptsafe Does not throw exceptions
 				 */
@@ -315,8 +336,10 @@ namespace Starstrider42 {
 				}
 
 				/** Generates a random number consistent with the distribution
+				 *
+				 * @return The desired random variate. The distribution depends on this object's internal data.
 				 * 
-				 * @except System.InvalidOperationException Thrown if the parameters are inappropriate 
+				 * @exception System.InvalidOperationException Thrown if the parameters are inappropriate 
 				 * 		for the distribution, or if the distribution is invalid.
 				 * 
 				 * @exceptsafe This method is atomic
@@ -479,6 +502,8 @@ namespace Starstrider42 {
 
 				// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these 
 				//	members -- even though ConfigNodes seem to completely ignore permissions in all other cases
+
+				/** The probability distribution from which the value is drawn */
 				[Persistent] protected Distribution dist;
 
 				/** @class ValueRange
@@ -489,30 +514,41 @@ namespace Starstrider42 {
 				 * 
 				 * @todo Find a way to make values private!
 				 */
+				/** Abstract string representation of @p min */
 				[Persistent(name="min")] protected string rawMin;
+				/** The minimum allowed value (not always used) */
 				protected double min;
 
+				/** Abstract string representation of @p max */
 				[Persistent(name="max")] protected string rawMax;
+				/** The maximum allowed value (not always used) */
 				protected double max;
 
+				/** Abstract string representation of @p avg */
 				[Persistent(name="avg")] protected string rawAvg;
+				/** The average value (not always used) */
 				protected double avg;
 
+				/** Abstract string representation of @p stdDev */
 				[Persistent(name="stddev")] protected string rawStdDev;
+				/** The standard deviation of the values (not always used) */
 				protected double stdDev;
 			}
 
-			/** 
+			/** Specialization of ValueRange for orbital size parameter.
+			 * 
 			 * @todo I don't think that SizeRange is a subtype of ValueRange in the Liskov sense... check!
 			 */
 			private class SizeRange : ValueRange {
-				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
+				/** Assigns situation-specific default values to the ValueRange
 				 * 
-				 * @param[in] type The description of orbit size that is used
 				 * @param[in] dist The distribution from which the value will be drawn
+				 * @param[in] type The description of orbit size that is used
 				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
 				 * @param[in] avg The mean value returned. May be unused.
 				 * @param[in] stddev The standard deviation of values returned. May be unused.
+				 * 
+				 * @post The given values will be used by draw() unless they are specifically overridden by a ConfigNode.
 				 * 
 				 * @exceptsafe Does not throw exceptions
 				 */
@@ -611,24 +647,28 @@ namespace Starstrider42 {
 					"Resonance\\(\\s*(?<planet>.+)\\s*,\\s*(?<m>\\d+)\\s*:\\s*(?<n>\\d+)\\s*\\)", 
 					RegexOptions.IgnoreCase);
 
-				/** Defines the parametrization of orbit size that is used
-				 */
+				/** Defines the parametrization of orbit size that is used */
 				internal enum SizeType {SemimajorAxis, Periapsis, Apoapsis};
 
+				/** The type of parameter describing the orbit */
 				[Persistent] private SizeType type;
 			}
 
-			/** 
+			/** Specialization of ValueRange for orbital phase parameter.
+			 * 
 			 * @todo I don't think that PhaseRange is a subtype of ValueRange in the Liskov sense... check!
 			 */
 			private class PhaseRange : ValueRange {
-				/** Allows situation-specific defaults to be assigned before the ConfigNode overwrites them
+				/** Assigns situation-specific default values to the ValueRange
 				 * 
-				 * @param[in] type The description of orbit position that is used
 				 * @param[in] dist The distribution from which the value will be drawn
+				 * @param[in] type The description of orbit position that is used
+				 * @param[in] epoch The time at which the orbit position should be measured
 				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
 				 * @param[in] avg The mean value returned. May be unused.
 				 * @param[in] stddev The standard deviation of values returned. May be unused.
+				 * 
+				 * @post The given values will be used by draw() unless they are specifically overridden by a ConfigNode.
 				 * 
 				 * @exceptsafe Does not throw exceptions
 				 */
@@ -660,12 +700,14 @@ namespace Starstrider42 {
 					return epoch;
 				}
 
-				/** Defines the parametrization of orbit size that is used
-				 */
+				/** Defines the parametrization of orbit size that is used */
 				internal enum PhaseType {MeanLongitude, MeanAnomaly};
+				/** Defines the time at which the phase is measured */
 				internal enum EpochType {GameStart, Now};
 
+				/** The type of parameter describing the orbit */
 				[Persistent] private PhaseType type;
+				/** The time at which the parameter should be calculated */
 				[Persistent] private EpochType epoch;
 			}
 		}

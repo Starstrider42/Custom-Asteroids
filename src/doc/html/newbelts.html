@@ -89,7 +89,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -108,7 +108,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <h2>Basic Usage </h2>
 <p>The most frequently used fields in each <code>ASTEROIDGROUP</code> block are the following:</p>
 <ul>
-<li><code>name</code>: a descriptive name. At present, this is not used in-game, but this may change in future versions.</li>
+<li><code>name</code>: a descriptive name. If <code>RenameAsteroids = True</code> is set in the settings file, this name will replace the generic "Ast." in the asteroids' name.</li>
 <li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the name of an in-game celestial body.</li>
 <li><code>spawnRate</code>: the relative odds that a newly spawned asteroid will belong to that group. Must be a nonnegative number. For forward compatibility, this number should be given as asteroids detected per day, but, at present, only the ratio to all the other <code>spawnRate</code> values matters.</li>
 <li><code>orbitSize</code>: a block describing how far from <code>centralBody</code> the asteroid's orbit is found. Parameters:<ul>
@@ -122,7 +122,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 </ul>
 </li>
 <li><code>inclination</code>: a block describing what inclinations an asteroid from the group may have.<ul>
-<li><code>avg</code>: the average inclination of an asteroid in this population, in degrees. Should be a nonnegative number. As with eccentricities, you may occasionally get some extreme values. Should be a nonnegative number.</li>
+<li><code>avg</code>: the average inclination of an asteroid in this population, in degrees. Should be a nonnegative number. As with eccentricities, you may occasionally get some extreme values.</li>
 </ul>
 </li>
 </ul>
@@ -156,7 +156,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Apr 26 2014 13:52:39 for Custom Asteroids by
+    <li class="footer">Generated on Sat May 3 2014 21:16:25 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

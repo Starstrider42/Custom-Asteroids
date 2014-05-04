@@ -1,6 +1,6 @@
 ﻿/** Implements random number generators appropriate for minor planet models
  * @file Random.cs
- * @author Starstrider42
+ * @author %Starstrider42
  * @date Created April 9, 2014
  */
 
@@ -8,21 +8,38 @@ using System;
 
 namespace Starstrider42 {
 
-	namespace CustomAsteroids {
-		// Can't use Tuples in .NET 3.5, and can't use .NET 4.0 with Unity/KSP
-		internal class Pair<T, U> {
-			public Pair() {
-			}
-
-			public Pair(T first, U second) {
-				this.First = first;
-				this.Second = second;
-			}
-
-			public T First { get; set; }
-			public U Second { get; set; }
+	/** Simple implementation of an ordered pair.
+	 * 
+	 * Works around the lack of tuple support in .NET 3.5
+	 * 
+	 * @tparam T The type of the first pair element
+	 * @tparam U The type of the second pair element
+	 */
+	internal class Pair<T, U> {
+		/** Should have a default constructor */
+		public Pair() {
 		}
 
+		/** Creates a new ordered pair
+		 * 
+		 * @param[in] first,second The values to store
+		 * 
+		 * @post The new object represents the pair (first, second).
+		 * 
+		 * @exceptsafe Does not throw exceptions.
+		 */
+		public Pair(T first, U second) {
+			this.First = first;
+			this.Second = second;
+		}
+
+		/** The first element of the pair */
+		public T First { get; set; }
+		/** The second element of the pair */
+		public U Second { get; set; }
+	}
+
+	namespace CustomAsteroids {
 		/** Contains static methods for random number distributions
 		 */
 		internal static class RandomDist {
