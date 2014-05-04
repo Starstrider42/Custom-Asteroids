@@ -400,11 +400,12 @@ namespace Starstrider42 {
 				 * 
 				 * @pre rawValue has one of the following formats:
 				 * 		- a string representation of a floating-point number
-				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where <Planet> is the 
-				 * 			name of a loaded celestial body, <stat> is one of (sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), 
-				 * 			and <value> is a string representation of a floating-point number
-				 * 		- a string of the format "Offset(<Planet>.<stat>, <value>)", where <Planet>, <stat>, 
-				 * 			and <value> are as above.
+				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where &lt;Planet&gt; is the 
+				 * 			name of a loaded celestial body, &lt;stat&gt; is one of 
+				 * 			(sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), and &lt;value&gt; is a string 
+				 * 			representation of a floating-point number
+				 * 		- a string of the format "Offset(<Planet>.<stat>, <value>)", where &lt;Planet&gt;, &lt;stat&gt;, 
+				 * 			and &lt;value&gt; are as above.
 				 * 
 				 * @exception ArgumentException Thrown if @p rawValue could not be interpreted as a floating-point value
 				 * 
@@ -491,10 +492,12 @@ namespace Starstrider42 {
 				internal enum Distribution {Uniform, LogUniform, Rayleigh};
 
 				// Unfortunately, planet name can have pretty much any character
+				/** Defines the syntax for a Ratio declaration */
 				private static Regex ratioDecl = new Regex("Ratio\\(\\s*(?<planet>.+)\\s*\\.\\s*" 
 					+ "(?<prop>sma|per|apo|ecc|inc|ape|lpe|lan|(mna|mnl)0)\\s*," 
 					+ "\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
 					RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+				/** Defines the syntax for an Offset declaration */
 				private static Regex sumDecl = new Regex("Offset\\(\\s*(?<planet>.+)\\s*\\.\\s*" 
 					+ "(?<prop>sma|per|apo|ecc|inc|ape|lpe|lan|(mna|mnl)0)\\s*," 
 					+ "\\s*(?<incr>[-+.e\\d]+)\\s*\\)", 
@@ -605,13 +608,16 @@ namespace Starstrider42 {
 				 * 
 				 * @pre rawValue has one of the following formats:
 				 * 		- a string representation of a floating-point number
-				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where <Planet> is the 
-				 * 			name of a loaded celestial body, <stat> is one of (sma, per, apo, ecc, inc, ape, lan), 
-				 * 			and <value> is a string representation of a floating-point number
-				 * 		- a string of the format "Resonance(<Planet>, <m>:<n>)", where <Planet> is the 
-				 * 			name of a loaded celestial body, and <m> and <n> are string representations 
+				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where &lt;Planet&gt; is the 
+				 * 			name of a loaded celestial body, &lt;stat&gt; is one of 
+				 * 			(sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), and &lt;value&gt; is a string 
+				 * 			representation of a floating-point number
+				 * 		- a string of the format "Offset(<Planet>.<stat>, <value>)", where &lt;Planet&gt;, &lt;stat&gt;, 
+				 * 			and &lt;value&gt; are as above.
+				 * 		- a string of the format "Resonance(<Planet>, <m>:<n>)", where &lt;Planet&gt; is the 
+				 * 			name of a loaded celestial body, and &lt;m&gt; and &lt;n&gt; are string representations 
 				 * 			of positive integers. In keeping with standard astronomical convention, m > n means 
-				 * 			an orbit inside that of <Planet>, while m < n means an exterior orbit
+				 * 			an orbit inside that of &lt;Planet&gt;, while m < n means an exterior orbit
 				 * 
 				 * @exception ArgumentException Thrown if @p rawValue could not be interpreted as a floating-point value
 				 * 
@@ -643,6 +649,7 @@ namespace Starstrider42 {
 				}
 
 				// Unfortunately, planet name can have pretty much any character
+				/** Defines the syntax for a Resonance declaration */
 				private static Regex mmrDecl = new Regex(
 					"Resonance\\(\\s*(?<planet>.+)\\s*,\\s*(?<m>\\d+)\\s*:\\s*(?<n>\\d+)\\s*\\)", 
 					RegexOptions.IgnoreCase);
