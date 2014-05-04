@@ -1,6 +1,6 @@
 ﻿/** Identifies when KSP creates a new asteroid, and starts the orbit-changing module
  * @file SpawnCatcher.cs
- * @author Starstrider42, based on a template by xEvilReeperx
+ * @author %Starstrider42, based on a template by xEvilReeperx
  * @date Created April 9, 2014
  */
 

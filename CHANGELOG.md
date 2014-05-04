@@ -11,7 +11,7 @@ Next Version (in development)
 
 ### New Features 
 
-* Asteroids can now be labeled by the group they belong to. This option is off by default, but may be toggled by setting `RenameAsteroids = True` in `GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg`.
+* Asteroids can now be labeled by the group they belong to. This option is on by default, but may be disabled by setting `RenameAsteroids = False` in `GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg`.
 
 ### Bug Fixes 
 

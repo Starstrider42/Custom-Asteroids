@@ -97,7 +97,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
      onmouseover="return searchBox.OnSearchSelectShow()"
      onmouseout="return searchBox.OnSearchSelectHide()"
      onkeydown="return searchBox.OnSearchSelectKey(event)">
-<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Pages</a></div>
+<a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(0)"><span class="SelectionMark">&#160;</span>All</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(1)"><span class="SelectionMark">&#160;</span>Classes</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(2)"><span class="SelectionMark">&#160;</span>Namespaces</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(3)"><span class="SelectionMark">&#160;</span>Files</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(4)"><span class="SelectionMark">&#160;</span>Functions</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(5)"><span class="SelectionMark">&#160;</span>Variables</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(6)"><span class="SelectionMark">&#160;</span>Enumerations</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(7)"><span class="SelectionMark">&#160;</span>Properties</a><a class="SelectItem" href="javascript:void(0)" onclick="searchBox.OnSelectItem(8)"><span class="SelectionMark">&#160;</span>Pages</a></div>
 
 <!-- iframe showing the search results (closed by default) -->
 <div id="MSearchResultsWindow">
@@ -110,6 +110,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pac-static-methods">Static Package Functions</a> &#124;
+<a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">AsteroidManager Class Reference</div>  </div>
@@ -122,6 +123,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html">BadPopulationException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exception indicating that a <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html" title="Represents a set of asteroids with similar orbits. ">Population</a> is in an invalid state.  <a href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html#details">More...</a><br/></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-static-methods"></a>
@@ -129,6 +131,16 @@ Static Package Functions</h2></td></tr>
 <tr class="memitem:abe7415209f0021dffcae49f3c2c57161"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#abe7415209f0021dffcae49f3c2c57161">editAsteroid</a> (Vessel asteroid)</td></tr>
 <tr class="memdesc:abe7415209f0021dffcae49f3c2c57161"><td class="mdescLeft">&#160;</td><td class="mdescRight">Customizes an asteroid, based on the settings loaded to Custom asteroids.  <a href="#abe7415209f0021dffcae49f3c2c57161">More...</a><br/></td></tr>
 <tr class="separator:abe7415209f0021dffcae49f3c2c57161"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
+Static Private Attributes</h2></td></tr>
+<tr class="memitem:a3ba1395f921d5326ff65ae62dc15e961"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ba1395f921d5326ff65ae62dc15e961"></a>
+static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html">PopulationLoader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a3ba1395f921d5326ff65ae62dc15e961">allowedPops</a></td></tr>
+<tr class="memdesc:a3ba1395f921d5326ff65ae62dc15e961"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton object responsible for handling Custom Asteroids configurations. <br/></td></tr>
+<tr class="separator:a3ba1395f921d5326ff65ae62dc15e961"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af5f82177cd0a77b4e7ff80bd75fec806"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#af5f82177cd0a77b4e7ff80bd75fec806">totalRate</a></td></tr>
+<tr class="memdesc:af5f82177cd0a77b4e7ff80bd75fec806"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores rate at which asteroids should be created.  <a href="#af5f82177cd0a77b4e7ff80bd75fec806">More...</a><br/></td></tr>
+<tr class="separator:af5f82177cd0a77b4e7ff80bd75fec806"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Central class for controlling asteroid orbits. </p>
@@ -167,11 +179,35 @@ Static Package Functions</h2></td></tr>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
     <tr><td class="paramname">System.InvalidOperationException</td><td>Thrown if there are no populations in which to place the asteroid </td></tr>
-    <tr><td class="paramname"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html">Starstrider42.CustomAsteroids.AsteroidManager.BadPopulationException</a></td><td>Thrown if a population exists, but cannot generate valid data</td></tr>
+    <tr><td class="paramname"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html" title="Exception indicating that a Population is in an invalid state. ">AsteroidManager.BadPopulationException</a></td><td>Thrown if a population exists, but cannot generate valid data</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section user"><dt>Exception Safety</dt><dd>The program is in a consistent state in the event of an exception </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Data Documentation</h2>
+<a class="anchor" id="af5f82177cd0a77b4e7ff80bd75fec806"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double totalRate</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Stores rate at which asteroids should be created. </p>
+<dl class="section note"><dt>Note</dt><dd>Provided for forward compatibility; currently has no effect. </dd></dl>
 
 </div>
 </div>
@@ -184,7 +220,7 @@ Static Package Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html">AsteroidManager</a></li>
-    <li class="footer">Generated on Sat Apr 26 2014 13:52:39 for Custom Asteroids by
+    <li class="footer">Generated on Sat May 3 2014 21:16:25 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
