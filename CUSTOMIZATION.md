@@ -5,6 +5,8 @@ Asteroid definition files declare where asteroids (or comets, or other small bod
 
 Within each file, each `ASTEROIDGROUP` block represents a single group of orbits. At present, you can't force a group to only give you certain sizes or types of asteroids. There is no limit to the number of `ASTEROIDGROUP` blocks you can place in a file.
 
+There may also be up to one `DEFAULT` block across all files, which controls how many asteroids are found on a Kerbin intercept trajectory as in the stock game. If the player has multiple files with a `DEFAULT` block, only one will be used.
+
 Basic Usage
 ------------
 
@@ -28,6 +30,8 @@ The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 * `inclination`: a block describing what inclinations an asteroid from the group may have.
     - `avg`: the average inclination of an asteroid in this population, in degrees. Should be a 
         nonnegative number. As with eccentricities, you may occasionally get some extreme values.
+
+The `DEFAULT` block, if present, has only the `name` and `spawnRate` fields. These work analogously to the `name` and `spawnRate` fields for `ASTEROIDGROUP`. If no `DEFAULT` block is present, all asteroids will appear in one of the asteroid groups.
 
 Advanced Usage
 ------------

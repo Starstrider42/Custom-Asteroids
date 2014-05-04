@@ -36,7 +36,7 @@ namespace Starstrider42 {
 			 * @note Required by interface of ConfigNode.LoadObjectFromConfig()
 			 */
 			internal Population() {
-				this.name         = "INVALID";
+				this.name         = "Ast.";
 				this.centralBody  = "Sun";
 				this.spawnRate    = 0.0;			// Safeguard: don't make asteroids until the values are set
 

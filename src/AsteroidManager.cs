@@ -58,19 +58,22 @@ namespace Starstrider42 {
 			internal static void editAsteroid(Vessel asteroid) {
 				Population newPop = allowedPops.drawPopulation();
 
-				try {
-					asteroid.orbitDriver.orbit = newPop.drawOrbit();
-				} catch (InvalidOperationException e) {
-					throw new BadPopulationException (newPop, 
-						"CustomAsteroids: Selected invalid population " + newPop, e);
+				if (newPop != null) {
+					try {
+						asteroid.orbitDriver.orbit = newPop.drawOrbit();
+					} catch (InvalidOperationException e) {
+						throw new BadPopulationException (newPop, 
+							"CustomAsteroids: Selected invalid population " + newPop, e);
+					}
 				}
 
 				if (allowedPops.getRenameOption()) {
 					string asteroidId = asteroid.GetName();
+					string    newName = (newPop != null ? newPop.getName() : allowedPops.defaultName());
 					if (asteroidId.IndexOf("Ast. ") >= 0) {
 						// Keep only the ID number
 						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
-						asteroid.vesselName = newPop.getName() + " " + asteroidId;
+						asteroid.vesselName = newName + " " + asteroidId;
 					} 	// if asteroid name doesn't match expected format, leave it as-is
 				}
 			}
@@ -177,6 +180,7 @@ namespace Starstrider42 {
 			 */
 			internal PopulationLoader() {
 				asteroidSets = new List<Population>();
+				untouchedSet = new DefaultAsteroids();
 
 				versionNumber   = latestVersion();
 				renameAsteroids = true;
@@ -285,6 +289,20 @@ namespace Starstrider42 {
 									Debug.LogException(e);
 								}	// Attempt to parse remaining populations
 							}
+							else if (curNode.name == "DEFAULT") {
+								try {
+									#if DEBUG
+									Debug.Log("Customasteroids: ConfigNode '" + curNode + "' loaded");
+									#endif
+									// Construct-and-swap for better exception safety
+									DefaultAsteroids oldPop = new DefaultAsteroids();
+									ConfigNode.LoadObjectFromConfig(oldPop, curNode);
+									allPops.untouchedSet = oldPop;
+								} catch (TypeInitializationException e) {
+									Debug.LogError("CustomAsteroids: failed to load population '" + curNode.GetValue("name") + "'");
+									Debug.LogException(e);
+								}	// Attempt to parse remaining populations
+							}
 							// ignore any other nodes present
 						}
 					}
@@ -318,6 +336,7 @@ namespace Starstrider42 {
 				try {
 					// A typedef! A typedef! My kerbdom for a typedef!
 					List<Pair<Population, double>> bins = new List<Pair<Population, double>>();
+					bins.Add(new Pair<Population, double>(null, untouchedSet.getSpawnRate()));
 					foreach (Population x in asteroidSets) {
 						bins.Add(new Pair<Population, double>(x, x.getSpawnRate()));
 					}
@@ -340,6 +359,16 @@ namespace Starstrider42 {
 					total += x.getSpawnRate();
 				}
 				return total;
+			}
+
+			/** Returns the name used for asteroids on stock orbits
+			 * 
+			 * @return The name with which to replace "Ast."
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal string defaultName() {
+				return untouchedSet.getName();
 			}
 
 			/** Returns whether or not asteroids may be renamed by their population
@@ -393,6 +422,53 @@ namespace Starstrider42 {
 			 * @note Initialized via ConfigNode
 			 */
 			private List<Population> asteroidSets;
+			private DefaultAsteroids untouchedSet;
+
+			/** Contains settings for asteroids that aren't affected by Custom Asteroids
+			 */
+			private sealed class DefaultAsteroids
+			{
+				/** Sets default settings for asteroids with unmodified orbits
+				 * 
+				 * @post The object is initialized to a state in which it will not be expected to generate orbits.
+				 * 
+				 * @exceptsafe Does not throw exceptions.
+				 * 
+				 * @note Required by interface of ConfigNode.LoadObjectFromConfig()
+				 */
+				internal DefaultAsteroids() {
+					this.name         = "Ast.";
+					this.spawnRate    = 0.0;
+				}
+
+				/** Returns the rate at which stock-like asteroids are discovered
+				 * 
+				 * @return The rate relative to the rates of all other populations.
+				 * 
+				 * @exceptsafe Does not throw exceptions.
+				 */
+				internal double getSpawnRate() {
+					return spawnRate;
+				}
+
+				/** Returns the name used for stock-like asteroids
+				 * 
+				 * @return A human-readable string identifying the population. May not be unique.
+				 * 
+				 * @exceptsafe Does not throw exceptions.
+				 */
+				public string getName() {
+					return name;
+				}
+
+				////////////////////////////////////////////////////////
+				// Population properties
+
+				/** The name of asteroids with unmodified orbits */
+				[Persistent] private string name;
+				/** The rate, in asteroids per day, at which asteroids on stock orbits */
+				[Persistent] private double spawnRate;
+			}
 
 			/////////////////////////////////////////////////////////
 			// Config options
