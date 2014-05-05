@@ -43,7 +43,8 @@ namespace Starstrider42 {
 				this.orbitSize    = new  SizeRange(ValueRange.Distribution.LogUniform, SizeRange.SizeType.SemimajorAxis);
 				this.eccentricity = new ValueRange(ValueRange.Distribution.Rayleigh, min: 0.0, max: 1.0);
 				this.inclination  = new ValueRange(ValueRange.Distribution.Rayleigh);
-				this.periapsis    = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
+				this.periapsis    = new  PeriRange(ValueRange.Distribution.Uniform, PeriRange.PeriType.Argument, 
+					min: 0.0, max: 360.0);
 				this.ascNode      = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
 				this.orbitPhase   = new PhaseRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0, 
 					type: PhaseRange.PhaseType.MeanAnomaly, epoch: PhaseRange.EpochType.GameStart);
@@ -77,9 +78,22 @@ namespace Starstrider42 {
 					// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
 					// So it's ok to just have positive inclinations
 					double i = inclination.draw();
-
-					double aPe = periapsis.draw();		// argument of periapsis
 					double lAn = ascNode.draw();		// longitude of ascending node
+
+					// Position of periapsis
+					double aPe;
+					double peri = periapsis.draw();		// argument of periapsis
+					switch (periapsis.getParam()) {
+					case PeriRange.PeriType.Argument:
+						aPe = peri;
+						break;
+					case PeriRange.PeriType.Longitude:
+						aPe = peri - lAn;
+						break;
+					default:
+						throw new InvalidOperationException("CustomAsteroids: cannot describe periapsis position using type " 
+							+ periapsis.getParam());
+					}
 
 					// Semimajor axis
 					double a;
@@ -299,7 +313,7 @@ namespace Starstrider42 {
 			/** The inclination (range) of orbits in this population */
 			[Persistent] private ValueRange inclination;
 			/** The argument/longitude of periapsis (range) of orbits in this population */
-			[Persistent] private ValueRange periapsis;
+			[Persistent] private  PeriRange periapsis;
 			/** The longitude of ascending node (range) of orbits in this population */
 			[Persistent] private ValueRange ascNode;
 			/** The range of positions along the orbit for asteroids in this population */
@@ -350,8 +364,13 @@ namespace Starstrider42 {
 						return RandomDist.drawUniform(min, max);
 					case Distribution.LogUniform: 
 						return RandomDist.drawLogUniform(min, max);
+					case Distribution.Gaussian: 
+					case Distribution.Normal: 
+						return RandomDist.drawNormal(avg, stdDev);
 					case Distribution.Rayleigh: 
 						return RandomDist.drawRayleigh(avg);
+					case Distribution.Isotropic: 
+						return RandomDist.drawIsotropic();
 					default: 
 						throw new InvalidOperationException("Invalid distribution specified, code " + dist);
 					}
@@ -402,8 +421,8 @@ namespace Starstrider42 {
 				 * 		- a string representation of a floating-point number
 				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where &lt;Planet&gt; is the 
 				 * 			name of a loaded celestial body, &lt;stat&gt; is one of 
-				 * 			(sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), and &lt;value&gt; is a string 
-				 * 			representation of a floating-point number
+				 * 			(rad, soi, sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), 
+				 * 			and &lt;value&gt; is a string representation of a floating-point number
 				 * 		- a string of the format "Offset(<Planet>.<stat>, <value>)", where &lt;Planet&gt;, &lt;stat&gt;, 
 				 * 			and &lt;value&gt; are as above.
 				 * 
@@ -443,7 +462,7 @@ namespace Starstrider42 {
 				 * 
 				 * @param[in] planet The exact, case-sensitive name of the celestial body
 				 * @param[in] property The short name of the property to recover. Must be one 
-				 * 		of ("sma", "per", "apo", "ecc", "inc", "ape", "lan", "mna0", or "mnl0").
+				 * 		of ("rad", "soi", "sma", "per", "apo", "ecc", "inc", "ape", "lan", "mna0", or "mnl0").
 				 * 
 				 * @return The value of @p property appropriate for @p planet. Distances are given 
 				 * 		in meters, angles are given in degrees.
@@ -456,9 +475,14 @@ namespace Starstrider42 {
 				 * @exceptsafe This method is atomic
 				 */
 				protected static double getPlanetProperty(string planet, string property) {
-					Orbit orbit = Population.getPlanetByName(planet).GetOrbit();
+					CelestialBody body = Population.getPlanetByName(planet);
+					Orbit orbit = body.GetOrbit();
 
 					switch (property.ToLower()) {
+					case "rad":
+						return body.Radius;
+					case "soi":
+						return body.sphereOfInfluence;
 					case "sma": 
 						return orbit.semiMajorAxis;
 					case "per": 
@@ -489,17 +513,22 @@ namespace Starstrider42 {
 
 				/** Defines the type of probability distribution from which the value is drawn
 				 */
-				internal enum Distribution {Uniform, LogUniform, Rayleigh};
+				internal enum Distribution {Uniform, LogUniform, Gaussian, Normal, Rayleigh, Isotropic};
+
+				/** Parse format for planet names. */
+				protected const string planetFormat = "(?<planet>.+)";
+				/** Parse format for planet properties. */
+				protected const string propFormat   = "(?<prop>rad|soi|sma|per|apo|ecc|inc|(a|l)pe|lan|mn(a|l)0)";
+				/** Parse format for planets, with properties. */
+				protected const string planetProp   = planetFormat + "\\s*\\.\\s*" + propFormat;
 
 				// Unfortunately, planet name can have pretty much any character
 				/** Defines the syntax for a Ratio declaration */
-				private static Regex ratioDecl = new Regex("Ratio\\(\\s*(?<planet>.+)\\s*\\.\\s*" 
-					+ "(?<prop>sma|per|apo|ecc|inc|ape|lpe|lan|(mna|mnl)0)\\s*," 
+				private static Regex ratioDecl = new Regex("Ratio\\(\\s*" + planetProp + "\\s*," 
 					+ "\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
 					RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 				/** Defines the syntax for an Offset declaration */
-				private static Regex sumDecl = new Regex("Offset\\(\\s*(?<planet>.+)\\s*\\.\\s*" 
-					+ "(?<prop>sma|per|apo|ecc|inc|ape|lpe|lan|(mna|mnl)0)\\s*," 
+				private static Regex sumDecl = new Regex("Offset\\(\\s*" + planetProp + "\\s*," 
 					+ "\\s*(?<incr>[-+.e\\d]+)\\s*\\)", 
 					RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
@@ -610,8 +639,8 @@ namespace Starstrider42 {
 				 * 		- a string representation of a floating-point number
 				 * 		- a string of the format "Ratio(<Planet>.<stat>, <value>)", where &lt;Planet&gt; is the 
 				 * 			name of a loaded celestial body, &lt;stat&gt; is one of 
-				 * 			(sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), and &lt;value&gt; is a string 
-				 * 			representation of a floating-point number
+				 * 			(rad, soi, sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), 
+				 * 			and &lt;value&gt; is a string representation of a floating-point number
 				 * 		- a string of the format "Offset(<Planet>.<stat>, <value>)", where &lt;Planet&gt;, &lt;stat&gt;, 
 				 * 			and &lt;value&gt; are as above.
 				 * 		- a string of the format "Resonance(<Planet>, <m>:<n>)", where &lt;Planet&gt; is the 
@@ -651,7 +680,7 @@ namespace Starstrider42 {
 				// Unfortunately, planet name can have pretty much any character
 				/** Defines the syntax for a Resonance declaration */
 				private static Regex mmrDecl = new Regex(
-					"Resonance\\(\\s*(?<planet>.+)\\s*,\\s*(?<m>\\d+)\\s*:\\s*(?<n>\\d+)\\s*\\)", 
+					"Resonance\\(\\s*" + planetFormat + "\\s*,\\s*(?<m>\\d+)\\s*:\\s*(?<n>\\d+)\\s*\\)", 
 					RegexOptions.IgnoreCase);
 
 				/** Defines the parametrization of orbit size that is used */
@@ -659,6 +688,46 @@ namespace Starstrider42 {
 
 				/** The type of parameter describing the orbit */
 				[Persistent] private SizeType type;
+			}
+
+			/** Specialization of ValueRange for position of periapsis.
+			 * 
+			 * @todo I don't think that PeriRange is a subtype of ValueRange in the Liskov sense... check!
+			 */
+			private class PeriRange : ValueRange {
+				/** Assigns situation-specific default values to the PeriRange
+				 * 
+				 * @param[in] dist The distribution from which the value will be drawn
+				 * @param[in] type The description of periapsis position that is used
+				 * @param[in] min,max The minimum and maximum values allowed for distributions. May be unused.
+				 * @param[in] avg The mean value returned. May be unused.
+				 * @param[in] stddev The standard deviation of values returned. May be unused.
+				 * 
+				 * @post The given values will be used by draw() unless they are specifically overridden by a ConfigNode.
+				 * 
+				 * @exceptsafe Does not throw exceptions
+				 */
+				internal PeriRange(Distribution dist, PeriType type = PeriType.Argument, 
+					double min = 0.0, double max = 1.0, double avg = 0.0, double stddev = 0.0) 
+					: base(dist, min, max, avg, stddev) {
+					this.type = type;
+				}
+
+				/** Returns the parametrization used by this ValueRange
+				 * 
+				 * @return The periapsis position parameter represented by this object.
+				 * 
+				 * @exceptsafe Does not throw exceptions.
+				 */
+				internal PeriType getParam() {
+					return type;
+				}
+
+				/** Defines the parametrization of orbit size that is used */
+				internal enum PeriType {Argument, Longitude};
+
+				/** The type of parameter describing the orbit */
+				[Persistent] private PeriType type;
 			}
 
 			/** Specialization of ValueRange for orbital phase parameter.

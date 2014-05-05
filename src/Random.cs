@@ -43,6 +43,11 @@ namespace Starstrider42 {
 		/** Contains static methods for random number distributions
 		 */
 		internal static class RandomDist {
+			static RandomDist() {
+				isNextNormal = false;
+				nextNormal = 0.0;
+			}
+
 			/** Randomly selects from discrete options with unequal weights
 			 * 
 			 * @tparam T The type of object to be selected
@@ -205,6 +210,60 @@ namespace Starstrider42 {
 				double sigmaSquared = mean * mean * 2.0 / Math.PI;
 				// IMPORTANT: don't let anything throw beyond this point
 				return Math.Sqrt(-2.0*sigmaSquared*Math.Log(UnityEngine.Random.value));
+			}
+
+			/** Draws a value from a normal distribution
+			 * 
+			 * @param[in] mean The mean of the distribution.
+			 * @param[in] stddev The standard deviation of the distribution.
+			 * 
+			 * @return A normal random variate. The return value has the same units as @p mean and @p stddev
+			 * 
+			 * @pre @p stddev &ge; 0
+			 * 
+			 * @exception System.ArgumentOutOfRangeException Thrown if @p stddev < 0
+			 * 
+			 * @exceptsafe This method is atomic
+			 */
+			internal static double drawNormal(double mean, double stddev) {
+				if (stddev < 0.0) {
+					throw new ArgumentOutOfRangeException("stddev",
+						"RandomDist.drawNormal(): A normal distribution cannot have a negative width (gave " + stddev + ")");
+				}
+
+				if (isNextNormal) {
+					isNextNormal = false;
+					return mean + stddev*nextNormal;
+				} else {
+					// Box-Muller transform
+					double u = UnityEngine.Random.value;
+					double v = UnityEngine.Random.value;
+
+					u = Math.Sqrt(-2.0 * Math.Log(u));
+
+					nextNormal = u * Math.Cos(2 * Math.PI * v);
+					isNextNormal = true;
+
+					return mean + stddev*(u * Math.Sin(2 * Math.PI * v));
+				}
+			}
+			/** Caches the next normal random variate to return from drawNormal() */
+			private static double nextNormal;
+			/** @p nextNormal is valid if and only if @p isNextNormal is true */
+			private static bool isNextNormal;
+
+			/** Draws the inclination of a randomly oriented plane
+			 * 
+			 * @return An angle between 0&deg; and 180&deg;, weighted by the sine of the angle. 
+			 * 
+			 * @note This function is intended to be used with inclinations. Drawing an inclination from this 
+			 * 		distribution and drawing a longitude of ascending node uniformly from [0&deg;, 360&deg;] 
+			 * 		will ensure that the orbital normal faces any direction with equal probability
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal static double drawIsotropic() {
+				return 180.0/Math.PI * Math.Acos(1 - 2 * UnityEngine.Random.value);
 			}
 		}
 	}
