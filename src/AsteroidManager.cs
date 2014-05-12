@@ -10,7 +10,7 @@ using System.Reflection;
 using UnityEngine;
 
 // Is there a good way to sync version number between here, doxygen.cfg, the markdown source, and Git tags?
-[assembly:AssemblyVersion("0.2.0")]
+[assembly:AssemblyVersion("0.2.1")]
 
 namespace Starstrider42 {
 
@@ -59,7 +59,6 @@ namespace Starstrider42 {
 					throw new BadPopulationException (newPop, 
 						"CustomAsteroids: Selected invalid population " + newPop, e);
 				}
-
 			}
 
 			internal class BadPopulationException : System.InvalidOperationException {
