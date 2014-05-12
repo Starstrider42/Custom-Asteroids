@@ -20,6 +20,13 @@ Next Version (in development)
 
 ### Bug Fixes 
 
+Version 0.2.1
+------------
+
+### Bug Fixes 
+
+* Neither asteroids nor vessels will be corrupted when undocking from an asteroid.
+
 Version 0.2.0
 ------------
 
