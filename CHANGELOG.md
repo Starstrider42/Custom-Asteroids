@@ -10,8 +10,9 @@ Next Version (in development)
 ### New Features 
 
 * Some asteroids will now stay on the stock KSP trajectory, which intercepts Kerbin's sphere of influence. The fraction of such asteroids may be changed by modifying or removing the `DEFAULT` clause in `Basic Asteroids.cfg`.
-* Asteroids can now be labeled by the group they belong to. This option is on by default, but may be disabled by setting `RenameAsteroids = False` in `GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg`.
+* Asteroids can now be labeled by the group they belong to. This option is on by default, but may be disabled in the [settings file](@ref options).
 * Asteroid orbital elements can now be expressed in terms of the properties of planets or moons. This reduces the amount of math the config-writer has to do, and makes config files more compatible with other solar system mods.
+* Support for version checkers using Tyrope and cybutek's .version file format.
 
 ### Changes 
 
@@ -33,14 +34,15 @@ Version 0.2.0
 ### New Features 
 
 * Custom Asteroids will now scan the KSP install for asteroid configuration files. This should make it easier to personalize asteroid sets without conflicting with the mod install.
-* Completely new configuration file format. The distributions assumed for each orbital element are no longer hardcoded.
+* Completely new configuration file format. The new format makes much smarter use of default settings, and the distributions assumed for each orbital element are no longer hardcoded.
 * Custom Asteroids can now control all six orbital elements.
 * Orbit size can be set by constraining semimajor axis, periapsis, or apoapsis. Orbit phase can be set by constraining mean anomaly or mean longitude. These two options give configuration-writers more control over where asteroids will and won't appear.
 
 ### Changes 
 
-* Added units to documentation
-* Reorganized code to support more general asteroid modifications in future releases.
+* Stock configs now have many more minor planet groups
+* Added units to config file documentation
+* Reorganized code to support asteroid modifications other than orbits in future releases.
 
 Version 0.1.0
 ------------

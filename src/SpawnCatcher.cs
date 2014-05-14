@@ -4,20 +4,44 @@
  * @date Created April 9, 2014
  */
 
+using System.Linq;
 using UnityEngine;
 
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
+		/** Workaround to let SpawnCatcher be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 */
+		[KSPAddon(KSPAddon.Startup.Flight, false)]
+		public class SCFlight : SpawnCatcher {
+		}
+		/** Workaround to let SpawnCatcher be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 */
+		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+		public class SCSpaceCenter : SpawnCatcher {
+		}
+		/** Workaround to let SpawnCatcher be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 */
+		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
+		public class SCTrackingStation : SpawnCatcher {
+		}
+				
 		/** Class for identifying and manipulating new asteroids before they are seen by the player
 		 * 
 		 * @invariant At most one instance of this class exists
 		 * @invariant If and only if an instance of this class edists, SpawnCatcher.CatchAsteroidSpawn() 
 		 *		will be called whenever a new vessel is created
+		 *
+		 * @warning Assumes that Space Center, Tracking Station, and Flight are the only real-time scenes. 
+		 * 		May be invalidated by the addition of a Mission Control or Observatory scene in KSP 0.24.
 		 */
-		[KSPAddon(KSPAddon.Startup.EveryScene, false)]
-		public class SpawnCatcher : MonoBehaviour 
-		{
+		public class SpawnCatcher : MonoBehaviour {
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
 			 * 
 			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
@@ -28,7 +52,10 @@ namespace Starstrider42 {
 			 */
 			public void Start()
 			{
-				GameEvents.onVesselCreate.Add(CatchAsteroidSpawn);
+				GameEvents.onVesselCreate.Add(catchAsteroidSpawn);
+
+				//StartCoroutine(editStockSpawner());
+				StartCoroutine("editStockSpawner");
 			}
 
 			/** This function is called when the object will be destroyed.
@@ -41,7 +68,44 @@ namespace Starstrider42 {
 			 */
 			public void OnDestroy() {
 				// Keep things tidy, since I'm not sure when (or if) onVesselCreate gets automatically cleaned up
-				GameEvents.onVesselCreate.Remove(CatchAsteroidSpawn);
+				GameEvents.onVesselCreate.Remove(catchAsteroidSpawn);
+				StopCoroutine("editStockSpawner");
+			}
+
+			/** @todo Interim implementation to let me explore ScenarioDiscoverableObjects
+			 * 
+			 * To be superceded once manual asteroid spawning is implemented
+			 */
+			public System.Collections.IEnumerator editStockSpawner() {
+				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
+					yield return 0;
+				}
+
+				ScenarioDiscoverableObjects spawner = null;
+				do {
+					// Testing shows that loop condition is met fast enough that return 0 doesn't hurt performance
+					yield return 0;
+					// The spawner may be destroyed and re-created before the spawnInterval condition is met... 
+					// 	Safer to do the lookup every time
+					spawner = (ScenarioDiscoverableObjects)HighLogic.CurrentGame.scenarios.
+						Find(scenario => scenario.moduleRef is ScenarioDiscoverableObjects).moduleRef;
+					// Sometimes old scenario persists to when SpawnCatcher is reloaded... check for default value
+				} while (spawner == null || spawner.spawnInterval != 15f);
+
+				#if DEBUG
+				Debug.Log("CustomAsteroids: editing spawner...");
+				#endif
+
+				spawner.minUntrackedLifetime = AsteroidManager.getUntrackedTimes().First;
+				spawner.maxUntrackedLifetime = AsteroidManager.getUntrackedTimes().Second;
+
+				if (AsteroidManager.getCustomSpawner()) {
+					// Disable stock spawner
+					spawner.spawnInterval = 1e10f;
+					spawner.spawnGroupMinLimit = 0;
+					spawner.spawnGroupMaxLimit = 0;
+					Debug.Log("CustomAsteroids: spawner disabled");
+				}
 			}
 
 			/** Selects newly created asteroids and forwards them to AsteroidManager for processing
@@ -56,22 +120,18 @@ namespace Starstrider42 {
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
-			public void CatchAsteroidSpawn(Vessel vessel) {
+			public void catchAsteroidSpawn(Vessel vessel) {
 				// Ignore asteroids "created" by undocking
 				if (vessel.vesselType == VesselType.SpaceObject && vessel.loaded == false) {
 					// Verify that each asteroid is caught exactly once
 					Debug.Log("CustomAsteroids: caught spawn of " + vessel.GetName());
-
-					// track it by default, else its orbit won't be visible in mapview
-					//vessel.DiscoveryInfo.SetLastObservedTime(Planetarium.GetUniversalTime());
-					//vessel.DiscoveryInfo.SetLevel(DiscoveryLevels.StateVectors | DiscoveryLevels.Name | DiscoveryLevels.Presence);
 
 					try {
 						AsteroidManager.editAsteroid(vessel);
 					} catch (System.InvalidOperationException e) {
 						Debug.LogException(e);
 						// Destroy the asteroid as a fallback option
-						vessel.orbitDriver.orbit = new Orbit(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, FlightGlobals.Bodies[0]);
+						vessel.Die();
 					}
 				}
 			}

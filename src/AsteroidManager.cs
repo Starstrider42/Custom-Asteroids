@@ -79,6 +79,27 @@ namespace Starstrider42 {
 				}
 			}
 
+			/** Returns the time range in which untracked asteroids will disappear
+			 * 
+			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
+			 * 		can go untracked
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal static Pair<float, float> getUntrackedTimes() {
+				return allowedPops.getUntrackedTimes();
+			}
+
+			/** Returns whether or not the ARM asteroid spawner is used
+			 * 
+			 * @return True if custom spawner used, false if stock.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal static bool getCustomSpawner() {
+				return allowedPops.getCustomSpawner();
+			}
+
 			/** Exception indicating that a Population is in an invalid state
 			 */
 			internal class BadPopulationException : System.InvalidOperationException {
@@ -171,6 +192,7 @@ namespace Starstrider42 {
 		 * @invariant At most one instance of this class exists
 		 * 
 		 * @todo Clean up this class
+		 * @todo Move options into their own class
 		 */
 		internal class PopulationLoader {
 			/** Creates an uninitialized solar system
@@ -183,8 +205,11 @@ namespace Starstrider42 {
 				asteroidSets = new List<Population>();
 				untouchedSet = new DefaultAsteroids();
 
-				versionNumber   = latestVersion();
-				renameAsteroids = true;
+				versionNumber        = latestVersion();
+				renameAsteroids      = true;
+				minUntrackedLifetime = 1.0f;
+				maxUntrackedLifetime = 20.0f;
+				useCustomSpawner     = true;
 			}
 
 			/** Stores current Custom Asteroids options in a config file
@@ -382,6 +407,27 @@ namespace Starstrider42 {
 				return renameAsteroids;
 			}
 
+			/** Returns whether or not the ARM asteroid spawner is used
+			 * 
+			 * @return True if custom spawner used, false if stock.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal bool getCustomSpawner() {
+				return useCustomSpawner;
+			}
+
+			/** Returns the time range in which untracked asteroids will disappear
+			 * 
+			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
+			 * 		can go untracked
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal Pair<float, float> getUntrackedTimes() {
+				return new Pair<float, float>(minUntrackedLifetime, maxUntrackedLifetime);
+			}
+
 			/** Identifies the Custom Asteroids config file
 			 * 
 			 * @return An absolute path to the config file
@@ -423,6 +469,10 @@ namespace Starstrider42 {
 			 * @note Initialized via ConfigNode
 			 */
 			private List<Population> asteroidSets;
+			/** Settings related to stock-like asteroids
+			 *
+			 * @note Initialized via ConfigNode
+			 */
 			private DefaultAsteroids untouchedSet;
 
 			/** Contains settings for asteroids that aren't affected by Custom Asteroids
@@ -473,11 +523,22 @@ namespace Starstrider42 {
 
 			/////////////////////////////////////////////////////////
 			// Config options
-			// Giving variables upper-case names because it looks better in the .cfg file
 
 			/** Whether or not make asteroid names match their population */
 			[Persistent(name="RenameAsteroids")]
 			private bool renameAsteroids;
+
+			/** Whether or not to use custom spawning behavior */
+			[Persistent(name="UseCustomSpawner")]
+			private bool useCustomSpawner;
+
+			/** Minimum number of days an asteroid goes untracked */
+			[Persistent(name="MinUntrackedTime")]
+			private float minUntrackedLifetime;
+
+			/** Maximum number of days an asteroid goes untracked */
+			[Persistent(name="MaxUntrackedTime")]
+			private float maxUntrackedLifetime;
 
 			/** The plugin version for which the settings file was written */
 			[Persistent(name="VersionNumber")]
