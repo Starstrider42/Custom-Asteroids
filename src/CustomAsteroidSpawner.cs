@@ -125,7 +125,7 @@ namespace Starstrider42 {
 		 * 
 		 * @todo Make this class sufficiently generic to be replaceable by third-party implementations
 		 */
-		internal class CustomAsteroidSpawner : ScenarioModule {
+		public class CustomAsteroidSpawner : ScenarioModule {
 			internal CustomAsteroidSpawner() {
 				wasEnabled   = AsteroidManager.getOptions().getCustomSpawner();
 
@@ -168,6 +168,15 @@ namespace Starstrider42 {
 			 * 
 			 * @param[in] node The ConfigNode representing this ScenarioModule
 			 * 
+			 * @pre @p node is assumed to have the following format:
+			 * @code{.cfg}
+			 * SpawnState
+			 * {
+			 * 	NextAsteroidUT = 12345.6789
+			 * 	Enabled = True
+			 * }
+			 * @endcode
+			 * 
 			 * @post The module is initialized with any settings in @p node
 			 */
 			public override void OnLoad(ConfigNode node)
@@ -197,7 +206,15 @@ namespace Starstrider42 {
 			 * 
 			 * @param[out] node The ConfigNode representing this ScenarioModule
 			 * 
-			 * @post The ConfigNode is initialized with the persistent contents of this object
+			 * @post @p node is initialized with the persistent contents of this object
+			 * @post @p node has the following format:
+			 * @code{.cfg}
+			 * SpawnState
+			 * {
+			 * 	NextAsteroidUT = 12345.6789
+			 * 	Enabled = True
+			 * }
+			 * @endcode
 			 */
 			public override void OnSave(ConfigNode node)
 			{
