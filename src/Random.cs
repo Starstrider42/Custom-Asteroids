@@ -188,6 +188,27 @@ namespace Starstrider42 {
 				return Math.Exp(UnityEngine.Random.Range((float)Math.Log(a),(float)Math.Log(b)));
 			}
 
+			/** Draws a value from an exponential distribution
+			 * 
+			 * @param[in] mean The mean of the distribution.
+			 * 
+			 * @return An exponential random variate. The return value has the same units as @p mean
+			 * 
+			 * @pre @p mean &ge; 0
+			 * 
+			 * @exception System.ArgumentOutOfRangeException Thrown if @p mean < 0
+			 * 
+			 * @exceptsafe This method is atomic
+			 */
+			internal static double drawExponential(double mean) {
+				if (mean < 0.0) {
+					throw new ArgumentOutOfRangeException("mean",
+						"RandomDist.drawExponential(): An exponential distribution cannot have a negative mean (gave " + mean + ")");
+				}
+				// IMPORTANT: don't let anything throw beyond this point
+				return -mean * Math.Log(UnityEngine.Random.value);
+			}
+
 			/** Draws a value from a Rayleigh distribution
 			 * 
 			 * @param[in] mean The mean of the distribution. This is not the standard 

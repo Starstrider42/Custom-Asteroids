@@ -18,26 +18,24 @@ namespace Starstrider42 {
 		/** Central class for controlling asteroid orbits
 		 */
 		internal static class AsteroidManager {
+			/** Loads all Custom Asteroids settings
+			 * 
+			 * @exceptsafe The object is in a consistent state in the event of an exception
+			 */
 			static AsteroidManager() {
 				try {
+					curOptions  = Options.Load();
 					allowedPops = PopulationLoader.Load();
-					totalRate = allowedPops.getTotalRate();
+
+					Debug.Log("CustomAsteroids: " + allowedPops.getTotalRate() + " new discoveries per Earth day");
 				} catch (Exception) {
 					// Ensure the contents of AsteroidManager are predictable even in the event of an exception
 					// Though an exception thrown by a static constructor is basically unrecoverable...
-					allowedPops = null;
-					totalRate = 0.0;
+					curOptions  = new Options();
+					allowedPops = new PopulationLoader();
 					throw;
 				}
 			}
-
-			/** Singleton object responsible for handling Custom Asteroids configurations */
-			private static PopulationLoader allowedPops;
-			/** Stores rate at which asteroids should be created
-			 * 
-			 * @note Provided for forward compatibility; currently has no effect.
-			 */
-			private static double totalRate;
 
 			/** Customizes an asteroid, based on the settings loaded to Custom asteroids
 			 * 
@@ -68,7 +66,7 @@ namespace Starstrider42 {
 					}
 				}
 
-				if (allowedPops.getRenameOption() && asteroid.GetName() != null) {
+				if (curOptions.getRenameOption() && asteroid.GetName() != null) {
 					string asteroidId = asteroid.GetName();
 					string    newName = (newPop != null ? newPop.getName() : allowedPops.defaultName());
 					if (asteroidId.IndexOf("Ast. ") >= 0) {
@@ -79,26 +77,31 @@ namespace Starstrider42 {
 				}
 			}
 
-			/** Returns the time range in which untracked asteroids will disappear
+			/** Returns the current options used by Custom Asteroids
 			 * 
-			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
-			 * 		can go untracked
-			 * 
-			 * @exceptsafe Does not throw exceptions.
-			 */
-			internal static Pair<float, float> getUntrackedTimes() {
-				return allowedPops.getUntrackedTimes();
-			}
-
-			/** Returns whether or not the ARM asteroid spawner is used
-			 * 
-			 * @return True if custom spawner used, false if stock.
+			 * @return An Options objects with the settings to use
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
-			internal static bool getCustomSpawner() {
-				return allowedPops.getCustomSpawner();
+			internal static Options getOptions() {
+				return curOptions;
 			}
+
+			/** Provides rate at which asteroids should be created
+			 * 
+			 * @return The total spawn rate of all loaded Populations
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal static double spawnRate() {
+				return allowedPops.getTotalRate();
+			}
+
+			/** Singleton object responsible for handling Custom Asteroids configurations */
+			private static PopulationLoader allowedPops;
+
+			/** Singleton object responsible for handling Custom Asteroids options */
+			private static Options curOptions;
 
 			/** Exception indicating that a Population is in an invalid state
 			 */
@@ -187,24 +190,16 @@ namespace Starstrider42 {
 			}
 		}
 
-		/** Stores raw asteroid data
+		/** Stores a set of configuration options for Custom Asteroids
 		 * 
-		 * @invariant At most one instance of this class exists
-		 * 
-		 * @todo Clean up this class
-		 * @todo Move options into their own class
+		 * ConfigNodes are used to manage option persistence
 		 */
-		internal class PopulationLoader {
-			/** Creates an uninitialized solar system
-			 * 
-			 * @post No asteroids will be created
+		internal class Options {
+			/** Sets all options to their default values
 			 * 
 			 * @exceptsafe Does not throw exceptions.
 			 */
-			internal PopulationLoader() {
-				asteroidSets = new List<Population>();
-				untouchedSet = new DefaultAsteroids();
-
+			internal Options() {
 				versionNumber        = latestVersion();
 				renameAsteroids      = true;
 				minUntrackedLifetime = 1.0f;
@@ -242,51 +237,45 @@ namespace Starstrider42 {
 
 			/** Factory method obtaining Custom Asteroids settings from a config file
 			 * 
-			 * @return A newly constructed PopulationLoader object containing up-to-date 
+			 * @return A newly constructed Options object containing up-to-date 
 			 * 		settings from the Custom Asteroids config file, or the default settings 
 			 * 		if no such file exists.
 			 * 
-			 * @exception System.TypeInitializationException Thrown if the PopulationLoader object 
+			 * @exception System.TypeInitializationException Thrown if the Options object 
 			 * 		could not be constructed
 			 * 
 			 * @exceptsafe The program is in a consistent state in the event of an exception
 			 * 
 			 * @todo Can I make Load() atomic?
-			 * 
-			 * @todo Break up this function
 			 */
-			internal static PopulationLoader Load() {
+			internal static Options Load() {
 				try {
-					// UrlConfig x;
-					// x.parent.fullPath;		// Name of file to write to
-					// x.config					// AsteroidSet node
-
-					// Start with an empty population list
-					PopulationLoader allPops = new PopulationLoader();
+					// Start with the default options
+					Options allOptions = new Options();
 
 					// Load options
 					Debug.Log("CustomAsteroids: loading settings...");
 
-					ConfigNode allOptions = ConfigNode.Load(optionList());
-					if (allOptions != null) {
-						ConfigNode.LoadObjectFromConfig(allPops, allOptions);
+					ConfigNode optFile = ConfigNode.Load(optionList());
+					if (optFile != null) {
+						ConfigNode.LoadObjectFromConfig(allOptions, optFile);
 						// Backward-compatible with initial release
-						if (!allOptions.HasValue("VersionNumber")) {
-							allPops.versionNumber = "0.1.0";
+						if (!optFile.HasValue("VersionNumber")) {
+							allOptions.versionNumber = "0.1.0";
 						}
 					} else {
-						allPops.versionNumber = "";
+						allOptions.versionNumber = "";
 					}
 
-					if (allPops.versionNumber != latestVersion()) {
+					if (allOptions.versionNumber != latestVersion()) {
 						// Config file is either missing or out of date, make a new one
-						// Any information loaded from config file will be preserved
+						// Any information loaded from previous config file will be preserved
 						try {
-							allPops.Save();
-							if (allPops.versionNumber.Length == 0) {
+							allOptions.Save();
+							if (allOptions.versionNumber.Length == 0) {
 								Debug.Log("CustomAsteroids: no config file found at " + optionList() + "; creating new one");
 							} else {
-								Debug.Log("CustomAsteroids: loaded config file from version " + allPops.versionNumber +
+								Debug.Log("CustomAsteroids: loaded config file from version " + allOptions.versionNumber +
 									"; updating to version " + latestVersion());
 							}
 						} catch (Exception e) {
@@ -297,6 +286,127 @@ namespace Starstrider42 {
 					}
 
 					Debug.Log("CustomAsteroids: settings loaded");
+
+					return allOptions;
+					// No idea what kinds of exceptions are thrown by ConfigNode
+				} catch (Exception e) {
+					throw new TypeInitializationException("Starstrider42.CustomAsteroids.Options", e);
+				}
+			}
+
+			/** Returns whether or not asteroids may be renamed by their population
+			 * 
+			 * @return True if renaming allowed, false otherwise.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal bool getRenameOption() {
+				return renameAsteroids;
+			}
+
+			/** Returns whether or not the ARM asteroid spawner is used
+			 * 
+			 * @return True if custom spawner used, false if stock.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal bool getCustomSpawner() {
+				return useCustomSpawner;
+			}
+
+			/** Returns the time range in which untracked asteroids will disappear
+			 * 
+			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
+			 * 		can go untracked
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal Pair<float, float> getUntrackedTimes() {
+				return new Pair<float, float>(minUntrackedLifetime, maxUntrackedLifetime);
+			}
+
+			/** Identifies the Custom Asteroids config file
+			 * 
+			 * @return An absolute path to the config file
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private static string optionList() {
+				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg";
+			}
+
+			/** Returns the mod's current version number
+			 *
+			 * @return A version number in major.minor.patch form
+			 *
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private static string latestVersion() {
+				return Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
+			}
+
+			/////////////////////////////////////////////////////////
+			// Config options
+
+			/** Whether or not make asteroid names match their population */
+			[Persistent(name="RenameAsteroids")]
+			private bool renameAsteroids;
+
+			/** Whether or not to use custom spawning behavior */
+			[Persistent(name="UseCustomSpawner")]
+			private bool useCustomSpawner;
+
+			/** Minimum number of days an asteroid goes untracked */
+			[Persistent(name="MinUntrackedTime")]
+			private float minUntrackedLifetime;
+
+			/** Maximum number of days an asteroid goes untracked */
+			[Persistent(name="MaxUntrackedTime")]
+			private float maxUntrackedLifetime;
+
+			/** The plugin version for which the settings file was written */
+			[Persistent(name="VersionNumber")]
+			private string versionNumber;
+		}
+
+		/** Stores raw asteroid data
+		 * 
+		 * @invariant At most one instance of this class exists
+		 * 
+		 * @todo Clean up this class
+		 */
+		internal class PopulationLoader {
+			/** Creates an uninitialized solar system
+			 * 
+			 * @post No asteroids will be created
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal PopulationLoader() {
+				asteroidSets = new List<Population>();
+				untouchedSet = new DefaultAsteroids();
+			}
+
+			/** Factory method obtaining Custom Asteroids settings from a config file
+			 * 
+			 * @return A newly constructed PopulationLoader object containing a fill list
+			 * 		of all valid asteroid groups in asteroid config files
+			 * 
+			 * @exception System.TypeInitializationException Thrown if the PopulationLoader object 
+			 * 		could not be constructed
+			 * 
+			 * @exceptsafe The program is in a consistent state in the event of an exception
+			 * 
+			 * @todo Can I make Load() atomic?
+			 */
+			internal static PopulationLoader Load() {
+				try {
+					// UrlConfig x;
+					// x.parent.fullPath;		// Name of file to write to
+					// x.config					// AsteroidSet node
+
+					// Start with an empty population list
+					PopulationLoader allPops = new PopulationLoader();
 
 					// Search for populations in all config files
 					UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("AsteroidSets");
@@ -397,57 +507,6 @@ namespace Starstrider42 {
 				return untouchedSet.getName();
 			}
 
-			/** Returns whether or not asteroids may be renamed by their population
-			 * 
-			 * @return True if renaming allowed, false otherwise.
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			internal bool getRenameOption() {
-				return renameAsteroids;
-			}
-
-			/** Returns whether or not the ARM asteroid spawner is used
-			 * 
-			 * @return True if custom spawner used, false if stock.
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			internal bool getCustomSpawner() {
-				return useCustomSpawner;
-			}
-
-			/** Returns the time range in which untracked asteroids will disappear
-			 * 
-			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
-			 * 		can go untracked
-			 * 
-			 * @exceptsafe Does not throw exceptions.
-			 */
-			internal Pair<float, float> getUntrackedTimes() {
-				return new Pair<float, float>(minUntrackedLifetime, maxUntrackedLifetime);
-			}
-
-			/** Identifies the Custom Asteroids config file
-			 * 
-			 * @return An absolute path to the config file
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			private static string optionList() {
-				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg";
-			}
-
-			/** Returns the mod's current version number
-			 *
-			 * @return A version number in major.minor.patch form
-			 *
-			 * @exceptsafe Does not throw exceptions
-			 */
-			private static string latestVersion() {
-				return Assembly.GetExecutingAssembly().GetName().Version.ToString(3);
-			}
-
 			/** Debug function for traversing node tree
 			 *
 			 * @param[in] node The top-level node of the tree to be printed
@@ -508,7 +567,7 @@ namespace Starstrider42 {
 				 * 
 				 * @exceptsafe Does not throw exceptions.
 				 */
-				public string getName() {
+				internal string getName() {
 					return name;
 				}
 
@@ -520,29 +579,6 @@ namespace Starstrider42 {
 				/** The rate, in asteroids per day, at which asteroids on stock orbits */
 				[Persistent] private double spawnRate;
 			}
-
-			/////////////////////////////////////////////////////////
-			// Config options
-
-			/** Whether or not make asteroid names match their population */
-			[Persistent(name="RenameAsteroids")]
-			private bool renameAsteroids;
-
-			/** Whether or not to use custom spawning behavior */
-			[Persistent(name="UseCustomSpawner")]
-			private bool useCustomSpawner;
-
-			/** Minimum number of days an asteroid goes untracked */
-			[Persistent(name="MinUntrackedTime")]
-			private float minUntrackedLifetime;
-
-			/** Maximum number of days an asteroid goes untracked */
-			[Persistent(name="MaxUntrackedTime")]
-			private float maxUntrackedLifetime;
-
-			/** The plugin version for which the settings file was written */
-			[Persistent(name="VersionNumber")]
-			private string versionNumber;
 		}
 	}
 }

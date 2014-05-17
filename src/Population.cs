@@ -188,7 +188,7 @@ namespace Starstrider42 {
 			 * 
 			 * @exceptsafe Does not throw exceptions.
 			 */
-			public string getName() {
+			internal string getName() {
 				return name;
 			}
 
