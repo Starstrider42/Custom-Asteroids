@@ -38,6 +38,8 @@ The `DEFAULT` block, if present, has only the `name` and `spawnRate` fields. The
 Advanced Usage
 ------------
 
+The average number of known asteroids in each group -- if none are tracked -- will equal `spawnRate` times the average of `Options.MinUntrackedTime` and `Options.MaxUntrackedTime`. Set the value for `spawnRate` accordingly.
+
 Each `ASTEROIDGROUP` block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:
 * `dist`: the distribution from which the parameter will be drawn. Allowed values are Uniform, 
     LogUniform, Gaussian (Normal also accepted), or Rayleigh.
