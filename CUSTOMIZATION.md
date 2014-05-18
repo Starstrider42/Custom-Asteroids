@@ -12,12 +12,14 @@ Basic Usage
 
 The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 
-* `name`: a descriptive name. If `RenameAsteroids = True` is set in the settings file, this name will replace the generic "Ast." in the asteroids' name.
+* `name`: a unique, machine-readable name. Must not contain spaces.
+* `title`: a descriptive name. If `RenameAsteroids = True` is set in the [settings file](@ref options), 
+    this name will replace the generic "Ast." in the asteroids' name.
 * `centralBody`: the name of the object the asteroids will orbit. Must exactly match the name of an 
     in-game celestial body.
-* `spawnRate`: the relative odds that a newly spawned asteroid will belong to that group. Must be a 
-    nonnegative number. For forward compatibility, this number should be given as asteroids detected per 
-    day, but, at present, only the ratio to all the other `spawnRate` values matters.
+* `spawnRate`: must be a nonnegative number. If `UseCustomSpawner = True` is set in the 
+    [settings file](@ref options), this value gives the number of asteroids detected per Earth day. 
+    If `UseCustomSpawner = False`, only the ratio to all the other `spawnRate` values matters.
 * `orbitSize`: a block describing how far from `centralBody` the asteroid's orbit is found. Parameters:
     - `type`: Describes which orbital element is constrained by `min` and `max`. Allowed values are 
         SemimajorAxis, Periapsis, or Apoapsis.

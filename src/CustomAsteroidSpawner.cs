@@ -157,9 +157,7 @@ namespace Starstrider42 {
 						Debug.Log("CustomAsteroids: asteroid discovered at UT " + nextAsteroid);
 						stockSpawner.SpawnAsteroid();
 
-						Debug.Log("DEBUG: time = " + nextAsteroid);
 						nextAsteroid += waitForAsteroid();
-						Debug.Log("DEBUG: time = " + nextAsteroid);
 					}
 				}
 			}
@@ -181,15 +179,14 @@ namespace Starstrider42 {
 			 */
 			public override void OnLoad(ConfigNode node)
 			{
-				Debug.Log("DEBUG: time = " + nextAsteroid);
 				base.OnLoad(node);
-				Debug.Log("DEBUG: time = " + nextAsteroid);
 
-				Debug.Log("DEBUG: full node = " + node);
+				#if DEBUG
+				Debug.Log("CustomAsteroids: full node = " + node);
+				#endif
 				ConfigNode thisNode = node.GetNode("SpawnState");
 				if (thisNode != null) {
 					ConfigNode.LoadObjectFromConfig(this, thisNode);
-					Debug.Log("DEBUG: time = " + nextAsteroid);
 				}
 
 				// Prevent a backlog of asteroids if the player suddenly switched

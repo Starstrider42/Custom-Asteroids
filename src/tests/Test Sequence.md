@@ -7,7 +7,7 @@ Custom Asteroids Test Sequence
 4. Immediately go into the Tracking Station and filter for only unknown objects
 5. While there are less than ~30 known asteroids
     a. Track all unknown asteroids on the map.
-    b. Accelerate time to 1000×
+    b. Accelerate time to 10000×
     c. Return to 1× when new asteroids appear.
 6. Check orbital distribution in game
 7. Exit the Tracking Station (to ensure the game is saved), then quit

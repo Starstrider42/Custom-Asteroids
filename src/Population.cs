@@ -36,7 +36,8 @@ namespace Starstrider42 {
 			 * @note Required by interface of ConfigNode.LoadObjectFromConfig()
 			 */
 			internal Population() {
-				this.name         = "Ast.";
+				this.name         = "invalid";
+				this.title        = "Ast.";
 				this.centralBody  = "Sun";
 				this.spawnRate    = 0.0;			// Safeguard: don't make asteroids until the values are set
 
@@ -184,12 +185,22 @@ namespace Starstrider42 {
 
 			/** Returns the name of the population
 			 * 
-			 * @return A human-readable string identifying the population. May not be unique.
+			 * @return A human-readable string identifying the population.
 			 * 
 			 * @exceptsafe Does not throw exceptions.
 			 */
 			internal string getName() {
 				return name;
+			}
+
+			/** Returns the name of asteroids within the population
+			 * 
+			 * @return A human-readable string that can be used as an asteroid prefix.
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal string getAsteroidName() {
+				return title;
 			}
 
 			/** Converts an anomaly to an orbital longitude
@@ -300,8 +311,10 @@ namespace Starstrider42 {
 			////////////////////////////////////////////////////////
 			// Population properties
 
-			/** The name of asteroids belonging to this population */
+			/** A unique name for the population */
 			[Persistent] private string name;
+			/** The name of asteroids belonging to this population */
+			[Persistent] private string title;
 			/** The name of the celestial object orbited by the asteroids */
 			[Persistent] private string centralBody;
 			/** The rate, in asteroids per day, at which asteroids are discovered */

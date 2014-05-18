@@ -10,7 +10,7 @@ using System.Reflection;
 using UnityEngine;
 
 // Is there a good way to sync version number between here, doxygen.cfg, the markdown source, and Git tags?
-[assembly:AssemblyVersion("0.2.1")]
+[assembly:AssemblyVersion("1.0.0")]
 
 namespace Starstrider42 {
 
@@ -68,7 +68,7 @@ namespace Starstrider42 {
 
 				if (curOptions.getRenameOption() && asteroid.GetName() != null) {
 					string asteroidId = asteroid.GetName();
-					string    newName = (newPop != null ? newPop.getName() : allowedPops.defaultName());
+					string    newName = (newPop != null ? newPop.getAsteroidName() : allowedPops.defaultName());
 					if (asteroidId.IndexOf("Ast. ") >= 0) {
 						// Keep only the ID number
 						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
@@ -105,7 +105,7 @@ namespace Starstrider42 {
 
 			/** Exception indicating that a Population is in an invalid state
 			 */
-			internal class BadPopulationException : System.InvalidOperationException {
+			internal class BadPopulationException : InvalidOperationException {
 				/** Constructs an exception with no specific information
 				 * 
 				 * @exceptsafe Does not throw exceptions
@@ -319,9 +319,19 @@ namespace Starstrider42 {
 			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
 			 * 		can go untracked
 			 * 
-			 * @exceptsafe Does not throw exceptions.
+			 * @except System.InvalidOperationException Thrown if .first is negative of .second is nonpositive
+			 * 
+			 * @exceptsafe Program state is unchanged in the event of an exception
 			 */
 			internal Pair<float, float> getUntrackedTimes() {
+				if (minUntrackedLifetime < 0.0f) {
+					throw new InvalidOperationException("Minimum untracked time may not be negative (gave " 
+						+ minUntrackedLifetime+ ")");
+				}
+				if (maxUntrackedLifetime <= 0.0f) {
+					throw new InvalidOperationException("Maximum untracked time must be positive (gave " 
+						+ maxUntrackedLifetime+ ")");
+				}
 				return new Pair<float, float>(minUntrackedLifetime, maxUntrackedLifetime);
 			}
 
@@ -504,7 +514,7 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			internal string defaultName() {
-				return untouchedSet.getName();
+				return untouchedSet.getAsteroidName();
 			}
 
 			/** Debug function for traversing node tree
@@ -547,7 +557,8 @@ namespace Starstrider42 {
 				 * @note Required by interface of ConfigNode.LoadObjectFromConfig()
 				 */
 				internal DefaultAsteroids() {
-					this.name         = "Ast.";
+					this.name         = "default";
+					this.title        = "Ast.";
 					this.spawnRate    = 0.0;
 				}
 
@@ -567,16 +578,28 @@ namespace Starstrider42 {
 				 * 
 				 * @exceptsafe Does not throw exceptions.
 				 */
-				internal string getName() {
+				internal string getAsteroidName() {
+					return title;
+				}
+
+				/** Returns a string that represents the current object.
+				 *
+				 * @return A simple string identifying the object
+				 * 
+				 * @see [Object.ToString()](http://msdn.microsoft.com/en-us/library/system.object.tostring%28v=vs.90%29.aspx)
+				 */
+				public override string ToString() {
 					return name;
 				}
 
 				////////////////////////////////////////////////////////
 				// Population properties
 
-				/** The name of asteroids with unmodified orbits */
+				/** The name of the group */
 				[Persistent] private string name;
-				/** The rate, in asteroids per day, at which asteroids on stock orbits */
+				/** The name of asteroids with unmodified orbits */
+				[Persistent] private string title;
+				/** The rate, in asteroids per day, at which asteroids appear on stock orbits */
 				[Persistent] private double spawnRate;
 			}
 		}
