@@ -485,42 +485,52 @@ namespace Starstrider42 {
 				 * @exception ArgumentException Thrown if no planet named @p name exists, or if 
 				 * 		@p property does not have one of the allowed values
 				 * 
+				 * @note The only properties supported for Sun are "rad" and "soi"
+				 * 
 				 * @exceptsafe This method is atomic
 				 */
 				protected static double getPlanetProperty(string planet, string property) {
 					CelestialBody body = Population.getPlanetByName(planet);
-					Orbit orbit = body.GetOrbit();
 
 					switch (property.ToLower()) {
 					case "rad":
 						return body.Radius;
 					case "soi":
 						return body.sphereOfInfluence;
-					case "sma": 
-						return orbit.semiMajorAxis;
-					case "per": 
-						return orbit.PeR;
-					case "apo": 
-						return orbit.ApR;
-					case "ecc": 
-						return orbit.eccentricity;
-					case "inc": 
-						return orbit.inclination;
-					case "ape": 
-						return orbit.argumentOfPeriapsis;
-					case "lpe": 
-						// Ignore inclination: http://en.wikipedia.org/wiki/Longitude_of_periapsis
-						return orbit.LAN + orbit.argumentOfPeriapsis;
-					case "lan": 
-						return orbit.LAN;
-					case "mna0":
-						return orbit.meanAnomalyAtEpoch * 180.0/Math.PI;
-					case "mnl0":
-						return Population.anomalyToLong(orbit.meanAnomalyAtEpoch * 180.0/Math.PI, 
-							orbit.inclination, orbit.argumentOfPeriapsis, orbit.LAN);
 					default:
-						throw new ArgumentException("CustomAsteroids: celestial bodies do not have a " + property + " value", 
-							"property");
+						if (body.GetOrbitDriver() == null) {
+							throw new ArgumentException("CustomAsteroids: celestial body '" + planet + "' does not have an orbit", 
+								"planet");
+						}
+						Orbit orbit = body.GetOrbit();
+
+						switch (property.ToLower()) {
+						case "sma": 
+							return orbit.semiMajorAxis;
+						case "per": 
+							return orbit.PeR;
+						case "apo": 
+							return orbit.ApR;
+						case "ecc": 
+							return orbit.eccentricity;
+						case "inc": 
+							return orbit.inclination;
+						case "ape": 
+							return orbit.argumentOfPeriapsis;
+						case "lpe": 
+						// Ignore inclination: http://en.wikipedia.org/wiki/Longitude_of_periapsis
+							return orbit.LAN + orbit.argumentOfPeriapsis;
+						case "lan": 
+							return orbit.LAN;
+						case "mna0":
+							return orbit.meanAnomalyAtEpoch * 180.0 / Math.PI;
+						case "mnl0":
+							return Population.anomalyToLong(orbit.meanAnomalyAtEpoch * 180.0 / Math.PI, 
+								orbit.inclination, orbit.argumentOfPeriapsis, orbit.LAN);
+						default:
+							throw new ArgumentException("CustomAsteroids: celestial bodies do not have a " + property + " value", 
+								"property");
+						}
 					}
 				}
 

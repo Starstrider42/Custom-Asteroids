@@ -1,7 +1,7 @@
 Custom Asteroids Options                         {#options}
 ============
 
-When it is first run, Custom Asteroids creates a config file in `GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg`. This file may be used to toggle the following options:
+When it is first run, Custom Asteroids creates a config file in `GameData/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg`. This file may be used to toggle the following options:
 
 * `RenameAsteroids`: if True (the default), asteroids will be named by the group they belong to. If False, asteroids will keep their default names.
 * `UseCustomSpawner`: if True (the default), asteroids will be discovered at a steady rate. If False, new asteroids will be discovered any time there are no untracked asteroids, as in the stock game.

@@ -319,7 +319,7 @@ namespace Starstrider42 {
 			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
 			 * 		can go untracked
 			 * 
-			 * @except System.InvalidOperationException Thrown if .first is negative of .second is nonpositive
+			 * @exception System.InvalidOperationException Thrown if .first is negative of .second is nonpositive
 			 * 
 			 * @exceptsafe Program state is unchanged in the event of an exception
 			 */
@@ -331,6 +331,10 @@ namespace Starstrider42 {
 				if (maxUntrackedLifetime <= 0.0f) {
 					throw new InvalidOperationException("Maximum untracked time must be positive (gave " 
 						+ maxUntrackedLifetime+ ")");
+				}
+				if (maxUntrackedLifetime < minUntrackedLifetime) {
+					throw new InvalidOperationException("Maximum untracked time must be at least minimum time (gave " 
+						+ minUntrackedLifetime + " > " + maxUntrackedLifetime+ ")");
 				}
 				return new Pair<float, float>(minUntrackedLifetime, maxUntrackedLifetime);
 			}

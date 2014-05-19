@@ -1,9 +1,9 @@
 Custom(izing) Asteroids                         {#newbelts}
 ============
 
-Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is `GameData/Starstrider42/CustomAsteroids/config/Basic Asteroids.cfg`. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.
+Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is `GameData/CustomAsteroids/config/Basic Asteroids.cfg`. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.
 
-Within each file, each `ASTEROIDGROUP` block represents a single group of orbits. At present, you can't force a group to only give you certain sizes or types of asteroids. There is no limit to the number of `ASTEROIDGROUP` blocks you can place in a file.
+Within each file, each `ASTEROIDGROUP` block represents a single group of orbits. There is no limit to the number of `ASTEROIDGROUP` blocks you can place in a file.
 
 There may also be up to one `DEFAULT` block across all files, which controls how many asteroids are found on a Kerbin intercept trajectory as in the stock game. If the player has multiple files with a `DEFAULT` block, only one will be used.
 
@@ -78,7 +78,7 @@ The six orbital elements are:
     only orbital element that must *always* be given. Distribution defaults to LogUniform if 
     unspecified. The `orbitSize` node also has two additional options:
     - `type`: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.
-    - The `min`, `max`, and `avg` fields of `orbitSize` may take a string of the form 
+    - The `min`, `max`, or `avg` fields of `orbitSize` may take a string of the form 
     'Resonance(&lt;planet&gt;, &lt;m&gt;:&lt;n&gt;)', where &lt;planet&gt; is the name of a 
     celestial body, and &lt;m&gt; and &lt;n&gt; are positive integers. The string will be interpreted 
     as the semimajor axis needed to get an m:n mean-motion resonance with &lt;planet&gt;. For 

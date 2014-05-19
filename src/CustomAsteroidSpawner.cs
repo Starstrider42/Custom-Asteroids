@@ -61,6 +61,10 @@ namespace Starstrider42 {
 
 			/** Modifies the stock spawner to match Custom Asteroids settings
 			 * 
+			 * @return Controls the delay before execution resumes
+			 * 
+			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
+			 * 
 			 * @post If the plugin settings allow a custom spawner, the stock spawner is set to never 
 			 * 		create asteroids spontaneously
 			 * @post Asteroid liftimes match plugin settings
@@ -99,6 +103,10 @@ namespace Starstrider42 {
 			}
 
 			/** Ensures the current game has a custom spawner ready for use
+			 * 
+			 * @return Controls the delay before execution resumes
+			 * 
+			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
 			 * 
 			 * @post The currently loaded game has a CustomAsteroidSpawner scenario
 			 * 
