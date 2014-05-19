@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Custom Asteroids Public API: Custom Asteroids Options</title>
+<title>Custom Asteroids: Custom Asteroids Options</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,8 +30,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">Custom Asteroids Public API
-   &#160;<span id="projectnumber">0.2.1</span>
+   <div id="projectname">Custom Asteroids
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -103,12 +103,12 @@ $(document).ready(function(){initNavTree('options.html','');});
 <div class="title">Custom Asteroids Options </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>When it is first run, Custom Asteroids creates a config file in <code>GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg</code>. This file may be used to toggle the following options:</p>
+<div class="textblock"><p>When it is first run, Custom Asteroids creates a config file in <code>GameData/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg</code>. This file may be used to toggle the following options:</p>
 <ul>
 <li><code>RenameAsteroids</code>: if True (the default), asteroids will be named by the group they belong to. If False, asteroids will keep their default names.</li>
 <li><code>UseCustomSpawner</code>: if True (the default), asteroids will be discovered at a steady rate. If False, new asteroids will be discovered any time there are no untracked asteroids, as in the stock game.</li>
-<li><code>MinUntrackedTime</code>: the minimum number of days an asteroid can stay untracked before it disappears. NOT affected by <code>UseCustomSpawner</code>.</li>
-<li><code>MaxUntrackedTime</code>: the maximum number of days an asteroid can stay untracked before it disappears. NOT affected by <code>UseCustomSpawner</code>.</li>
+<li><code>MinUntrackedTime</code>: the minimum number of Earth days an asteroid can stay untracked before it disappears. NOT affected by <code>UseCustomSpawner</code>. Must be nonnegative.</li>
+<li><code>MaxUntrackedTime</code>: the maximum number of Earth days an asteroid can stay untracked before it disappears. NOT affected by <code>UseCustomSpawner</code>. Must be positive, and must be no less than <code>MinUntrackedTime</code>.</li>
 <li><code>VersionNumber</code>: the plugin version for which the options were written. <b>DO NOT CHANGE THIS</b>. Custom Asteroids uses this field for backward compatibility support. </li>
 </ul>
 </div></div><!-- contents -->
@@ -116,7 +116,7 @@ $(document).ready(function(){initNavTree('options.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri May 16 2014 19:51:59 for Custom Asteroids Public API by
+    <li class="footer">Generated on Sun May 18 2014 20:22:15 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Custom Asteroids Public API: Version History</title>
+<title>Custom Asteroids: Version History</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,8 +30,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">Custom Asteroids Public API
-   &#160;<span id="projectnumber">0.2.1</span>
+   <div id="projectname">Custom Asteroids
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -103,21 +103,22 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <div class="title">Version History </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Custom Asteroids conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. Since Custom Asteroids does not expose public functions, the <a class="el" href="newbelts.html">format of asteroid population files</a> will be considered the API for the purpose of versioning.</p>
-<h2>Next Version (in development) </h2>
+<div class="textblock"><p>Custom Asteroids conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. In addition to the actual <a href="http://starstrider42.github.io/Custom-Asteroids/">public API</a>, the <a class="el" href="newbelts.html">format of asteroid population files</a> will be considered the API for the purpose of versioning.</p>
+<h2>Version 1.0.0 </h2>
 <h3>New Features</h3>
 <ul>
-<li>Some asteroids will now stay on the stock KSP trajectory, which intercepts Kerbin's sphere of influence. The fraction of such asteroids may be changed by modifying or removing the <code>DEFAULT</code> clause in <code>Basic Asteroids.cfg</code>.</li>
+<li>Some asteroids will now stay on the stock KSP trajectory, which intercepts Kerbin's sphere of influence. The number of such asteroids may be changed by modifying or removing the <code>DEFAULT</code> clause in <code>Basic Asteroids.cfg</code>.</li>
 <li>Asteroids can now be labeled by the group they belong to. This option is on by default, but may be disabled in the <a class="el" href="options.html">settings file</a>.</li>
 <li>Asteroid orbital elements can now be expressed in terms of the properties of planets or moons. This reduces the amount of math the config-writer has to do, and makes config files more compatible with other solar system mods.</li>
-<li>Support for version checkers using Tyrope and cybutek's .version file format.</li>
+<li>Support for version checkers using Tyrope and cybutek's <code>.version</code> file format.</li>
+<li>Support for using Module Manager to customize downloaded configs.</li>
 </ul>
 <h3>Changes</h3>
 <ul>
+<li>Asteroid groups now have a unique <code>name</code> field and a human-readable <code>title</code> field, consistent with the format of most other KSP configs. <b>THIS BREAKS COMPATIBILITY</b> with the version 0.2 format.</li>
 <li>The position of an orbit's periapsis can now be set by constaining either the argument of periapsis or longitude of periapsis.</li>
-<li>Added support for Gaussian and isotropic distributions.</li>
+<li>Added support for Gaussian, isotropic, and exponential distributions.</li>
 </ul>
-<h3>Bug Fixes</h3>
 <h2>Version 0.2.1 </h2>
 <h3>Bug Fixes</h3>
 <ul>
@@ -146,7 +147,7 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri May 16 2014 19:51:59 for Custom Asteroids Public API by
+    <li class="footer">Generated on Sun May 18 2014 20:22:15 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

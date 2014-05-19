@@ -1,6 +1,6 @@
 var NAVTREE =
 [
-  [ "Custom Asteroids Public API", "index.html", [
+  [ "Custom Asteroids", "index.html", [
     [ "Version History", "changelog.html", null ],
     [ "Custom(izing) Asteroids", "newbelts.html", null ],
     [ "Custom Asteroids Options", "options.html", null ],

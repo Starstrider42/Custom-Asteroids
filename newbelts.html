@@ -4,7 +4,7 @@
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.6"/>
-<title>Custom Asteroids Public API: Custom(izing) Asteroids</title>
+<title>Custom Asteroids: Custom(izing) Asteroids</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,8 +30,8 @@
  <tr style="height: 56px;">
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
-   <div id="projectname">Custom Asteroids Public API
-   &#160;<span id="projectnumber">0.2.1</span>
+   <div id="projectname">Custom Asteroids
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -103,15 +103,16 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <div class="title">Custom(izing) Asteroids </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is <code>GameData/Starstrider42/CustomAsteroids/config/Basic Asteroids.cfg</code>. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.</p>
-<p>Within each file, each <code>ASTEROIDGROUP</code> block represents a single group of orbits. At present, you can't force a group to only give you certain sizes or types of asteroids. There is no limit to the number of <code>ASTEROIDGROUP</code> blocks you can place in a file.</p>
+<div class="textblock"><p>Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is <code>GameData/CustomAsteroids/config/Basic Asteroids.cfg</code>. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.</p>
+<p>Within each file, each <code>ASTEROIDGROUP</code> block represents a single group of orbits. There is no limit to the number of <code>ASTEROIDGROUP</code> blocks you can place in a file.</p>
 <p>There may also be up to one <code>DEFAULT</code> block across all files, which controls how many asteroids are found on a Kerbin intercept trajectory as in the stock game. If the player has multiple files with a <code>DEFAULT</code> block, only one will be used.</p>
 <h2>Basic Usage </h2>
 <p>The most frequently used fields in each <code>ASTEROIDGROUP</code> block are the following:</p>
 <ul>
-<li><code>name</code>: a descriptive name. If <code>RenameAsteroids = True</code> is set in the settings file, this name will replace the generic "Ast." in the asteroids' name.</li>
+<li><code>name</code>: a unique, machine-readable name. Must not contain spaces.</li>
+<li><code>title</code>: a descriptive name. If <code>RenameAsteroids = True</code> is set in the <a class="el" href="options.html">settings file</a>, this name will replace the generic "Ast." in the asteroids' name.</li>
 <li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the name of an in-game celestial body.</li>
-<li><code>spawnRate</code>: the relative odds that a newly spawned asteroid will belong to that group. Must be a nonnegative number. For forward compatibility, this number should be given as asteroids detected per day, but, at present, only the ratio to all the other <code>spawnRate</code> values matters.</li>
+<li><code>spawnRate</code>: must be a nonnegative number. If <code>UseCustomSpawner = True</code> is set in the <a class="el" href="options.html">settings file</a>, this value gives the number of asteroids detected per Earth day. If <code>UseCustomSpawner = False</code>, only the ratio to all the other <code>spawnRate</code> values matters.</li>
 <li><code>orbitSize</code>: a block describing how far from <code>centralBody</code> the asteroid's orbit is found. Parameters:<ul>
 <li><code>type</code>: Describes which orbital element is constrained by <code>min</code> and <code>max</code>. Allowed values are SemimajorAxis, Periapsis, or Apoapsis.</li>
 <li><code>min</code>: The smallest value an asteroid from this group may have, in meters.</li>
@@ -129,12 +130,13 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 </ul>
 <p>The <code>DEFAULT</code> block, if present, has only the <code>name</code> and <code>spawnRate</code> fields. These work analogously to the <code>name</code> and <code>spawnRate</code> fields for <code>ASTEROIDGROUP</code>. If no <code>DEFAULT</code> block is present, all asteroids will appear in one of the asteroid groups.</p>
 <h2>Advanced Usage </h2>
+<p>The average number of known asteroids in each group &ndash; if none are tracked &ndash; will equal <code>spawnRate</code> times the average of <code>Options.MinUntrackedTime</code> and <code>Options.MaxUntrackedTime</code>. Set the value for <code>spawnRate</code> accordingly.</p>
 <p>Each <code>ASTEROIDGROUP</code> block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:</p>
 <ul>
-<li><code>dist</code>: the distribution from which the parameter will be drawn. Allowed values are Uniform, LogUniform, Gaussian (Normal also accepted), or Rayleigh.</li>
+<li><code>dist</code>: the distribution from which the parameter will be drawn. Allowed values are Uniform, LogUniform, Gaussian (Normal also accepted), Rayleigh, or Exponential.</li>
 <li><code>min</code>: the minimum value of the parameter. Currently used by Uniform and LogUniform.</li>
 <li><code>max</code>: the maximum value of the parameter. Currently used by Uniform and LogUniform.</li>
-<li><code>avg</code>: the average value of the parameter. Currently used by Gaussian and Rayleigh.</li>
+<li><code>avg</code>: the average value of the parameter. Currently used by Gaussian, Rayleigh, and Exponential.</li>
 <li><code>stddev</code>: the standard deviation of the parameter. Currently used by Gaussian.</li>
 </ul>
 <p>Allowed values of <code>min</code>, <code>max</code>, <code>avg</code>, and <code>stddev</code> are:</p>
@@ -163,7 +165,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <ul>
 <li><code>orbitSize</code>: one of three parameters describing the size of the orbit, in meters. This is the only orbital element that must <em>always</em> be given. Distribution defaults to LogUniform if unspecified. The <code>orbitSize</code> node also has two additional options:<ul>
 <li><code>type</code>: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.</li>
-<li>The <code>min</code>, <code>max</code>, and <code>avg</code> fields of <code>orbitSize</code> may take a string of the form 'Resonance(&lt;planet&gt;, &lt;m&gt;:&lt;n&gt;)', where &lt;planet&gt; is the name of a celestial body, and &lt;m&gt; and &lt;n&gt; are positive integers. The string will be interpreted as the semimajor axis needed to get an m:n mean-motion resonance with &lt;planet&gt;. For example, the string <code>Resonance(Jool, 2:3)</code> gives the semimajor axis to complete 2 orbits for every 3 orbits of Jool &ndash; in other words, the semimajor axis of Eeloo.</li>
+<li>The <code>min</code>, <code>max</code>, or <code>avg</code> fields of <code>orbitSize</code> may take a string of the form 'Resonance(&lt;planet&gt;, &lt;m&gt;:&lt;n&gt;)', where &lt;planet&gt; is the name of a celestial body, and &lt;m&gt; and &lt;n&gt; are positive integers. The string will be interpreted as the semimajor axis needed to get an m:n mean-motion resonance with &lt;planet&gt;. For example, the string <code>Resonance(Jool, 2:3)</code> gives the semimajor axis to complete 2 orbits for every 3 orbits of Jool &ndash; in other words, the semimajor axis of Eeloo.</li>
 </ul>
 </li>
 <li><code>eccentricity</code>: the eccentricity of the orbit. If omitted, defaults to circular orbits. Distribution defaults to Rayleigh if unspecified. If the distribution is changed to one that uses <code>min</code> and <code>max</code>, these values default to the 0-1 range.</li>
@@ -187,7 +189,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Fri May 16 2014 19:51:59 for Custom Asteroids Public API by
+    <li class="footer">Generated on Sun May 18 2014 20:22:15 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
