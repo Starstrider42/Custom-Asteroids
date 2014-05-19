@@ -13,6 +13,8 @@ namespace Starstrider42 {
 		/** Workaround to let SetupSpawner be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any Flight scene
 		 */
 		[KSPAddon(KSPAddon.Startup.Flight, false)]
 		internal class SSFlight : SetupSpawner {
@@ -20,6 +22,8 @@ namespace Starstrider42 {
 		/** Workaround to let SetupSpawner be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any SpaceCentre scene
 		 */
 		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
 		internal class SSSpaceCenter : SetupSpawner {
@@ -27,6 +31,8 @@ namespace Starstrider42 {
 		/** Workaround to let SetupSpawner be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any TrackingStation scene
 		 */
 		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
 		internal class SSTrackingStation : SetupSpawner {
@@ -65,9 +71,9 @@ namespace Starstrider42 {
 			 * 
 			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
 			 * 
+			 * @post Asteroid lifetimes match plugin settings
 			 * @post If the plugin settings allow a custom spawner, the stock spawner is set to never 
 			 * 		create asteroids spontaneously
-			 * @post Asteroid liftimes match plugin settings
 			 */
 			internal System.Collections.IEnumerator editStockSpawner() {
 				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {

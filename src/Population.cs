@@ -165,7 +165,7 @@ namespace Starstrider42 {
 
 			/** Returns the rate at which asteroids are discovered in the population
 			 * 
-			 * @return The rate relative to the rates of all other populations.
+			 * @return The number of asteroids discovered per Earth day.
 			 * 
 			 * @exceptsafe Does not throw exceptions.
 			 */
@@ -213,7 +213,7 @@ namespace Starstrider42 {
 			 * 
 			 * @return The angle between the reference direction (coordinate x-axis) and the projection 
 			 * 		of a position onto the x-y plane. Will be mean, eccentric, or true longitude, corresponding 
-			 * 		to the type of longitude provided.
+			 * 		to the type of anomaly provided.
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
@@ -261,7 +261,7 @@ namespace Starstrider42 {
 				return 180.0/Math.PI * (Math.Atan2(sin, cos) - aPeRad);
 			}
 
-			/** Searches for a celestial body
+			/** Searches KSP for a celestial body
 			 * 
 			 * @param[in] name The exact, case-sensitive name of the celestial body to recover
 			 * 
@@ -269,7 +269,7 @@ namespace Starstrider42 {
 			 * 
 			 * @pre All loaded celestial bodies have unique names
 			 * 
-			 * @exception ArgumentException Thrown if no planet named @p name exists
+			 * @exception ArgumentException Thrown if no celestial body named @p name exists
 			 * 
 			 * @exceptsafe This method is atomic
 			 */
@@ -317,7 +317,7 @@ namespace Starstrider42 {
 			[Persistent] private string title;
 			/** The name of the celestial object orbited by the asteroids */
 			[Persistent] private string centralBody;
-			/** The rate, in asteroids per day, at which asteroids are discovered */
+			/** The rate, in asteroids per Earth day, at which asteroids are discovered */
 			[Persistent] private double spawnRate;
 			/** The size (range) of orbits in this population */
 			[Persistent] private  SizeRange orbitSize;
@@ -382,6 +382,8 @@ namespace Starstrider42 {
 						return RandomDist.drawNormal(avg, stdDev);
 					case Distribution.Rayleigh: 
 						return RandomDist.drawRayleigh(avg);
+					case Distribution.Exponential:
+						return RandomDist.drawExponential(avg);
 					case Distribution.Isotropic: 
 						return RandomDist.drawIsotropic();
 					default: 
@@ -400,7 +402,7 @@ namespace Starstrider42 {
 				 * @pre @p this.rawMin, @p this.rawMax, @p this.rawAvg, and @p this.rawStdDev contain a 
 				 * 	representation of the desired object value
 				 * 
-				 * @warning Class invariant should not be assumed to hold true prior to calling PersistenceLoad()
+				 * @warning Class invariant should not be assumed to hold true prior to calling parseAll()
 				 * 
 				 * @exception TypeInitializationException Thrown if the ConfigNode could not be interpreted 
 				 * 		as a set of floating-point values
@@ -536,7 +538,7 @@ namespace Starstrider42 {
 
 				/** Defines the type of probability distribution from which the value is drawn
 				 */
-				internal enum Distribution {Uniform, LogUniform, Gaussian, Normal, Rayleigh, Isotropic};
+				internal enum Distribution {Uniform, LogUniform, Gaussian, Normal, Rayleigh, Exponential, Isotropic};
 
 				/** Parse format for planet names. */
 				protected const string planetFormat = "(?<planet>.+)";
@@ -628,7 +630,7 @@ namespace Starstrider42 {
 				 * @pre @p this.rawMin, @p this.rawMax, @p this.rawAvg, and @p this.rawStdDev contain a 
 				 * 	representation of the desired object value
 				 * 
-				 * @warning Class invariant should not be assumed to hold true prior to calling PersistenceLoad()
+				 * @warning Class invariant should not be assumed to hold true prior to calling parseAll()
 				 * 
 				 * @exception TypeInitializationException Thrown if the ConfigNode could not be interpreted 
 				 * 		as a set of floating-point values

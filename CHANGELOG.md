@@ -19,7 +19,7 @@ Version 1.0.0
 
 * Asteroid groups now have a unique `name` field and a human-readable `title` field, consistent with the format of most other KSP configs. **THIS BREAKS COMPATIBILITY** with the version 0.2 format.
 * The position of an orbit's periapsis can now be set by constaining either the argument of periapsis or longitude of periapsis.
-* Added support for Gaussian and isotropic distributions.
+* Added support for Gaussian, isotropic, and exponential distributions.
 
 Version 0.2.1
 ------------

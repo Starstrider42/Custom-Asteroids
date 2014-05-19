@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -104,29 +104,43 @@ $(document).ready(function(){initNavTree('todo.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><dl class="reflist">
-<dt><a class="anchor" id="_todo000005"></a>File <a class="el" href="_population_8cs.html">Population.cs</a>  </dt>
+<dt><a class="anchor" id="_todo000005"></a>Class <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html">CustomAsteroidSpawner</a>  </dt>
+<dd>Make this class sufficiently generic to be replaceable by third-party implementations  </dd>
+<dt><a class="anchor" id="_todo000003"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a3c3a439c31dfd3abdd6ec6ffe87276ff">Options.Load</a>  ()</dt>
+<dd>Can I make Load() atomic?  </dd>
+<dt><a class="anchor" id="_todo000002"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a5df140c1ee51aadf7fe88ce3fb9cac33">Options.Save</a>  ()</dt>
+<dd>Identify exception conditions </dd>
+<dt><a class="anchor" id="_todo000008"></a>File <a class="el" href="_population_8cs.html">Population.cs</a>  </dt>
 <dd>Refactor this file  </dd>
-<dt><a class="anchor" id="_todo000006"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ac31d1558d9ea8fb716af8108a789dd1f">Population.drawOrbit</a>  ()</dt>
+<dt><a class="anchor" id="_todo000009"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ac31d1558d9ea8fb716af8108a789dd1f">Population.drawOrbit</a>  ()</dt>
 <dd>Break up this function  </dd>
+<dt><a class="anchor" id="_todo000011"></a>Class <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_peri_range.html">Population.PeriRange</a>  </dt>
+<dd>I don't think that PeriRange is a subtype of <a class="el" href="class_value_range.html">ValueRange</a> in the Liskov sense... check!  </dd>
+<dt><a class="anchor" id="_todo000012"></a>Class <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html">Population.PhaseRange</a>  </dt>
+<dd>I don't think that PhaseRange is a subtype of <a class="el" href="class_value_range.html">ValueRange</a> in the Liskov sense... check!  </dd>
+<dt><a class="anchor" id="_todo000010"></a>Class <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_size_range.html">Population.SizeRange</a>  </dt>
+<dd>I don't think that SizeRange is a subtype of <a class="el" href="class_value_range.html">ValueRange</a> in the Liskov sense... check!  </dd>
 <dt><a class="anchor" id="_todo000001"></a>Class <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html">PopulationLoader</a>  </dt>
 <dd>Clean up this class  </dd>
-<dt><a class="anchor" id="_todo000003"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8">PopulationLoader.Load</a>  ()</dt>
-<dd><p class="startdd">Can I make Load() atomic?</p>
-<p class="enddd">Break up this function  </p>
-</dd>
-<dt><a class="anchor" id="_todo000002"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a5df140c1ee51aadf7fe88ce3fb9cac33">PopulationLoader.Save</a>  ()</dt>
-<dd>Identify exception conditions </dd>
-<dt><a class="anchor" id="_todo000008"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ac54ce402cec4f1d67a1cef4db841d26d">SpawnCatcher.OnDestroy</a>  ()</dt>
+<dt><a class="anchor" id="_todo000004"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8">PopulationLoader.Load</a>  ()</dt>
+<dd>Can I make Load() atomic?  </dd>
+<dt><a class="anchor" id="_todo000007"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_setup_spawner.html#ac54ce402cec4f1d67a1cef4db841d26d">SetupSpawner.OnDestroy</a>  ()</dt>
+<dd>What exceptions are thrown by StopCoroutine?  </dd>
+<dt><a class="anchor" id="_todo000006"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_setup_spawner.html#a07aaf1227e4d645f15e0a964f54ef291">SetupSpawner.Start</a>  ()</dt>
+<dd>What exceptions are thrown by StartCoroutine?  </dd>
+<dt><a class="anchor" id="_todo000015"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ac54ce402cec4f1d67a1cef4db841d26d">SpawnCatcher.OnDestroy</a>  ()</dt>
 <dd>What exceptions are thrown by GameEvents.onVesselCreate.*?  </dd>
-<dt><a class="anchor" id="_todo000007"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#a07aaf1227e4d645f15e0a964f54ef291">SpawnCatcher.Start</a>  ()</dt>
-<dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd>
+<dt><a class="anchor" id="_todo000014"></a>Member <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#a07aaf1227e4d645f15e0a964f54ef291">SpawnCatcher.Start</a>  ()</dt>
+<dd>What exceptions are thrown by GameEvents.onVesselCreate.*?  </dd>
+<dt><a class="anchor" id="_todo000013"></a>Class <a class="el" href="class_value_range.html">ValueRange</a>  </dt>
+<dd>Find a way to make values private! </dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat May 3 2014 21:16:25 for Custom Asteroids by
+    <li class="footer">Generated on Sun May 18 2014 20:04:56 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

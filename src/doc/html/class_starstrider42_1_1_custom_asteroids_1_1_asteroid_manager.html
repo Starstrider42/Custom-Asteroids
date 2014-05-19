@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -110,6 +110,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#pac-static-methods">Static Package Functions</a> &#124;
+<a href="#pri-static-methods">Static Private Member Functions</a> &#124;
 <a href="#pri-static-attribs">Static Private Attributes</a> &#124;
 <a href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -129,8 +130,20 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-static-methods"></a>
 Static Package Functions</h2></td></tr>
 <tr class="memitem:abe7415209f0021dffcae49f3c2c57161"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#abe7415209f0021dffcae49f3c2c57161">editAsteroid</a> (Vessel asteroid)</td></tr>
-<tr class="memdesc:abe7415209f0021dffcae49f3c2c57161"><td class="mdescLeft">&#160;</td><td class="mdescRight">Customizes an asteroid, based on the settings loaded to Custom asteroids.  <a href="#abe7415209f0021dffcae49f3c2c57161">More...</a><br/></td></tr>
+<tr class="memdesc:abe7415209f0021dffcae49f3c2c57161"><td class="mdescLeft">&#160;</td><td class="mdescRight">Customizes an asteroid, based on the settings loaded to Custom Asteroids.  <a href="#abe7415209f0021dffcae49f3c2c57161">More...</a><br/></td></tr>
 <tr class="separator:abe7415209f0021dffcae49f3c2c57161"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c12841a17543c4e88b26433cc6b7156"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html">Options</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0c12841a17543c4e88b26433cc6b7156">getOptions</a> ()</td></tr>
+<tr class="memdesc:a0c12841a17543c4e88b26433cc6b7156"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current options used by Custom Asteroids.  <a href="#a0c12841a17543c4e88b26433cc6b7156">More...</a><br/></td></tr>
+<tr class="separator:a0c12841a17543c4e88b26433cc6b7156"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3bf96257663bdc4017887fdd43f11630"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a3bf96257663bdc4017887fdd43f11630">spawnRate</a> ()</td></tr>
+<tr class="memdesc:a3bf96257663bdc4017887fdd43f11630"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides rate at which asteroids should be created.  <a href="#a3bf96257663bdc4017887fdd43f11630">More...</a><br/></td></tr>
+<tr class="separator:a3bf96257663bdc4017887fdd43f11630"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-methods"></a>
+Static Private Member Functions</h2></td></tr>
+<tr class="memitem:a715f4f39377cca059caf58ac1362b109"><td class="memItemLeft" align="right" valign="top">static&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a715f4f39377cca059caf58ac1362b109">AsteroidManager</a> ()</td></tr>
+<tr class="memdesc:a715f4f39377cca059caf58ac1362b109"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads all Custom Asteroids settings.  <a href="#a715f4f39377cca059caf58ac1362b109">More...</a><br/></td></tr>
+<tr class="separator:a715f4f39377cca059caf58ac1362b109"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pri-static-attribs"></a>
 Static Private Attributes</h2></td></tr>
@@ -138,13 +151,41 @@ Static Private Attributes</h2></td></tr>
 static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html">PopulationLoader</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a3ba1395f921d5326ff65ae62dc15e961">allowedPops</a></td></tr>
 <tr class="memdesc:a3ba1395f921d5326ff65ae62dc15e961"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton object responsible for handling Custom Asteroids configurations. <br/></td></tr>
 <tr class="separator:a3ba1395f921d5326ff65ae62dc15e961"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af5f82177cd0a77b4e7ff80bd75fec806"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#af5f82177cd0a77b4e7ff80bd75fec806">totalRate</a></td></tr>
-<tr class="memdesc:af5f82177cd0a77b4e7ff80bd75fec806"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores rate at which asteroids should be created.  <a href="#af5f82177cd0a77b4e7ff80bd75fec806">More...</a><br/></td></tr>
-<tr class="separator:af5f82177cd0a77b4e7ff80bd75fec806"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0a6ccdba89335ea44589908c2479e1a8"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0a6ccdba89335ea44589908c2479e1a8"></a>
+static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html">Options</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0a6ccdba89335ea44589908c2479e1a8">curOptions</a></td></tr>
+<tr class="memdesc:a0a6ccdba89335ea44589908c2479e1a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Singleton object responsible for handling Custom Asteroids options. <br/></td></tr>
+<tr class="separator:a0a6ccdba89335ea44589908c2479e1a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Central class for controlling asteroid orbits. </p>
-</div><h2 class="groupheader">Member Function Documentation</h2>
+</div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" id="a715f4f39377cca059caf58ac1362b109"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html">AsteroidManager</a> </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Loads all Custom Asteroids settings. </p>
+<dl class="section user"><dt>Exception Safety</dt><dd>The object is in a consistent state in the event of an exception </dd></dl>
+
+</div>
+</div>
+<h2 class="groupheader">Member Function Documentation</h2>
 <a class="anchor" id="abe7415209f0021dffcae49f3c2c57161"></a>
 <div class="memitem">
 <div class="memproto">
@@ -167,14 +208,16 @@ static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_populati
 </table>
 </div><div class="memdoc">
 
-<p>Customizes an asteroid, based on the settings loaded to Custom asteroids. </p>
+<p>Customizes an asteroid, based on the settings loaded to Custom Asteroids. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in,out]</td><td class="paramname">asteroid</td><td>The asteroid to be modified</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section pre"><dt>Precondition</dt><dd><code>asteroid</code> is an asteroid object in-game</dd></dl>
+<dl class="section pre"><dt>Precondition</dt><dd><code>asteroid</code> is a valid asteroid object in the game </dd>
+<dd>
+<code>asteroid</code> has never been loaded in physics range</dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd><code>asteroid</code> has properties consistent with membership in a randomly chosen population</dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
@@ -187,8 +230,7 @@ static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_populati
 
 </div>
 </div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a class="anchor" id="af5f82177cd0a77b4e7ff80bd75fec806"></a>
+<a class="anchor" id="a0c12841a17543c4e88b26433cc6b7156"></a>
 <div class="memitem">
 <div class="memproto">
 <table class="mlabels">
@@ -196,18 +238,49 @@ static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_populati
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">double totalRate</td>
+          <td class="memname">static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html">Options</a> getOptions </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">private</span></span>  </td>
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
-<p>Stores rate at which asteroids should be created. </p>
-<dl class="section note"><dt>Note</dt><dd>Provided for forward compatibility; currently has no effect. </dd></dl>
+<p>Returns the current options used by Custom Asteroids. </p>
+<dl class="section return"><dt>Returns</dt><dd>An <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html" title="Stores a set of configuration options for Custom Asteroids. ">Options</a> objects with the settings to use</dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a3bf96257663bdc4017887fdd43f11630"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double spawnRate </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Provides rate at which asteroids should be created. </p>
+<dl class="section return"><dt>Returns</dt><dd>The total spawn rate of all loaded Populations</dd></dl>
+<dl class="section user"><dt>Exception Safety</dt><dd>Does not throw exceptions. </dd></dl>
 
 </div>
 </div>
@@ -220,7 +293,7 @@ static <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_populati
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html">AsteroidManager</a></li>
-    <li class="footer">Generated on Sat May 3 2014 21:16:25 for Custom Asteroids by
+    <li class="footer">Generated on Sun May 18 2014 20:04:56 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

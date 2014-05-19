@@ -37,11 +37,12 @@ namespace Starstrider42 {
 				}
 			}
 
-			/** Customizes an asteroid, based on the settings loaded to Custom asteroids
+			/** Customizes an asteroid, based on the settings loaded to Custom Asteroids
 			 * 
 			 * @param[in,out] asteroid The asteroid to be modified
 			 * 
-			 * @pre @p asteroid is an asteroid object in-game
+			 * @pre @p asteroid is a valid asteroid object in the game
+			 * @pre @p asteroid has never been loaded in physics range
 			 * 
 			 * @post @p asteroid has properties consistent with membership in a randomly 
 			 * 		chosen population
@@ -316,10 +317,11 @@ namespace Starstrider42 {
 
 			/** Returns the time range in which untracked asteroids will disappear
 			 * 
-			 * @return The minimum (.first) and maximum (.second) number of days an asteroid 
+			 * @return The minimum (@p first) and maximum (@p second) number of days an asteroid 
 			 * 		can go untracked
 			 * 
-			 * @exception System.InvalidOperationException Thrown if .first is negative of .second is nonpositive
+			 * @exception System.InvalidOperationException Thrown if @p first is negative, @p second 
+			 * 		is nonpositive, or @p first > @p second
 			 * 
 			 * @exceptsafe Program state is unchanged in the event of an exception
 			 */
@@ -346,7 +348,7 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			private static string optionList() {
-				return KSPUtil.ApplicationRootPath + "GameData/Starstrider42/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg";
+				return KSPUtil.ApplicationRootPath + "GameData/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg";
 			}
 
 			/** Returns the mod's current version number
@@ -362,7 +364,7 @@ namespace Starstrider42 {
 			/////////////////////////////////////////////////////////
 			// Config options
 
-			/** Whether or not make asteroid names match their population */
+			/** Whether or not make to asteroid names match their population */
 			[Persistent(name="RenameAsteroids")]
 			private bool renameAsteroids;
 
@@ -390,7 +392,7 @@ namespace Starstrider42 {
 		 * @todo Clean up this class
 		 */
 		internal class PopulationLoader {
-			/** Creates an uninitialized solar system
+			/** Creates an empty solar system
 			 * 
 			 * @post No asteroids will be created
 			 * 
@@ -403,7 +405,7 @@ namespace Starstrider42 {
 
 			/** Factory method obtaining Custom Asteroids settings from a config file
 			 * 
-			 * @return A newly constructed PopulationLoader object containing a fill list
+			 * @return A newly constructed PopulationLoader object containing a full list
 			 * 		of all valid asteroid groups in asteroid config files
 			 * 
 			 * @exception System.TypeInitializationException Thrown if the PopulationLoader object 

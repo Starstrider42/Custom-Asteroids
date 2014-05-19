@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['version_20history',['Version History',['../changelog.html',1,'']]],
-  ['valuerange',['ValueRange',['../class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#aab0de923521145d9253644c51421cf98',1,'Starstrider42::CustomAsteroids::Population::ValueRange']]],
-  ['valuerange',['ValueRange',['../class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html',1,'Starstrider42::CustomAsteroids::Population']]],
-  ['versionnumber',['versionNumber',['../class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a42b3292bef6b991c065d651ba14f61ee',1,'Starstrider42::CustomAsteroids::PopulationLoader']]]
+  ['untouchedset',['untouchedSet',['../class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a215eefb96ea99786d9fe0345dbf7713a',1,'Starstrider42::CustomAsteroids::PopulationLoader']]],
+  ['update',['Update',['../class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#aec0783b5a136e042adcc47bae4fe5291',1,'Starstrider42::CustomAsteroids::CustomAsteroidSpawner']]],
+  ['usecustomspawner',['useCustomSpawner',['../class_starstrider42_1_1_custom_asteroids_1_1_options.html#ad3781f7d806fe2bdd30c560210f0e7e4',1,'Starstrider42::CustomAsteroids::Options']]]
 ];

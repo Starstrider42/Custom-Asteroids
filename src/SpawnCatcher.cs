@@ -13,6 +13,8 @@ namespace Starstrider42 {
 		/** Workaround to let SpawnCatcher be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any Flight scene
 		 */
 		[KSPAddon(KSPAddon.Startup.Flight, false)]
 		internal class SCFlight : SpawnCatcher {
@@ -20,6 +22,8 @@ namespace Starstrider42 {
 		/** Workaround to let SpawnCatcher be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any SpaceCentre scene
 		 */
 		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
 		internal class SCSpaceCenter : SpawnCatcher {
@@ -27,6 +31,8 @@ namespace Starstrider42 {
 		/** Workaround to let SpawnCatcher be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any TrackingStation scene
 		 */
 		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
 		internal class SCTrackingStation : SpawnCatcher {

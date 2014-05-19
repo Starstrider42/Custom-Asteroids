@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['randomdist',['RandomDist',['../class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html',1,'Starstrider42::CustomAsteroids']]]
+  ['invalidoperationexception',['InvalidOperationException',['../class_invalid_operation_exception.html',1,'']]],
+  ['ipersistenceload',['IPersistenceLoad',['../class_i_persistence_load.html',1,'']]]
 ];

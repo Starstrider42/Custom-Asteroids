@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -109,6 +109,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pac-methods">Package Functions</a> &#124;
 <a href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">SpawnCatcher Class Reference</div>  </div>
@@ -117,13 +118,18 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 
 <p>Class for identifying and manipulating new asteroids before they are seen by the player.  
  <a href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#details">More...</a></p>
-<div class="dynheader">
-Inheritance diagram for SpawnCatcher:</div>
-<div class="dyncontent">
+<div id="dynsection-0" onclick="return toggleVisibility(this)" class="dynheader closed" style="cursor:pointer;">
+  <img id="dynsection-0-trigger" src="closed.png" alt="+"/> Inheritance diagram for SpawnCatcher:</div>
+<div id="dynsection-0-summary" class="dynsummary" style="display:block;">
+</div>
+<div id="dynsection-0-content" class="dyncontent" style="display:none;">
  <div class="center">
   <img src="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.png" usemap="#SpawnCatcher_map" alt=""/>
   <map id="SpawnCatcher_map" name="SpawnCatcher_map">
-<area href="class_mono_behaviour.html" alt="MonoBehaviour" shape="rect" coords="0,0,102,24"/>
+<area href="class_mono_behaviour.html" alt="MonoBehaviour" shape="rect" coords="126,0,242,24"/>
+<area href="class_starstrider42_1_1_custom_asteroids_1_1_s_c_flight.html" title="Workaround to let SpawnCatcher be run in multiple specific scenes. " alt="SCFlight" shape="rect" coords="0,112,116,136"/>
+<area href="class_starstrider42_1_1_custom_asteroids_1_1_s_c_space_center.html" title="Workaround to let SpawnCatcher be run in multiple specific scenes. " alt="SCSpaceCenter" shape="rect" coords="126,112,242,136"/>
+<area href="class_starstrider42_1_1_custom_asteroids_1_1_s_c_tracking_station.html" title="Workaround to let SpawnCatcher be run in multiple specific scenes. " alt="SCTrackingStation" shape="rect" coords="252,112,368,136"/>
 </map>
  </div></div>
 <table class="memberdecls">
@@ -135,28 +141,40 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac54ce402cec4f1d67a1cef4db841d26d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ac54ce402cec4f1d67a1cef4db841d26d">OnDestroy</a> ()</td></tr>
 <tr class="memdesc:ac54ce402cec4f1d67a1cef4db841d26d"><td class="mdescLeft">&#160;</td><td class="mdescRight">This function is called when the object will be destroyed.  <a href="#ac54ce402cec4f1d67a1cef4db841d26d">More...</a><br/></td></tr>
 <tr class="separator:ac54ce402cec4f1d67a1cef4db841d26d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb78016c077d49bc61a4a1d64d0ab917"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917">CatchAsteroidSpawn</a> (Vessel vessel)</td></tr>
-<tr class="memdesc:adb78016c077d49bc61a4a1d64d0ab917"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects newly created asteroids and forwards them to <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html" title="Central class for controlling asteroid orbits. ">AsteroidManager</a> for processing.  <a href="#adb78016c077d49bc61a4a1d64d0ab917">More...</a><br/></td></tr>
-<tr class="separator:adb78016c077d49bc61a4a1d64d0ab917"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pac-methods"></a>
+Package Functions</h2></td></tr>
+<tr class="memitem:ae7f7cb9967d85235f6f82f851ef0c067"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ae7f7cb9967d85235f6f82f851ef0c067">catchAsteroidSpawn</a> (Vessel vessel)</td></tr>
+<tr class="memdesc:ae7f7cb9967d85235f6f82f851ef0c067"><td class="mdescLeft">&#160;</td><td class="mdescRight">Selects newly created asteroids and forwards them to <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html" title="Central class for controlling asteroid orbits. ">AsteroidManager</a> for processing.  <a href="#ae7f7cb9967d85235f6f82f851ef0c067">More...</a><br/></td></tr>
+<tr class="separator:ae7f7cb9967d85235f6f82f851ef0c067"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Class for identifying and manipulating new asteroids before they are seen by the player. </p>
 <dl class="section invariant"><dt>Invariant</dt><dd>At most one instance of this class exists </dd>
 <dd>
-If and only if an instance of this class edists, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to AsteroidManager for processing. ">SpawnCatcher.CatchAsteroidSpawn()</a> will be called whenever a new vessel is created </dd></dl>
+If and only if an instance of this class edists, SpawnCatcher.CatchAsteroidSpawn() will be called whenever a new vessel is created</dd></dl>
+<dl class="section warning"><dt>Warning</dt><dd>Assumes that Space Center, Tracking Station, and Flight are the only real-time scenes. May be invalidated by the addition of a Mission Control or Observatory scene in KSP 0.24. </dd></dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a class="anchor" id="adb78016c077d49bc61a4a1d64d0ab917"></a>
+<a class="anchor" id="ae7f7cb9967d85235f6f82f851ef0c067"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">void CatchAsteroidSpawn </td>
+          <td class="memname">void catchAsteroidSpawn </td>
           <td>(</td>
           <td class="paramtype">Vessel&#160;</td>
           <td class="paramname"><em>vessel</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">package</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Selects newly created asteroids and forwards them to <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html" title="Central class for controlling asteroid orbits. ">AsteroidManager</a> for processing. </p>
@@ -187,8 +205,8 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 
 <p>This function is called when the object will be destroyed. </p>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html">Unity Documentation</a></dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to AsteroidManager for processing. ">SpawnCatcher.CatchAsteroidSpawn()</a> will no longer be called whenever a new vessel is created</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>SpawnCatcher.CatchAsteroidSpawn() will no longer be called whenever a new vessel is created</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000015">Todo:</a></b></dt><dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd></dl>
 
 </div>
 </div>
@@ -207,8 +225,8 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 
 <p>Called on the frame when a script is enabled just before any of the Update methods is called the first time. </p>
 <dl class="section see"><dt>See Also</dt><dd><a href="http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html">Unity Documentation</a></dd></dl>
-<dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917" title="Selects newly created asteroids and forwards them to AsteroidManager for processing. ">SpawnCatcher.CatchAsteroidSpawn()</a> will henceforth be called whenever a new vessel is created</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd></dl>
+<dl class="section post"><dt>Postcondition</dt><dd>SpawnCatcher.CatchAsteroidSpawn() will henceforth be called whenever a new vessel is created</dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000014">Todo:</a></b></dt><dd>What exceptions are thrown by GameEvents.onVesselCreate.*? </dd></dl>
 
 </div>
 </div>
@@ -221,7 +239,7 @@ If and only if an instance of this class edists, <a class="el" href="class_stars
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html">SpawnCatcher</a></li>
-    <li class="footer">Generated on Sat May 3 2014 21:16:25 for Custom Asteroids by
+    <li class="footer">Generated on Sun May 18 2014 20:04:56 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

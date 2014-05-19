@@ -42,10 +42,10 @@ The average number of known asteroids in each group -- if none are tracked -- wi
 
 Each `ASTEROIDGROUP` block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:
 * `dist`: the distribution from which the parameter will be drawn. Allowed values are Uniform, 
-    LogUniform, Gaussian (Normal also accepted), or Rayleigh.
+    LogUniform, Gaussian (Normal also accepted), Rayleigh, or Exponential.
 * `min`: the minimum value of the parameter. Currently used by Uniform and LogUniform.
 * `max`: the maximum value of the parameter. Currently used by Uniform and LogUniform.
-* `avg`: the average value of the parameter. Currently used by Gaussian and Rayleigh.
+* `avg`: the average value of the parameter. Currently used by Gaussian, Rayleigh, and Exponential.
 * `stddev`: the standard deviation of the parameter. Currently used by Gaussian.
 
 Allowed values of `min`, `max`, `avg`, and `stddev` are:

@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">0.2.0</span>
+   &#160;<span id="projectnumber">1.0.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -104,6 +104,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="#index_r"><span>r</span></a></li>
       <li><a href="#index_s"><span>s</span></a></li>
       <li><a href="#index_t"><span>t</span></a></li>
+      <li><a href="#index_u"><span>u</span></a></li>
       <li><a href="#index_v"><span>v</span></a></li>
       <li class="current"><a href="#index_w"><span>w</span></a></li>
     </ul>
@@ -150,6 +151,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>ascNode
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a4e0326d193d3071d9438246b7124bfe2">Population</a>
 </li>
+<li>AsteroidManager()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a715f4f39377cca059caf58ac1362b109">AsteroidManager</a>
+</li>
 <li>asteroidSets
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#abdd87c36cd4ce0f60c8db2d25076b2db">PopulationLoader</a>
 </li>
@@ -164,22 +168,34 @@ $(document).ready(function(){initNavTree('functions.html','');});
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html#adf2e8e805112ee9496b8cabece206026">AsteroidManager.BadPopulationException</a>
 </li>
 <li>BadPopulationException()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html#aee239abbdddde1e2781b6d6442bb03ee">AsteroidManager.BadPopulationException</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html#a7bd5fcab964b4c4baf65f92982f95297">AsteroidManager.BadPopulationException</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_c"></a>- c -</h3><ul>
-<li>CatchAsteroidSpawn()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#adb78016c077d49bc61a4a1d64d0ab917">SpawnCatcher</a>
+<li>catchAsteroidSpawn()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ae7f7cb9967d85235f6f82f851ef0c067">SpawnCatcher</a>
 </li>
 <li>centralBody
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ab463a90744f53a21ede5585d15eb926f">Population</a>
+</li>
+<li>confirmCustomSpawner()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_setup_spawner.html#a308079643ba6fb8e7a20dedebb870016">SetupSpawner</a>
+</li>
+<li>curOptions
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0a6ccdba89335ea44589908c2479e1a8">AsteroidManager</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_d"></a>- d -</h3><ul>
+<li>DefaultAsteroids()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader_1_1_default_asteroids.html#a9d252269f55ba6c1621b12cfd7721c05">PopulationLoader.DefaultAsteroids</a>
+</li>
+<li>defaultName()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a9a1cb0d94f71a95129158b7bb05ad1d6">PopulationLoader</a>
+</li>
 <li>dist
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a00522d4f2a080a3f95790bfd8b9822e7">Population.ValueRange</a>
 </li>
@@ -192,8 +208,17 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>drawAngle()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a10669ac0d0fc3d51c9d7fdba6d147eff">RandomDist</a>
 </li>
+<li>drawExponential()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#ae51f4209de2c57a124a600b1bb078092">RandomDist</a>
+</li>
+<li>drawIsotropic()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a473a2f1fd52ff839f1a4a7885fb40101">RandomDist</a>
+</li>
 <li>drawLogUniform()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a551fae8a8b2bd3280dd6e9491102f924">RandomDist</a>
+</li>
+<li>drawNormal()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a54da679a703e402cc5802e127d2d02f7">RandomDist</a>
 </li>
 <li>drawOrbit()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ac31d1558d9ea8fb716af8108a789dd1f">Population</a>
@@ -220,6 +245,9 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>editAsteroid()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#abe7415209f0021dffcae49f3c2c57161">AsteroidManager</a>
 </li>
+<li>editStockSpawner()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_setup_spawner.html#a5f4d1e39ec2900f7fd69adf1107fd390">SetupSpawner</a>
+</li>
 <li>epoch
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#a9d635179e676fb3e27c8a47141648af5">Population.PhaseRange</a>
 </li>
@@ -237,30 +265,51 @@ $(document).ready(function(){initNavTree('functions.html','');});
 
 
 <h3><a class="anchor" id="index_g"></a>- g -</h3><ul>
+<li>getAsteroidName()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a44bac9e5cca6265174203c1c104c014e">Population</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader_1_1_default_asteroids.html#a44bac9e5cca6265174203c1c104c014e">PopulationLoader.DefaultAsteroids</a>
+</li>
+<li>getCustomSpawner()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#af36891adda9263fc62e705932624b84a">Options</a>
+</li>
 <li>getEpoch()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#af417f256cb490b46d2635681ded4ef1d">Population.PhaseRange</a>
 </li>
 <li>getName()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a11335e13e50af74108bf926dc1340b4b">Population</a>
 </li>
+<li>getOptions()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a0c12841a17543c4e88b26433cc6b7156">AsteroidManager</a>
+</li>
 <li>getParam()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#ae82ff999150abfe594d0e7ea50ae6a18">Population.PhaseRange</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_peri_range.html#aa8db085e6606f82c5c24bd09ec402004">Population.PeriRange</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#ae82ff999150abfe594d0e7ea50ae6a18">Population.PhaseRange</a>
 , <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_size_range.html#a366e13f058574e065ef3f10352c4c03f">Population.SizeRange</a>
+</li>
+<li>getPlanetByName()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ab958e96ce1fa0510bf518b48e16f0efe">Population</a>
+</li>
+<li>getPlanetProperty()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a081a6fb80d17b44b81146404dac03e02">Population.ValueRange</a>
 </li>
 <li>getPop()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager_1_1_bad_population_exception.html#af3898bed08cab173199d9bcd05125ebc">AsteroidManager.BadPopulationException</a>
 </li>
 <li>getRenameOption()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a45b6abe7ca7477bbeaf82fa356a2ce1d">PopulationLoader</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a45b6abe7ca7477bbeaf82fa356a2ce1d">Options</a>
 </li>
 <li>getSpawnRate()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a4a02e283eafc18fe79cc9be62b3dcf3a">Population</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader_1_1_default_asteroids.html#a4a02e283eafc18fe79cc9be62b3dcf3a">PopulationLoader.DefaultAsteroids</a>
 </li>
 <li>getStartUt()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#ad434c5a9bf186b5a1e9324b98fcc3961">Population</a>
 </li>
 <li>getTotalRate()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#ac197054cfd516d5ec2676ae0012d8961">PopulationLoader</a>
+</li>
+<li>getUntrackedTimes()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#ac98a84a3504b82cb4d4f785fab272424">Options</a>
 </li>
 </ul>
 
@@ -269,15 +318,19 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>inclination
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#aea648e642ef0a15931b022172c469702">Population</a>
 </li>
+<li>isNextNormal
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a22bd4e5a0b71f3b96cf8f95ceea9dd49">RandomDist</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_l"></a>- l -</h3><ul>
 <li>latestVersion()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a395b016d2249c918c092c770a9bff2ca">PopulationLoader</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a395b016d2249c918c092c770a9bff2ca">Options</a>
 </li>
 <li>Load()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8">PopulationLoader</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a3c3a439c31dfd3abdd6ec6ffe87276ff">Options</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a0655ffa9968f642584b1005324c158b8">PopulationLoader</a>
 </li>
 <li>longToAnomaly()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a082a82fde35c817430808a6b7f1972b3">Population</a>
@@ -289,8 +342,17 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>max
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a0b0ede69e8156eb97acc579b88e883de">Population.ValueRange</a>
 </li>
+<li>maxUntrackedLifetime
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a9873fe0c87994eb187a3e97ca66410a1">Options</a>
+</li>
 <li>min
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#aad36546e8175d2922bee165fe028fedc">Population.ValueRange</a>
+</li>
+<li>minUntrackedLifetime
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#afa31313c28f8cbe96a0f541aa1a16d49">Options</a>
+</li>
+<li>mmrDecl
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_size_range.html#a39e9ebede18e5de0e66aa406622b6aed">Population.SizeRange</a>
 </li>
 </ul>
 
@@ -298,16 +360,33 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <h3><a class="anchor" id="index_n"></a>- n -</h3><ul>
 <li>name
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a8ccf841cb59e451791bcb2e1ac4f1edc">Population</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader_1_1_default_asteroids.html#a8ccf841cb59e451791bcb2e1ac4f1edc">PopulationLoader.DefaultAsteroids</a>
+</li>
+<li>nextAsteroid
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a3b7e7f26ff6277f99b727a411e305f22">CustomAsteroidSpawner</a>
+</li>
+<li>nextNormal
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a0e721e39d15f5a3ca648d7b89ed4aaae">RandomDist</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_o"></a>- o -</h3><ul>
 <li>OnDestroy()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ac54ce402cec4f1d67a1cef4db841d26d">SpawnCatcher</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_setup_spawner.html#ac54ce402cec4f1d67a1cef4db841d26d">SetupSpawner</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#ac54ce402cec4f1d67a1cef4db841d26d">SpawnCatcher</a>
+</li>
+<li>OnLoad()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a5004b2e2fccf95672af5da392153a3bb">CustomAsteroidSpawner</a>
+</li>
+<li>OnSave()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#ac689288c9eac88d1c7221720004672b3">CustomAsteroidSpawner</a>
 </li>
 <li>optionList()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a5a59ae4bff1a9f1cde0d3a706c5ffd53">PopulationLoader</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a5a59ae4bff1a9f1cde0d3a706c5ffd53">Options</a>
+</li>
+<li>Options()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a28d39a844c3a37ab61d32ab7c6352f09">Options</a>
 </li>
 <li>orbitPhase
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a7bf126dc99969f17d0e62499dcb8a880">Population</a>
@@ -322,14 +401,39 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>Pair()
 : <a class="el" href="class_starstrider42_1_1_pair_3_01_t_00_01_u_01_4.html#aca76f2567c44e074af5f57c6fac1f899">Pair&lt; T, U &gt;</a>
 </li>
+<li>parseAll()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_size_range.html#a29120bafb209a7bbc19e2f22b26cae24">Population.SizeRange</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#aa8c02a30691ed5f1ff0f9038cee1fcb4">Population.ValueRange</a>
+</li>
+<li>parseOrbitalElement()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a3b05c39ab60da8cad5687f8e4ba984b3">Population.ValueRange</a>
+</li>
+<li>parseOrbitSize()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_size_range.html#a5f499195ceb0ed51eb052bcf4ca581fe">Population.SizeRange</a>
+</li>
 <li>periapsis
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a3b7a6c0643f08b5e3169dc7b3c5d32eb">Population</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a77b39f0d17c9b68d124da6f239c0aca3">Population</a>
+</li>
+<li>PeriRange()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_peri_range.html#ac5c3c13cb6dba12ee3d007e0e22a741f">Population.PeriRange</a>
+</li>
+<li>PeriType
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_peri_range.html#af02aa1b87c433012471c43ac1285dfd2">Population.PeriRange</a>
+</li>
+<li>PersistenceLoad()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#ae7f8d3c2cc468296ff8bb6db8a75ea58">Population.ValueRange</a>
 </li>
 <li>PhaseRange()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#a211f75198b39c9b71f6cb43b661ef571">Population.PhaseRange</a>
 </li>
 <li>PhaseType
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#af00a42ecad444bbda75cde1b64bd7e72">Population.PhaseRange</a>
+</li>
+<li>planetFormat
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#aa12b0ca8ed35dde5386681358a1f47d2">Population.ValueRange</a>
+</li>
+<li>planetProp
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a0d0099f6f58fb84fc5479d31cea70dbe">Population.ValueRange</a>
 </li>
 <li>Population()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#afddea4eab6725f7038ca52ee073743d3">Population</a>
@@ -340,19 +444,37 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>printNode()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a8fdf8d588dad1e9c249aa4b64e98b1ac">PopulationLoader</a>
 </li>
+<li>propFormat
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#aac5557105f7a84f788ee6e2043c41574">Population.ValueRange</a>
+</li>
 </ul>
 
 
 <h3><a class="anchor" id="index_r"></a>- r -</h3><ul>
+<li>ratioDecl
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#af82e0b32297ca995cb43d1ca577c282b">Population.ValueRange</a>
+</li>
+<li>rawAvg
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#aebe634e1cccf34f5b1756383e3d0ee46">Population.ValueRange</a>
+</li>
+<li>rawMax
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#add876497f44ea40a9d41f2516e8d2a5a">Population.ValueRange</a>
+</li>
+<li>rawMin
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a7c43aa12189523d2e03892f7aa4fb3f3">Population.ValueRange</a>
+</li>
+<li>rawStdDev
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#adbd2658a86742c1edef87defea1ea046">Population.ValueRange</a>
+</li>
 <li>renameAsteroids
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#ae2c85b13e674aad557f5dc50194f072d">PopulationLoader</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#ae2c85b13e674aad557f5dc50194f072d">Options</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_s"></a>- s -</h3><ul>
 <li>Save()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a5df140c1ee51aadf7fe88ce3fb9cac33">PopulationLoader</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a5df140c1ee51aadf7fe88ce3fb9cac33">Options</a>
 </li>
 <li>Second
 : <a class="el" href="class_starstrider42_1_1_pair_3_01_t_00_01_u_01_4.html#abf406b9a194f0bcb9b120ce150774fce">Pair&lt; T, U &gt;</a>
@@ -363,43 +485,71 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <li>SizeType
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_size_range.html#a483be0a6d8ef2c72a74da3529e9d1467">Population.SizeRange</a>
 </li>
-<li>spawnRate
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a05472bc77c4c279051dc8ceb99ea67e4">Population</a>
+<li>spawnRate()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#a3bf96257663bdc4017887fdd43f11630">AsteroidManager</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a05472bc77c4c279051dc8ceb99ea67e4">Population</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader_1_1_default_asteroids.html#a05472bc77c4c279051dc8ceb99ea67e4">PopulationLoader.DefaultAsteroids</a>
 </li>
 <li>Start()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#a07aaf1227e4d645f15e0a964f54ef291">SpawnCatcher</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_setup_spawner.html#a07aaf1227e4d645f15e0a964f54ef291">SetupSpawner</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html#a07aaf1227e4d645f15e0a964f54ef291">SpawnCatcher</a>
 </li>
-<li>stddev
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a6ed2ab2d0246c66167c4d33f468ca608">Population.ValueRange</a>
+<li>stdDev
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#af1cf94b9a35b1c179613bebe3d5cdbc7">Population.ValueRange</a>
+</li>
+<li>sumDecl
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a64a7401b398f75134e3460872e4eb20e">Population.ValueRange</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_t"></a>- t -</h3><ul>
+<li>title
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#a43a5eafe64b96968035e5a4013e47c75">Population</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader_1_1_default_asteroids.html#a43a5eafe64b96968035e5a4013e47c75">PopulationLoader.DefaultAsteroids</a>
+</li>
 <li>ToString()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population.html#aa73e7c4dd1df5fd5fbf81c7764ee1533">Population</a>
-</li>
-<li>totalRate
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_manager.html#af5f82177cd0a77b4e7ff80bd75fec806">AsteroidManager</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader_1_1_default_asteroids.html#aa73e7c4dd1df5fd5fbf81c7764ee1533">PopulationLoader.DefaultAsteroids</a>
 </li>
 <li>type
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#a871492b2b5f7049eaf436d3fb384cf89">Population.PhaseRange</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_peri_range.html#ab865ed0437a141f4802b737aae67f76f">Population.PeriRange</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_phase_range.html#a871492b2b5f7049eaf436d3fb384cf89">Population.PhaseRange</a>
 , <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_size_range.html#a70576692a42273c3c7b5c6891b973f7d">Population.SizeRange</a>
+</li>
+</ul>
+
+
+<h3><a class="anchor" id="index_u"></a>- u -</h3><ul>
+<li>untouchedSet
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a215eefb96ea99786d9fe0345dbf7713a">PopulationLoader</a>
+</li>
+<li>Update()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#aec0783b5a136e042adcc47bae4fe5291">CustomAsteroidSpawner</a>
+</li>
+<li>useCustomSpawner
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#ad3781f7d806fe2bdd30c560210f0e7e4">Options</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_v"></a>- v -</h3><ul>
 <li>ValueRange()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#aab0de923521145d9253644c51421cf98">Population.ValueRange</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_1_1_value_range.html#a4d2332fc4e736811768b049caac0cda9">Population.ValueRange</a>
 </li>
 <li>versionNumber
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_population_loader.html#a42b3292bef6b991c065d651ba14f61ee">PopulationLoader</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_options.html#a42b3292bef6b991c065d651ba14f61ee">Options</a>
 </li>
 </ul>
 
 
 <h3><a class="anchor" id="index_w"></a>- w -</h3><ul>
+<li>waitForAsteroid()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a508008f141d47c3a9947d4c37ea12000">CustomAsteroidSpawner</a>
+</li>
+<li>wasEnabled
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a896004af0b349750437a4007b1908449">CustomAsteroidSpawner</a>
+</li>
 <li>weightedSample&lt; T &gt;()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_random_dist.html#a93a0d6c7d2fb9c073d3fb1eea39f0402">RandomDist</a>
 </li>
@@ -409,7 +559,7 @@ $(document).ready(function(){initNavTree('functions.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat May 3 2014 21:16:25 for Custom Asteroids by
+    <li class="footer">Generated on Sun May 18 2014 20:04:56 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
