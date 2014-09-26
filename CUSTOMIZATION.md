@@ -50,9 +50,9 @@ Each `ASTEROIDGROUP` block has six subfields corresponding to orbital parameters
 
 Allowed values of `min`, `max`, `avg`, and `stddev` are:
 * A floating-point number, giving the exact value (in appropriate units) for the parameter
-* A string of the form 'Ratio(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; 
-    is the name of a celestial body, &lt;value&gt; is a floating-point multiplier, and 
-    &lt;stat&gt; is one of 
+* A string of the form 'Ratio(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)'. Whitespace is 
+    ignored. &lt;planet&gt; is the name of a celestial body, &lt;value&gt; is a floating-point 
+    multiplier, and &lt;stat&gt; is one of 
     - rad: the radius of &lt;planet&gt;, in meters
     - soi: the sphere of influence of &lt;planet&gt;, in meters
     - sma: the semimajor axis of &lt;planet&gt;, in meters
@@ -69,9 +69,9 @@ Allowed values of `min`, `max`, `avg`, and `stddev` are:
   For example, the string `Ratio(Jool.sma, 0.5)` means "half of Jool's semimajor axis, in meters".
 * A string of the form 'Offset(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; 
     and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to 
-    the celestial body's orbital element (units determined by &lt;stat&gt;). For example, the string 
-    `Offset(Duna.per, -50000000)` means "50,000,000 meters less than Duna's periapsis", or just 
-    beyond its sphere of influence.
+    the celestial body's orbital element (units determined by &lt;stat&gt;). Again, whitesapce is 
+    ignored. For example, the string `Offset(Duna.per, -50000000)` means "50,000,000 meters less 
+    than Duna's periapsis", or just beyond its sphere of influence.
 
 The six orbital elements are:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 

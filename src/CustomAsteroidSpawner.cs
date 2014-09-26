@@ -104,7 +104,18 @@ namespace Starstrider42 {
 					spawner.spawnOddsAgainst   = 10000;
 					spawner.spawnGroupMinLimit = 0;
 					spawner.spawnGroupMaxLimit = 0;
+					#if DEBUG
 					Debug.Log("CustomAsteroids: stock spawner disabled");
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.sizeCurve = " + spawner.sizeCurve.ToString());
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnOddsAgainst = " + spawner.spawnOddsAgainst);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnInterval = " + spawner.spawnInterval);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.maxUntrackedLifetime = " + spawner.maxUntrackedLifetime);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.minUntrackedLifetime = " + spawner.minUntrackedLifetime);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
+					#endif
 				}
 			}
 
