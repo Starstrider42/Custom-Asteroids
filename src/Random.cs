@@ -71,20 +71,20 @@ namespace Starstrider42 {
 			 */
 			internal static T weightedSample<T>(System.Collections.Generic.IList<Pair<T,double>> weightedChoices) {
 				if (weightedChoices.Count == 0) {
-					throw new ArgumentException("RandomDist.weightedSample(): Cannot sample from an empty set", "weightedChoices");
+					throw new ArgumentException("weightedSample(): Cannot sample from an empty set", "weightedChoices");
 				}
 				double norm = 0.0;
 				foreach (Pair<T,double> choice in weightedChoices) {
 					if (choice.Second < 0) {
 						throw new ArgumentOutOfRangeException("weightedChoices",
-							"RandomDist.weightedSample(): The weight of any sample may not be negative (gave " 
+							"weightedSample(): The weight of any sample may not be negative (gave " 
 								+ choice.Second + " for " + choice.First + ")");
 					}
 					norm += choice.Second;
 				}
 				if (norm <= 0.0) {
 					throw new ArgumentOutOfRangeException("weightedChoices",
-						"RandomDist.weightedSample(): the weights of the samples may not all be zero");
+						"weightedSample(): the weights of the samples may not all be zero");
 				}
 
 				// important: no exceptions beyond this point
@@ -141,7 +141,7 @@ namespace Starstrider42 {
 			internal static double drawUniform(double a, double b) {
 				if (b < a) {
 					throw new ArgumentOutOfRangeException("a",
-						"RandomDist.drawLogUniform(): In a uniform distribution, the first parameter must be no more than the second (gave a = " 
+						"drawLogUniform(): In a uniform distribution, the first parameter must be no more than the second (gave a = " 
 						+ a + ", b = " + b + ")");
 				}
 				// IMPORTANT: don't let anything throw beyond this point
@@ -170,12 +170,12 @@ namespace Starstrider42 {
 			internal static double drawLogUniform(double a, double b) {
 				if (b < a) {
 					throw new ArgumentOutOfRangeException("a",
-						"RandomDist.drawLogUniform(): In a log-uniform distribution, the first parameter must be no more than the second (gave a = " 
+						"drawLogUniform(): In a log-uniform distribution, the first parameter must be no more than the second (gave a = " 
 						+ a + ", b = " + b + ")");
 				}
 				if (a <= 0) {
 					throw new ArgumentOutOfRangeException("a",
-						"RandomDist.drawLogUniform(): In a log-uniform distribution, all parameters must be positive (gave a = " 
+						"drawLogUniform(): In a log-uniform distribution, all parameters must be positive (gave a = " 
 						+ a + ", b = " + b + ")");
 				}
 				// IMPORTANT: don't let anything throw beyond this point
@@ -203,7 +203,7 @@ namespace Starstrider42 {
 			internal static double drawExponential(double mean) {
 				if (mean < 0.0) {
 					throw new ArgumentOutOfRangeException("mean",
-						"RandomDist.drawExponential(): An exponential distribution cannot have a negative mean (gave " + mean + ")");
+						"drawExponential(): An exponential distribution cannot have a negative mean (gave " + mean + ")");
 				}
 				// IMPORTANT: don't let anything throw beyond this point
 				return -mean * Math.Log(UnityEngine.Random.value);
@@ -226,7 +226,7 @@ namespace Starstrider42 {
 			internal static double drawRayleigh(double mean) {
 				if (mean < 0.0) {
 					throw new ArgumentOutOfRangeException("mean",
-						"RandomDist.drawRayleigh(): A Rayleigh distribution cannot have a negative mean (gave " + mean + ")");
+						"drawRayleigh(): A Rayleigh distribution cannot have a negative mean (gave " + mean + ")");
 				}
 				double sigmaSquared = mean * mean * 2.0 / Math.PI;
 				// IMPORTANT: don't let anything throw beyond this point
@@ -249,7 +249,7 @@ namespace Starstrider42 {
 			internal static double drawNormal(double mean, double stddev) {
 				if (stddev < 0.0) {
 					throw new ArgumentOutOfRangeException("stddev",
-						"RandomDist.drawNormal(): A normal distribution cannot have a negative width (gave " + stddev + ")");
+						"drawNormal(): A normal distribution cannot have a negative width (gave " + stddev + ")");
 				}
 
 				if (isNextNormal) {

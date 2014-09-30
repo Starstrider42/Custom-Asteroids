@@ -206,6 +206,7 @@ namespace Starstrider42 {
 				minUntrackedLifetime = 1.0f;
 				maxUntrackedLifetime = 20.0f;
 				useCustomSpawner     = true;
+				errorsOnScreen       = true;
 			}
 
 			/** Stores current Custom Asteroids options in a config file
@@ -315,6 +316,16 @@ namespace Starstrider42 {
 				return useCustomSpawner;
 			}
 
+			/** Returns whether or not asteroid spawning errors should appear in the game.
+			 * 
+			 * @return True if errors should be put on screen, false if logged only.
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			internal bool getErrorReporting() {
+				return errorsOnScreen;
+			}
+
 			/** Returns the time range in which untracked asteroids will disappear
 			 * 
 			 * @return The minimum (@p first) and maximum (@p second) number of days an asteroid 
@@ -371,6 +382,10 @@ namespace Starstrider42 {
 			/** Whether or not to use custom spawning behavior */
 			[Persistent(name="UseCustomSpawner")]
 			private bool useCustomSpawner;
+
+			/** Whether or not to report failed asteroid spawns in the game. The errors will be logged regardless. */
+			[Persistent(name="ErrorsOnScreen")]
+			private bool errorsOnScreen;
 
 			/** Minimum number of days an asteroid goes untracked */
 			[Persistent(name="MinUntrackedTime")]
