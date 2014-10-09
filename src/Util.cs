@@ -3,7 +3,9 @@
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
-		public class Util {
+		/** General-purpose functions that don't belong elsewhere
+		 */
+		public static class Util {
 
 			/** Prints an error message visible to the player
 			 * @param[in] format The error message, or a composite format string for the message.

@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -142,7 +142,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <p>Allowed values of <code>min</code>, <code>max</code>, <code>avg</code>, and <code>stddev</code> are:</p>
 <ul>
 <li>A floating-point number, giving the exact value (in appropriate units) for the parameter</li>
-<li><p class="startli">A string of the form 'Ratio(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; is the name of a celestial body, &lt;value&gt; is a floating-point multiplier, and &lt;stat&gt; is one of</p>
+<li><p class="startli">A string of the form 'Ratio(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)'. Whitespace is ignored. &lt;planet&gt; is the name of a celestial body, &lt;value&gt; is a floating-point multiplier, and &lt;stat&gt; is one of</p>
 <ul>
 <li>rad: the radius of &lt;planet&gt;, in meters</li>
 <li>soi: the sphere of influence of &lt;planet&gt;, in meters</li>
@@ -159,7 +159,8 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 </ul>
 <p class="startli">For example, the string <code>Ratio(Jool.sma, 0.5)</code> means "half of Jool's semimajor axis, in meters".</p>
 </li>
-<li>A string of the form 'Offset(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to the celestial body's orbital element (units determined by &lt;stat&gt;). For example, the string <code>Offset(Duna.per, -50000000)</code> means "50,000,000 meters less than Duna's periapsis", or just beyond its sphere of influence.</li>
+<li>A string of the form 'Offset(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to the celestial body's orbital element (units determined by &lt;stat&gt;). Again, whitesapce is ignored. For example, the string <code>Offset(Duna.per, -50000000)</code> means "50,000,000 meters less 
+    than Duna's periapsis", or just beyond its sphere of influence.</li>
 </ul>
 <p>The six orbital elements are:</p>
 <ul>
@@ -189,7 +190,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun May 18 2014 20:04:56 for Custom Asteroids by
+    <li class="footer">Generated on Wed Oct 8 2014 18:41:10 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>

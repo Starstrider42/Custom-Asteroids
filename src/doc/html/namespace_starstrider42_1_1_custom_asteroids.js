@@ -13,5 +13,6 @@ var namespace_starstrider42_1_1_custom_asteroids =
     [ "SCFlight", "class_starstrider42_1_1_custom_asteroids_1_1_s_c_flight.html", null ],
     [ "SCSpaceCenter", "class_starstrider42_1_1_custom_asteroids_1_1_s_c_space_center.html", null ],
     [ "SCTrackingStation", "class_starstrider42_1_1_custom_asteroids_1_1_s_c_tracking_station.html", null ],
-    [ "SpawnCatcher", "class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html", "class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher" ]
+    [ "SpawnCatcher", "class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher.html", "class_starstrider42_1_1_custom_asteroids_1_1_spawn_catcher" ],
+    [ "Util", "class_starstrider42_1_1_custom_asteroids_1_1_util.html", "class_starstrider42_1_1_custom_asteroids_1_1_util" ]
 ];

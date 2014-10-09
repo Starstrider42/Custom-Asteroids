@@ -32,5 +32,6 @@ var hierarchy =
     [ "ScenarioModule", "class_scenario_module.html", [
       [ "CustomAsteroidSpawner", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html", null ]
     ] ],
+    [ "Util", "class_starstrider42_1_1_custom_asteroids_1_1_util.html", null ],
     [ "ValueRange", "class_value_range.html", null ]
 ];

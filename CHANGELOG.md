@@ -4,7 +4,7 @@ Version History                         {#changelog}
 Custom Asteroids conforms to version 2.0.0 of the [Semantic Versioning specification](http://semver.org/spec/v2.0.0.html). 
 All version numbers are to be interpreted as described therein. In addition to the actual [public API](http://starstrider42.github.io/Custom-Asteroids/), the [format of asteroid population files](@ref newbelts) will be considered the API for the purpose of versioning.
 
-Version 1.1.0 (in development)
+Version 1.1.0
 ------------
 
 ### New Features 

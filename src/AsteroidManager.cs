@@ -10,7 +10,7 @@ using System.Reflection;
 using UnityEngine;
 
 // Is there a good way to sync version number between here, doxygen.cfg, the markdown source, and Git tags?
-[assembly:AssemblyVersion("1.0.0")]
+[assembly:AssemblyVersion("1.1.0")]
 
 namespace Starstrider42 {
 
