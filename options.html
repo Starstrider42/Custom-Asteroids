@@ -31,7 +31,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.0.0</span>
+   &#160;<span id="projectnumber">1.1.0</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -107,6 +107,7 @@ $(document).ready(function(){initNavTree('options.html','');});
 <ul>
 <li><code>RenameAsteroids</code>: if True (the default), asteroids will be named by the group they belong to. If False, asteroids will keep their default names.</li>
 <li><code>UseCustomSpawner</code>: if True (the default), asteroids will be discovered at a steady rate. If False, new asteroids will be discovered any time there are no untracked asteroids, as in the stock game.</li>
+<li><code>ErrorsOnScreen</code>: if True (the default), any errors or incompatibilities in asteroid config files will be displayed on screen as soon as they are detected. If False, errors will be logged but otherwise unreported.</li>
 <li><code>MinUntrackedTime</code>: the minimum number of Earth days an asteroid can stay untracked before it disappears. NOT affected by <code>UseCustomSpawner</code>. Must be nonnegative.</li>
 <li><code>MaxUntrackedTime</code>: the maximum number of Earth days an asteroid can stay untracked before it disappears. NOT affected by <code>UseCustomSpawner</code>. Must be positive, and must be no less than <code>MinUntrackedTime</code>.</li>
 <li><code>VersionNumber</code>: the plugin version for which the options were written. <b>DO NOT CHANGE THIS</b>. Custom Asteroids uses this field for backward compatibility support. </li>
@@ -116,7 +117,7 @@ $(document).ready(function(){initNavTree('options.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun May 18 2014 20:22:15 for Custom Asteroids by
+    <li class="footer">Generated on Wed Oct 8 2014 18:41:44 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
   </ul>
