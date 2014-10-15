@@ -95,6 +95,7 @@ namespace Starstrider42 {
 					try {
 						AsteroidManager.editAsteroid(vessel);
 					} catch (System.InvalidOperationException e) {
+						// Explicit alert for those who want it
 						if (e.InnerException != null) {
 							Util.ErrorToPlayer("Could not place {0}. Cause: \"{1}\"\nRoot Cause: \"{2}\".", 
 								vessel.GetName(), e.Message, e.GetBaseException().Message);

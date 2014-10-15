@@ -1,6 +1,39 @@
 ﻿using System;
+using System.Reflection;
 
 namespace Starstrider42 {
+
+	/** Simple implementation of an ordered pair.
+	 * 
+	 * Works around the lack of tuple support in .NET 3.5, and can 
+	 * 	do things that KeyValuePair can't
+	 * 
+	 * @tparam T The type of the first pair element
+	 * @tparam U The type of the second pair element
+	 */
+	internal class Pair<T, U> {
+		/** Should have a default constructor */
+		public Pair() {
+		}
+
+		/** Creates a new ordered pair
+		 * 
+		 * @param[in] first,second The values to store
+		 * 
+		 * @post The new object represents the pair (first, second).
+		 * 
+		 * @exceptsafe Does not throw exceptions.
+		 */
+		public Pair(T first, U second) {
+			this.First = first;
+			this.Second = second;
+		}
+
+		/** The first element of the pair */
+		[Persistent] public T First { get; set; }
+		/** The second element of the pair */
+		[Persistent] public U Second { get; set; }
+	}
 
 	namespace CustomAsteroids {
 		/** General-purpose functions that don't belong elsewhere

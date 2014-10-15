@@ -10,142 +10,6 @@ using UnityEngine;
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any Flight scene
-		 */
-		[KSPAddon(KSPAddon.Startup.Flight, false)]
-		internal class SSFlight : SetupSpawner {
-		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any SpaceCentre scene
-		 */
-		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-		internal class SSSpaceCenter : SetupSpawner {
-		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any TrackingStation scene
-		 */
-		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
-		internal class SSTrackingStation : SetupSpawner {
-		}
-
-		/** Checks relationship between stock and custom spawners
-		 */
-		internal class SetupSpawner : MonoBehaviour {
-			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
-			 * 
-			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
-			 * 
-			 * @todo What exceptions are thrown by StartCoroutine?
-			 */
-			public void Start()
-			{
-				//StartCoroutine(editStockSpawner());
-				StartCoroutine("editStockSpawner");
-				StartCoroutine("confirmCustomSpawner");
-			}
-
-			/** This function is called when the object will be destroyed.
-			 * 
-			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
-			 * 
-			 * @todo What exceptions are thrown by StopCoroutine?
-			 */
-			public void OnDestroy() {
-				StopCoroutine("editStockSpawner");
-				StopCoroutine("confirmCustomSpawner");
-			}
-
-			/** Modifies the stock spawner to match Custom Asteroids settings
-			 * 
-			 * @return Controls the delay before execution resumes
-			 * 
-			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
-			 * 
-			 * @post Asteroid lifetimes match plugin settings
-			 * @post If the plugin settings allow a custom spawner, the stock spawner is set to never 
-			 * 		create asteroids spontaneously
-			 */
-			internal System.Collections.IEnumerator editStockSpawner() {
-				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
-					yield return 0;
-				}
-
-				ScenarioDiscoverableObjects spawner = null;
-				do {
-					// Testing shows that loop condition is met fast enough that return 0 doesn't hurt performance
-					yield return 0;
-					// The spawner may be destroyed and re-created before the spawnInterval condition is met... 
-					// 	Safer to do the lookup every time
-					spawner = (ScenarioDiscoverableObjects)HighLogic.CurrentGame.scenarios.
-						Find(scenario => scenario.moduleRef is ScenarioDiscoverableObjects).moduleRef;
-					// Sometimes old scenario persists to when custom addons are reloaded...
-					// Check for default value to make sure it's the new one
-				} while (spawner == null || spawner.spawnGroupMaxLimit != 8);
-
-				#if DEBUG
-				Debug.Log("CustomAsteroids: editing stock spawner...");
-				#endif
-
-				spawner.minUntrackedLifetime = AsteroidManager.getOptions().getUntrackedTimes().First;
-				spawner.maxUntrackedLifetime = AsteroidManager.getOptions().getUntrackedTimes().Second;
-
-				if (AsteroidManager.getOptions().getCustomSpawner()) {
-					// Thou Shalt Not adjust spawnInterval -- it's needed to clean up old asteroids
-					spawner.spawnOddsAgainst   = 10000;
-					spawner.spawnGroupMinLimit = 0;
-					spawner.spawnGroupMaxLimit = 0;
-					#if DEBUG
-					Debug.Log("CustomAsteroids: stock spawner disabled");
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.sizeCurve = " + spawner.sizeCurve.ToString());
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnOddsAgainst = " + spawner.spawnOddsAgainst);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnInterval = " + spawner.spawnInterval);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.maxUntrackedLifetime = " + spawner.maxUntrackedLifetime);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.minUntrackedLifetime = " + spawner.minUntrackedLifetime);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
-					#endif
-				}
-			}
-
-			/** Ensures the current game has a custom spawner ready for use
-			 * 
-			 * @return Controls the delay before execution resumes
-			 * 
-			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
-			 * 
-			 * @post The currently loaded game has a CustomAsteroidSpawner scenario
-			 * 
-			 * @note The spawner must be loaded whether or not custom spawning is enabled, in case the 
-			 * 		player changes the setting for a later game session
-			 */
-			internal System.Collections.IEnumerator confirmCustomSpawner() {
-				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
-					yield return 0;
-				}
-
-				ProtoScenarioModule curSpawner = HighLogic.CurrentGame.scenarios.
-					Find(scenario => scenario.moduleRef is CustomAsteroidSpawner);
-
-				if (curSpawner == null) {
-					Debug.Log("CustomAsteroids: Adding CustomAsteroidSpawner to game '" + HighLogic.CurrentGame.Title + "'");
-					HighLogic.CurrentGame.AddProtoScenarioModule(typeof(CustomAsteroidSpawner), 
-						GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
-				}
-			}
-		}
-
 		/** Class determining when and where asteroids may be spawned
 		 * 
 		 * @todo Make this class sufficiently generic to be replaceable by third-party implementations
@@ -274,5 +138,142 @@ namespace Starstrider42 {
 			[Persistent(name="Enabled")]
 			private bool wasEnabled;
 		}
+
+		/** Checks relationship between stock and custom spawners
+		 */
+		internal class SetupSpawner : MonoBehaviour {
+			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
+			 * 
+			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
+			 * 
+			 * @todo What exceptions are thrown by StartCoroutine?
+			 */
+			public void Start()
+			{
+				//StartCoroutine(editStockSpawner());
+				StartCoroutine("editStockSpawner");
+				StartCoroutine("confirmCustomSpawner");
+			}
+
+			/** This function is called when the object will be destroyed.
+			 * 
+			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
+			 * 
+			 * @todo What exceptions are thrown by StopCoroutine?
+			 */
+			public void OnDestroy() {
+				StopCoroutine("editStockSpawner");
+				StopCoroutine("confirmCustomSpawner");
+			}
+
+			/** Modifies the stock spawner to match Custom Asteroids settings
+			 * 
+			 * @return Controls the delay before execution resumes
+			 * 
+			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
+			 * 
+			 * @post Asteroid lifetimes match plugin settings
+			 * @post If the plugin settings allow a custom spawner, the stock spawner is set to never 
+			 * 		create asteroids spontaneously
+			 */
+			internal System.Collections.IEnumerator editStockSpawner() {
+				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
+					yield return 0;
+				}
+
+				ScenarioDiscoverableObjects spawner = null;
+				do {
+					// Testing shows that loop condition is met fast enough that return 0 doesn't hurt performance
+					yield return 0;
+					// The spawner may be destroyed and re-created before the spawnInterval condition is met... 
+					// 	Safer to do the lookup every time
+					spawner = (ScenarioDiscoverableObjects)HighLogic.CurrentGame.scenarios.
+						Find(scenario => scenario.moduleRef is ScenarioDiscoverableObjects).moduleRef;
+					// Sometimes old scenario persists to when custom addons are reloaded...
+					// Check for default value to make sure it's the new one
+				} while (spawner == null || spawner.spawnGroupMaxLimit != 8);
+
+				#if DEBUG
+				Debug.Log("CustomAsteroids: editing stock spawner...");
+				#endif
+
+				spawner.minUntrackedLifetime = AsteroidManager.getOptions().getUntrackedTimes().First;
+				spawner.maxUntrackedLifetime = AsteroidManager.getOptions().getUntrackedTimes().Second;
+
+				if (AsteroidManager.getOptions().getCustomSpawner()) {
+					// Thou Shalt Not adjust spawnInterval -- it's needed to clean up old asteroids
+					spawner.spawnOddsAgainst   = 10000;
+					spawner.spawnGroupMinLimit = 0;
+					spawner.spawnGroupMaxLimit = 0;
+					#if DEBUG
+					Debug.Log("CustomAsteroids: stock spawner disabled");
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.sizeCurve = " + spawner.sizeCurve.ToString());
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnOddsAgainst = " + spawner.spawnOddsAgainst);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnInterval = " + spawner.spawnInterval);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.maxUntrackedLifetime = " + spawner.maxUntrackedLifetime);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.minUntrackedLifetime = " + spawner.minUntrackedLifetime);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
+					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
+					#endif
+				}
+			}
+
+			/** Ensures the current game has a custom spawner ready for use
+			 * 
+			 * @return Controls the delay before execution resumes
+			 * 
+			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
+			 * 
+			 * @post The currently loaded game has a CustomAsteroidSpawner scenario
+			 * 
+			 * @note The spawner must be loaded whether or not custom spawning is enabled, in case the 
+			 * 		player changes the setting for a later game session
+			 */
+			internal System.Collections.IEnumerator confirmCustomSpawner() {
+				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
+					yield return 0;
+				}
+
+				ProtoScenarioModule curSpawner = HighLogic.CurrentGame.scenarios.
+					Find(scenario => scenario.moduleRef is CustomAsteroidSpawner);
+
+				if (curSpawner == null) {
+					Debug.Log("CustomAsteroids: Adding CustomAsteroidSpawner to game '" + HighLogic.CurrentGame.Title + "'");
+					HighLogic.CurrentGame.AddProtoScenarioModule(typeof(CustomAsteroidSpawner), 
+						GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
+				}
+			}
+		}
+
+		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any Flight scene
+		 */
+		[KSPAddon(KSPAddon.Startup.Flight, false)]
+		internal class SSFlight : SetupSpawner {
+		}
+		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any SpaceCentre scene
+		 */
+		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+		internal class SSSpaceCenter : SetupSpawner {
+		}
+		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any TrackingStation scene
+		 */
+		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
+		internal class SSTrackingStation : SetupSpawner {
+		}
+
 	}
 }

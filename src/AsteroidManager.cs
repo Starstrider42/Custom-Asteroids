@@ -76,6 +76,14 @@ namespace Starstrider42 {
 						asteroid.vesselName = newName + " " + asteroidId;
 					} 	// if asteroid name doesn't match expected format, leave it as-is
 				}
+
+				AsteroidDataRepository repo = AsteroidDataRepository.findModule();
+				if (repo != null) {
+					repo.register(asteroid, new CustomAsteroidData());
+					#if DEBUG
+					Debug.Log("CustomAsteroids: added " + asteroid.GetName() + " to repository");
+					#endif
+				}
 			}
 
 			/** Returns the current options used by Custom Asteroids
