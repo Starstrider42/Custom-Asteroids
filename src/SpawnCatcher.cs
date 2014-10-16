@@ -58,7 +58,7 @@ namespace Starstrider42 {
 			 */
 			public void Start()
 			{
-				GameEvents.onVesselCreate.Add(catchAsteroidSpawn);
+				GameEvents.onNewVesselCreated.Add(catchAsteroidSpawn);
 			}
 
 			/** This function is called when the object will be destroyed.
@@ -71,7 +71,7 @@ namespace Starstrider42 {
 			 */
 			public void OnDestroy() {
 				// Keep things tidy, since I'm not sure when (or if) onVesselCreate gets automatically cleaned up
-				GameEvents.onVesselCreate.Remove(catchAsteroidSpawn);
+				GameEvents.onNewVesselCreated.Remove(catchAsteroidSpawn);
 			}
 
 			/** Selects newly created asteroids and forwards them to AsteroidManager for processing

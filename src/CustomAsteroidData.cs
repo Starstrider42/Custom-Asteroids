@@ -18,87 +18,31 @@ namespace Starstrider42 {
 		 * 		* ModuleAsteroid.prefabBaseURL
 		 */
 		public class CustomAsteroidData : PartModule {
-			[KSPField (isPersistant = true)]
-			public string composition = "Stony";
+			// I need KSPField(isPersistant) for persistence when it's in a vessel, and 
+			// 	Persistent for persistence in all other cases... bleh!
+			[KSPField(isPersistant = true, guiActive = true, guiName = "Type")]
+			[Persistent] public string composition = "Stony";
 
 			// Default density from ModuleAsteroid, in tons/m^3
+			[KSPField (isPersistant = true)]
 			[Persistent] public float density = 0.03f;
 
 			// Default fraction of science recovered by transmitting back to Kerbin, from ModuleAsteroid.
+			[KSPField (isPersistant = true)]
 			[Persistent] public float sampleExperimentXmitScalar = 0.3f;
 			// Default sampling experiment from ModuleAsteroid.
+			[KSPField (isPersistant = true)]
 			[Persistent] public string sampleExperimentId = "asteroidSample";
 		}
+
+
 
 		/** Stores data on asteroids that have not yet been loaded
 		 */
 		public class AsteroidDataRepository : ScenarioModule {
 			internal AsteroidDataRepository() {
+				loaded = false;
 				unloadedAsteroids = new SortedDictionary<Guid, CustomAsteroidData>();
-			}
-
-			/** Called when the module is either constructed or loaded as part of a save game
-			 * 
-			 * @param[in] node The ConfigNode representing this ScenarioModule
-			 * 
-			 * @post The module is initialized with any settings in @p node
-			 */
-			public override void OnLoad(ConfigNode node)
-			{
-				base.OnLoad(node);
-
-				#if DEBUG
-				Debug.Log("CustomAsteroids: full node = " + node);
-				#endif
-				ConfigNode thisNode = node.GetNode("KnownAsteroids");
-				if (thisNode != null) {
-					ConfigNode.LoadObjectFromConfig(this, thisNode);
-					// Have to add the dictionary by hand
-					ConfigNode dict = thisNode.GetNode("Repository");
-					if (dict != null) {
-						unloadedAsteroids.Clear();
-						foreach (ConfigNode entry in dict.GetNodes("Record")) {
-							Guid key = new Guid(entry.GetValue("Asteroid"));
-
-							CustomAsteroidData value = new CustomAsteroidData();
-							ConfigNode.LoadObjectFromConfig(value, entry.GetNode("Data"));
-
-							unloadedAsteroids.Add(key, value);
-						}
-					}
-				}
-			}
-
-			/** Called when the save game including the module is saved
-			 * 
-			 * @param[out] node The ConfigNode representing this ScenarioModule
-			 * 
-			 * @post @p node is initialized with the persistent contents of this object
-			 */
-			public override void OnSave(ConfigNode node)
-			{
-				base.OnSave(node);
-
-				ConfigNode allData = new ConfigNode();
-				ConfigNode.CreateConfigFromObject(this, allData);
-				// Have to add the dictionary by hand
-				ConfigNode dict = new ConfigNode("Repository");
-				foreach (KeyValuePair<Guid, CustomAsteroidData> p in unloadedAsteroids) {
-					ConfigNode entry = new ConfigNode("Record");
-					entry.AddValue("Asteroid", p.Key);
-					ConfigNode data = new ConfigNode();
-						ConfigNode.CreateConfigFromObject(p.Value, data);
-						data.name = "Data";
-						entry.AddNode(data);
-					dict.AddNode(entry);
-				}
-				allData.AddNode(dict);
-				allData.name = "KnownAsteroids";
-				node.AddNode(allData);
-
-				#if DEBUG
-				Debug.Log("CustomAsteroids: saved node = " + node);
-				#endif
 			}
 
 			/** Wrapper function for looking up the scenario module
@@ -180,6 +124,126 @@ namespace Starstrider42 {
 				return new CustomAsteroidData();
 			}
 
+			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
+			 * 
+			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
+			 * 
+			 * @todo What exceptions are thrown by StartCoroutine?
+			 */
+			public void Start()
+			{
+				GameEvents.onVesselDestroy.Add(unregister);
+				// GameEvents.onVesselGoOffRails doesn't work for some reason
+				GameEvents.onPartUnpack.Add(checkAsteroid);
+			}
+
+			/** This function is called when the object will be destroyed.
+			 * 
+			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
+			 * 
+			 * @todo What exceptions are thrown by StopCoroutine?
+			 */
+			public void OnDestroy() {
+				GameEvents.onVesselDestroy.Remove(unregister);
+				GameEvents.onPartUnpack.Remove(checkAsteroid);
+			}
+
+			/** Function called when an asteroid is loaded
+			 */
+			private void checkAsteroid(Part potato) {
+				if (unloadedAsteroids.ContainsKey(potato.vessel.id) 
+						&& potato.FindModuleImplementing<CustomAsteroidData>() != null) {
+					#if DEBUG
+					Debug.Log("CustomAsteroids: Transferring registration of asteroid " + potato.vessel.vesselName);
+					#endif
+					CustomAsteroidData newData = unloadedAsteroids[potato.vessel.id];
+					ConfigNode newNode = new ConfigNode();
+					ConfigNode.CreateConfigFromObject(newData, newNode);
+					#if DEBUG
+					Debug.Log("CustomAsteroids: Desired module is " + newNode);
+					#endif
+
+					List<CustomAsteroidData> oldData = potato.FindModulesImplementing<CustomAsteroidData>();
+
+					foreach (CustomAsteroidData oldModule in oldData) {
+						oldModule.Load(newNode);
+					}
+					unregister(potato.vessel);
+				} // else we're good
+			}
+
+			/** Called when the module is either constructed or loaded as part of a save game
+			 * 
+			 * @param[in] node The ConfigNode representing this ScenarioModule
+			 * 
+			 * @post The module is initialized with any settings in @p node
+			 */
+			public override void OnLoad(ConfigNode node)
+			{
+				base.OnLoad(node);
+
+				#if DEBUG
+				Debug.Log("CustomAsteroids: full node = " + node);
+				#endif
+				ConfigNode thisNode = node.GetNode("KnownAsteroids");
+				if (thisNode != null) {
+					ConfigNode.LoadObjectFromConfig(this, thisNode);
+					// Have to add the dictionary by hand
+					ConfigNode dict = thisNode.GetNode("Repository");
+					if (dict != null) {
+						unloadedAsteroids.Clear();
+						foreach (ConfigNode entry in dict.GetNodes("Record")) {
+							Guid key = new Guid(entry.GetValue("Asteroid"));
+
+							CustomAsteroidData value = new CustomAsteroidData();
+							ConfigNode.LoadObjectFromConfig(value, entry.GetNode("Data"));
+
+							unloadedAsteroids.Add(key, value);
+						}
+					}
+				}
+
+				loaded = true;
+			}
+
+			/** If true, then object is up-to-date. If false, object should be treated as uninitialized.
+			 */
+			internal bool isLoaded() {
+				return loaded;
+			}
+
+			/** Called when the save game including the module is saved
+			 * 
+			 * @param[out] node The ConfigNode representing this ScenarioModule
+			 * 
+			 * @post @p node is initialized with the persistent contents of this object
+			 */
+			public override void OnSave(ConfigNode node)
+			{
+				base.OnSave(node);
+
+				ConfigNode allData = new ConfigNode();
+				ConfigNode.CreateConfigFromObject(this, allData);
+				// Have to add the dictionary by hand
+				ConfigNode dict = new ConfigNode("Repository");
+				foreach (KeyValuePair<Guid, CustomAsteroidData> p in unloadedAsteroids) {
+					ConfigNode entry = new ConfigNode("Record");
+					entry.AddValue("Asteroid", p.Key);
+					ConfigNode data = new ConfigNode();
+						ConfigNode.CreateConfigFromObject(p.Value, data);
+						data.name = "Data";
+						entry.AddNode(data);
+					dict.AddNode(entry);
+				}
+				allData.AddNode(dict);
+				allData.name = "KnownAsteroids";
+				node.AddNode(allData);
+
+				#if DEBUG
+				Debug.Log("CustomAsteroids: saved node = " + node);
+				#endif
+			}
+
 			/** The list of known asteroids
 			 * 
 			 * @invariant Every asteroid that has never been loaded has its Guid in @p unloadedAsteroids.
@@ -191,6 +255,10 @@ namespace Starstrider42 {
 			 *  for details
 			 */
 			private SortedDictionary<Guid, CustomAsteroidData> unloadedAsteroids;
+
+			/** Flag to indicate that AsteroidDataRepository is up-to-date
+			 */
+			private bool loaded;
 		}
 
 		/** Checks relationship between stock and custom spawners
@@ -204,9 +272,7 @@ namespace Starstrider42 {
 			 */
 			public void Start()
 			{
-				//StartCoroutine(editStockSpawner());
 				StartCoroutine("confirmAsteroidRepository");
-				GameEvents.onVesselDestroy.Add(obsoleteAsteroid);
 			}
 
 			/** This function is called when the object will be destroyed.
@@ -217,21 +283,6 @@ namespace Starstrider42 {
 			 */
 			public void OnDestroy() {
 				StopCoroutine("confirmAsteroidRepository");
-				GameEvents.onVesselDestroy.Remove(obsoleteAsteroid);
-			}
-
-			/** Function called when an asteroid in the repository no longer exists
-			 */
-			private void obsoleteAsteroid(Vessel vessel) {
-				AsteroidDataRepository repo = AsteroidDataRepository.findModule();
-				if (repo != null) {
-					repo.unregister(vessel);
-					#if DEBUG
-					Debug.Log("Unregistered obsolete asteroid " + vessel.vesselName);
-					#endif
-				} else {
-					Debug.LogError("Could not unregister asteroid " + vessel.vesselName, vessel);
-				}
 			}
 
 			/** Ensures the current game can store asteroids
