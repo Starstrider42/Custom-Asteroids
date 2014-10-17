@@ -176,7 +176,7 @@ namespace Starstrider42 {
 			 * @post If the plugin settings allow a custom spawner, the stock spawner is set to never 
 			 * 		create asteroids spontaneously
 			 */
-			internal System.Collections.IEnumerator editStockSpawner() {
+			private System.Collections.IEnumerator editStockSpawner() {
 				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
 					yield return 0;
 				}
@@ -231,7 +231,7 @@ namespace Starstrider42 {
 			 * @note The spawner must be loaded whether or not custom spawning is enabled, in case the 
 			 * 		player changes the setting for a later game session
 			 */
-			internal System.Collections.IEnumerator confirmCustomSpawner() {
+			private System.Collections.IEnumerator confirmCustomSpawner() {
 				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
 					yield return 0;
 				}

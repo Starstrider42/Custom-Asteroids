@@ -33,6 +33,62 @@ namespace Starstrider42 {
 			// Default sampling experiment from ModuleAsteroid.
 			[KSPField (isPersistant = true)]
 			[Persistent] public string sampleExperimentId = "asteroidSample";
+
+			/** Called when the part starts
+			 * 
+			 * @param[in] state The game sitiation in which the part is loaded
+			 */
+			public override void OnStart(PartModule.StartState state) {
+				if (state != StartState.Editor) {
+					List<ModuleAsteroid> potatoList = this.vessel.FindPartModulesImplementing<ModuleAsteroid>();
+					foreach (ModuleAsteroid ma in potatoList) {
+						#if DEBUG
+						Debug.Log("CustomAsteroids: BEFORE");
+						Debug.Log("CustomAsteroids: experimentId = " + ma.sampleExperimentId);
+						Debug.Log("CustomAsteroids: xmit         = " + ma.sampleExperimentXmitScalar);
+						Debug.Log("CustomAsteroids: density      = " + ma.density);
+						Debug.Log("CustomAsteroids: mass         = " + ma.part.mass);
+						#endif
+
+						// Update asteroid info
+						// Wait to make sure ModuleAsteroid is fully initialized first
+						StartCoroutine("setAsteroid", ma);
+					}
+				}
+			}
+
+			/** Updates the asteroid properties
+			 * 
+			 * @param[in] asteroid The ModuleAsteroid to update.
+			 * 
+			 * @return Controls the delay before execution resumes
+			 * 
+			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
+			 * 
+			 * @post The asteroid has the specified density
+			 */
+			private System.Collections.IEnumerator setAsteroid(ModuleAsteroid asteroid) {
+				// Wait one tick to ensure ModuleAsteroid has started first
+				yield return 0;
+
+				// Science properties
+				asteroid.sampleExperimentId = this.sampleExperimentId;
+				asteroid.sampleExperimentXmitScalar = this.sampleExperimentXmitScalar;
+
+				// Update mass and density consistently
+				float oldDensity = asteroid.density;
+				asteroid.density = this.density;
+				asteroid.part.mass *= (this.density / oldDensity);
+
+				#if DEBUG
+				yield return new WaitForSeconds(5);
+				Debug.Log("CustomAsteroids: FINAL");
+				Debug.Log("CustomAsteroids: experimentId = " + asteroid.sampleExperimentId);
+				Debug.Log("CustomAsteroids: xmit         = " + asteroid.sampleExperimentXmitScalar);
+				Debug.Log("CustomAsteroids: density      = " + asteroid.density);
+				Debug.Log("CustomAsteroids: mass         = " + asteroid.part.mass);
+				#endif
+			}
 		}
 
 
@@ -130,7 +186,7 @@ namespace Starstrider42 {
 			 * 
 			 * @todo What exceptions are thrown by StartCoroutine?
 			 */
-			public void Start()
+			public void OnStart()
 			{
 				GameEvents.onVesselDestroy.Add(unregister);
 				// GameEvents.onVesselGoOffRails doesn't work for some reason
@@ -261,7 +317,7 @@ namespace Starstrider42 {
 			private bool loaded;
 		}
 
-		/** Checks relationship between stock and custom spawners
+		/** Initializes the repository
 		 */
 		internal class SetupRepository : MonoBehaviour {
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
@@ -292,11 +348,8 @@ namespace Starstrider42 {
 			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
 			 * 
 			 * @post The currently loaded game has an AsteroidDataRepository scenario
-			 * 
-			 * @note The spawner must be loaded whether or not custom spawning is enabled, in case the 
-			 * 		player changes the setting for a later game session
 			 */
-			internal System.Collections.IEnumerator confirmAsteroidRepository() {
+			private System.Collections.IEnumerator confirmAsteroidRepository() {
 				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
 					yield return 0;
 				}
@@ -309,7 +362,7 @@ namespace Starstrider42 {
 			}
 		}
 
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		/** Workaround to let SetupRepository be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
@@ -318,7 +371,7 @@ namespace Starstrider42 {
 		[KSPAddon(KSPAddon.Startup.Flight, false)]
 		internal class SRFlight : SetupRepository {
 		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		/** Workaround to let SetupRepository be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
@@ -327,7 +380,7 @@ namespace Starstrider42 {
 		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
 		internal class SRSpaceCenter : SetupRepository {
 		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		/** Workaround to let SetupRepository be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
