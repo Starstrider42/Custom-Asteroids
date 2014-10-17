@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using UnityEngine;
 
 namespace Starstrider42 {
 
@@ -38,7 +39,7 @@ namespace Starstrider42 {
 	namespace CustomAsteroids {
 		/** General-purpose functions that don't belong elsewhere
 		 */
-		public static class Util {
+		internal static class Util {
 
 			/** Prints an error message visible to the player
 			 * @param[in] format The error message, or a composite format string for the message.
@@ -52,6 +53,56 @@ namespace Starstrider42 {
 				if (AsteroidManager.getOptions().getErrorReporting()) {
 					ScreenMessages.PostScreenMessage(new ScreenMessage(
 						String.Format("CustomAsteroids: " + format, param), 5.0f, ScreenMessageStyle.UPPER_RIGHT));
+				}
+			}
+		}
+
+		/** Boilerplate code for adding a scenario module to newly started games
+		 */
+		internal class AddScenario<SM> : MonoBehaviour
+			where SM: ScenarioModule {
+			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
+			 * 
+			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
+			 * 
+			 * @todo What exceptions are thrown by StartCoroutine?
+			 */
+			public void Start()
+			{
+				StartCoroutine("confirmScenarioAdded");
+			}
+
+			/** This function is called when the object will be destroyed.
+			 * 
+			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
+			 * 
+			 * @todo What exceptions are thrown by StopCoroutine?
+			 */
+			public void OnDestroy() {
+				StopCoroutine("confirmScenarioAdded");
+			}
+
+			/** Ensures the scenario is added
+			 * 
+			 * @return Controls the delay before execution resumes
+			 * 
+			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
+			 * 
+			 * @post The currently loaded game has an instance of the SM scenario module
+			 */
+			private System.Collections.IEnumerator confirmScenarioAdded() {
+				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
+					yield return 0;
+				}
+
+				ProtoScenarioModule curSpawner = HighLogic.CurrentGame.scenarios.
+					Find(scenario => scenario.moduleRef is CustomAsteroidSpawner);
+
+				if (curSpawner == null) {
+					Debug.Log("CustomAsteroids: Adding " + typeof(SM).Name + " to game '" 
+						+ HighLogic.CurrentGame.Title + "'");
+					HighLogic.CurrentGame.AddProtoScenarioModule(typeof(SM), 
+						GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
 				}
 			}
 		}

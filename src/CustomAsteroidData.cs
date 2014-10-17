@@ -317,77 +317,32 @@ namespace Starstrider42 {
 			private bool loaded;
 		}
 
-		/** Initializes the repository
-		 */
-		internal class SetupRepository : MonoBehaviour {
-			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
-			 * 
-			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
-			 * 
-			 * @todo What exceptions are thrown by StartCoroutine?
-			 */
-			public void Start()
-			{
-				StartCoroutine("confirmAsteroidRepository");
-			}
-
-			/** This function is called when the object will be destroyed.
-			 * 
-			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
-			 * 
-			 * @todo What exceptions are thrown by StopCoroutine?
-			 */
-			public void OnDestroy() {
-				StopCoroutine("confirmAsteroidRepository");
-			}
-
-			/** Ensures the current game can store asteroids
-			 * 
-			 * @return Controls the delay before execution resumes
-			 * 
-			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
-			 * 
-			 * @post The currently loaded game has an AsteroidDataRepository scenario
-			 */
-			private System.Collections.IEnumerator confirmAsteroidRepository() {
-				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
-					yield return 0;
-				}
-
-				if (AsteroidDataRepository.findModule() == null) {
-					Debug.Log("CustomAsteroids: Adding AsteroidDataRepository to game '" + HighLogic.CurrentGame.Title + "'");
-					HighLogic.CurrentGame.AddProtoScenarioModule(typeof(AsteroidDataRepository), 
-						GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
-				}
-			}
-		}
-
-		/** Workaround to let SetupRepository be run in multiple specific scenes
+		/** Workaround to let module adder be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
 		 * Loaded on entering any Flight scene
 		 */
 		[KSPAddon(KSPAddon.Startup.Flight, false)]
-		internal class SRFlight : SetupRepository {
+		internal class ADRFlight : AddScenario<AsteroidDataRepository> {
 		}
-		/** Workaround to let SetupRepository be run in multiple specific scenes
+		/** Workaround to let module adder be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
 		 * Loaded on entering any SpaceCentre scene
 		 */
 		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-		internal class SRSpaceCenter : SetupRepository {
+		internal class ADRSpaceCenter : AddScenario<AsteroidDataRepository> {
 		}
-		/** Workaround to let SetupRepository be run in multiple specific scenes
+		/** Workaround to let module adder be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
 		 * Loaded on entering any TrackingStation scene
 		 */
 		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
-		internal class SRTrackingStation : SetupRepository {
+		internal class ADRTrackingStation : AddScenario<AsteroidDataRepository> {
 		}
 
 	}
