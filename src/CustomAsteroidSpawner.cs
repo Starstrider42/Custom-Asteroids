@@ -112,36 +112,6 @@ namespace Starstrider42 {
 				node.AddNode(allData);
 			}
 
-			/** Returns the time until the next asteroid should be detected
-			 * 
-			 * @return The number of seconds before an asteroid detection
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			private double waitForAsteroid() {
-				double rate = AsteroidManager.spawnRate();	// asteroids per day
-
-				if (rate > 0.0) {
-					rate /= (24.0 * 3600.0);
-					// Waiting time in a Poisson process follows an exponential distribution
-					return RandomDist.drawExponential(1.0/rate);
-				} else {
-					return double.PositiveInfinity;
-				}
-			}
-
-			/** The time at which the next asteroid will be placed */
-			[Persistent(name="NextAsteroidUT")]
-			private double nextAsteroid;
-
-			/** Whether the spawner was used previously */
-			[Persistent(name="Enabled")]
-			private bool wasEnabled;
-		}
-
-		/** Checks relationship between stock and custom spawners
-		 */
-		internal class SetupSpawner : MonoBehaviour {
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
 			 * 
 			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
@@ -150,9 +120,7 @@ namespace Starstrider42 {
 			 */
 			public void Start()
 			{
-				//StartCoroutine(editStockSpawner());
 				StartCoroutine("editStockSpawner");
-				StartCoroutine("confirmCustomSpawner");
 			}
 
 			/** This function is called when the object will be destroyed.
@@ -163,7 +131,6 @@ namespace Starstrider42 {
 			 */
 			public void OnDestroy() {
 				StopCoroutine("editStockSpawner");
-				StopCoroutine("confirmCustomSpawner");
 			}
 
 			/** Modifies the stock spawner to match Custom Asteroids settings
@@ -220,59 +187,59 @@ namespace Starstrider42 {
 				}
 			}
 
-			/** Ensures the current game has a custom spawner ready for use
+			/** Returns the time until the next asteroid should be detected
 			 * 
-			 * @return Controls the delay before execution resumes
+			 * @return The number of seconds before an asteroid detection
 			 * 
-			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
-			 * 
-			 * @post The currently loaded game has a CustomAsteroidSpawner scenario
-			 * 
-			 * @note The spawner must be loaded whether or not custom spawning is enabled, in case the 
-			 * 		player changes the setting for a later game session
+			 * @exceptsafe Does not throw exceptions
 			 */
-			private System.Collections.IEnumerator confirmCustomSpawner() {
-				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
-					yield return 0;
-				}
+			private double waitForAsteroid() {
+				double rate = AsteroidManager.spawnRate();	// asteroids per day
 
-				ProtoScenarioModule curSpawner = HighLogic.CurrentGame.scenarios.
-					Find(scenario => scenario.moduleRef is CustomAsteroidSpawner);
-
-				if (curSpawner == null) {
-					Debug.Log("CustomAsteroids: Adding CustomAsteroidSpawner to game '" + HighLogic.CurrentGame.Title + "'");
-					HighLogic.CurrentGame.AddProtoScenarioModule(typeof(CustomAsteroidSpawner), 
-						GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
+				if (rate > 0.0) {
+					rate /= (24.0 * 3600.0);
+					// Waiting time in a Poisson process follows an exponential distribution
+					return RandomDist.drawExponential(1.0/rate);
+				} else {
+					return double.PositiveInfinity;
 				}
 			}
+
+			/** The time at which the next asteroid will be placed */
+			[Persistent(name="NextAsteroidUT")]
+			private double nextAsteroid;
+
+			/** Whether the spawner was used previously */
+			[Persistent(name="Enabled")]
+			private bool wasEnabled;
 		}
 
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		/** Workaround to let module adder be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
 		 * Loaded on entering any Flight scene
 		 */
 		[KSPAddon(KSPAddon.Startup.Flight, false)]
-		internal class SSFlight : SetupSpawner {
+		internal class CASFlight : AddScenario<CustomAsteroidSpawner> {
 		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		/** Workaround to let module adder be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
 		 * Loaded on entering any SpaceCentre scene
 		 */
 		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-		internal class SSSpaceCenter : SetupSpawner {
+		internal class CASpaceCenter : AddScenario<CustomAsteroidSpawner> {
 		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		/** Workaround to let module adder be run in multiple specific scenes
 		 * 
 		 * Shamelessly stolen from Trigger Au, thanks for the idea!
 		 * 
 		 * Loaded on entering any TrackingStation scene
 		 */
 		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
-		internal class SSTrackingStation : SetupSpawner {
+		internal class CASTrackingStation : AddScenario<CustomAsteroidSpawner> {
 		}
 
 	}

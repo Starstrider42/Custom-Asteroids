@@ -186,7 +186,7 @@ namespace Starstrider42 {
 			 * 
 			 * @todo What exceptions are thrown by StartCoroutine?
 			 */
-			public void OnStart()
+			public void Start()
 			{
 				GameEvents.onVesselDestroy.Add(unregister);
 				// GameEvents.onVesselGoOffRails doesn't work for some reason
