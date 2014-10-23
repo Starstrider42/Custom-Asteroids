@@ -182,30 +182,7 @@ namespace Starstrider42 {
 
 			/** Returns the CustomAsteroidData name field */
 			public static string getAsteroidTypeName(Vessel asteroid) {
-				// Module in vessel takes precedence
-				List<CustomAsteroidData> active = asteroid.FindPartModulesImplementing<CustomAsteroidData>();
-				if (active != null && active.Count > 0)
-				{
-					return active.First().composition;
-				}
-
-				// Anything in the repository?
-				AsteroidDataRepository repo = findModule();
-				if (repo != null)
-				{
-					try
-					{
-						return repo.unloadedAsteroids[asteroid.id].composition;
-					}
-					catch (KeyNotFoundException) { }
-				}
-
-				// To verify that the vessel is actually an asteroid, this could also be done beforehand to simplify this method
-				List<ModuleAsteroid> a = asteroid.FindPartModulesImplementing<ModuleAsteroid>();
-				if (a != null && a.Count > 0)
-					return "Stony";
-				else
-					return "";
+				return getAsteroidData(asteroid).composition;
 			}
 
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
