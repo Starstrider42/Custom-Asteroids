@@ -186,7 +186,7 @@ namespace Starstrider42 {
 				List<CustomAsteroidData> active = asteroid.FindPartModulesImplementing<CustomAsteroidData>();
 				if (active != null && active.Count > 0)
 				{
-					return active.First().name;
+					return active.First().composition;
 				}
 
 				// Anything in the repository?
@@ -195,7 +195,7 @@ namespace Starstrider42 {
 				{
 					try
 					{
-						return repo.unloadedAsteroids[asteroid.id].name;
+						return repo.unloadedAsteroids[asteroid.id].composition;
 					}
 					catch (KeyNotFoundException) { }
 				}
