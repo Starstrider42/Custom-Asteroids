@@ -34,6 +34,80 @@ namespace Starstrider42 {
 			[KSPField (isPersistant = true)]
 			[Persistent] public string sampleExperimentId = "asteroidSample";
 
+			/** Returns the composition of any asteroid, whether or not it is loaded
+			 * 
+			 * @param[in] asteroid The asteroid whose composition is desired.
+			 * 
+			 * @return A string denoting the asteroid class or composition. In most cases, 
+			 * 		the string will equal the `title` field of a loaded `ASTEROID_CLASS` node, but 
+			 * 		the caller is responsible for handling values that do not match any node.
+			 * 
+			 * @pre @p asteroid is, in fact, an asteroid.
+			 * 
+			 * @exception NullReferenceException Thrown if @p asteroid is null.
+			 * 
+			 * @exceptsafe The game state must be unchanged in the event of an exception.
+			 */
+			public static string getAsteroidTypeName(Vessel asteroid) {
+				return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("composition");
+			}
+
+			/** Returns the density of any asteroid, whether or not it is loaded
+			 * 
+			 * @param[in] asteroid The asteroid whose density is desired.
+			 * 
+			 * @return The density in tons per cubic meter. In most cases, value will equal the 
+			 * 		`density` field of a loaded `ASTEROID_CLASS` node, but the caller is responsible 
+			 * 		for handling values that do not match any node.
+			 * 
+			 * @pre @p asteroid is, in fact, an asteroid.
+			 * 
+			 * @exception NullReferenceException Thrown if @p asteroid is null.
+			 * 
+			 * @exceptsafe The game state must be unchanged in the event of an exception.
+			 */
+			public static string getAsteroidDensity(Vessel asteroid) {
+				return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("density");
+			}
+
+			/** Returns the sample experiment transmittability of any asteroid, whether or not it is loaded
+			 * 
+			 * @param[in] asteroid The asteroid whose composition is desired.
+			 * 
+			 * @return The fraction of science data that can be recovered without taking the sample to a lab. 
+			 * 		In most cases, value will equal the `sampleExperimentXmitScalar` field of a loaded `ASTEROID_CLASS` 
+			 * 		node, but the caller is responsible for handling values that do not match any node.
+			 * 
+			 * @pre @p asteroid is, in fact, an asteroid.
+			 * 
+			 * @exception NullReferenceException Thrown if @p asteroid is null.
+			 * 
+			 * @exceptsafe The game state must be unchanged in the event of an exception.
+			 */
+			public static string getAsteroidXmitScalar(Vessel asteroid) {
+				return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("sampleExperimentXmitScalar");
+			}
+
+			/** Returns the name of the sample experiment of any asteroid, whether or not it is loaded
+			 * 
+			 * @param[in] asteroid The asteroid whose composition is desired.
+			 * 
+			 * @return A string indicating which experiment is run by sampling this asteroid. 
+			 * 		In most cases, the string will equal the `sampleExperimentId` field of a loaded 
+			 * 		`ASTEROID_CLASS` node, and will equal the `id` field of a loaded `EXPERIMENT_DEFINITION` 
+			 * 		node, but the caller is responsible for handling values that do not match any node 
+			 * 		of either type.
+			 * 
+			 * @pre @p asteroid is, in fact, an asteroid.
+			 * 
+			 * @exception NullReferenceException Thrown if @p asteroid is null.
+			 * 
+			 * @exceptsafe The game state must be unchanged in the event of an exception.
+			 */
+			public static string getAsteroidExperiment(Vessel asteroid) {
+				return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("sampleExperimentId");
+			}
+
 			/** Called when the part starts
 			 * 
 			 * @param[in] state The game sitiation in which the part is loaded
@@ -90,7 +164,6 @@ namespace Starstrider42 {
 				#endif
 			}
 		}
-
 
 
 		/** Stores data on asteroids that have not yet been loaded
@@ -154,35 +227,58 @@ namespace Starstrider42 {
 			 * 
 			 * @pre @p asteroid is an asteroid rather than an artificial vessel (caller's responsibility)
 			 * 
-			 * @post Returns the CustomAsteroidData instance associated with the asteroid, or a default value 
-			 * 	if no instance is stored
+			 * @post Returns a ConfigNode representing the CustomAsteroidData instance associated with the 
+			 * 	asteroid, or a default value if no instance is stored
 			 * 
 			 * @exception NullReferenceException Thrown if @p asteroid is null.
 			 * 
 			 * @exceptsafe The game state must be unchanged in the event of an exception.
 			 */
-			public static CustomAsteroidData getAsteroidData(Vessel asteroid) {
-				// Module in vessel takes precedence
+			internal static ConfigNode getAsteroidData(Vessel asteroid) {
+				// Active module in vessel takes precedence
 				List<CustomAsteroidData> active = asteroid.FindPartModulesImplementing<CustomAsteroidData>();
 				if (active != null && active.Count > 0) {
-					return active.First();
+					#if DEBUG
+					Debug.Log("CustomAsteroids: CustomAsteroidData found in vessel");
+					#endif
+					var nodeForm = new ConfigNode();
+					ConfigNode.CreateConfigFromObject(active.First(), nodeForm);
+					return nodeForm;
 				}
 
-				// Anything in the repository?
+				// Unloaded but initialized asteroid?
+				foreach (ProtoPartSnapshot part in asteroid.protoVessel.protoPartSnapshots) {
+					foreach (ProtoPartModuleSnapshot module in part.modules) {
+						if (module.moduleName == "CustomAsteroidData") {
+							#if DEBUG
+							Debug.Log("CustomAsteroids: CustomAsteroidData found in protovessel");
+							#endif
+							var nodeForm = new ConfigNode();
+							module.Save(nodeForm);
+							return nodeForm;
+						}
+					}
+				}
+
+				// Uninitialized asteroid?
 				AsteroidDataRepository repo = findModule();
 				if (repo != null) {
 					try {
-						return repo.unloadedAsteroids[asteroid.id];
+						CustomAsteroidData archiveData = repo.unloadedAsteroids[asteroid.id];
+						Debug.Log("CustomAsteroids: CustomAsteroidData found in scenario");
+						var nodeForm = new ConfigNode();
+						ConfigNode.CreateConfigFromObject(archiveData, nodeForm);
+						return nodeForm;
 					} catch (KeyNotFoundException) {}
 				}
 
 				// When all else fails, assume default asteroid type
-				return new CustomAsteroidData();
-			}
-
-			/** Returns the CustomAsteroidData name field */
-			public static string getAsteroidTypeName(Vessel asteroid) {
-				return getAsteroidData(asteroid).composition;
+				#if DEBUG
+				Debug.Log("CustomAsteroids: CustomAsteroidData not found; returning default");
+				#endif
+				var node = new ConfigNode();
+				ConfigNode.CreateConfigFromObject(new CustomAsteroidData(), node);
+				return node;
 			}
 
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
