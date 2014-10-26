@@ -171,7 +171,7 @@ namespace Starstrider42 {
 		public class AsteroidDataRepository : ScenarioModule {
 			internal AsteroidDataRepository() {
 				loaded = false;
-				unloadedAsteroids = new SortedDictionary<Guid, CustomAsteroidData>();
+				unloadedAsteroids = new SortedDictionary<Guid, ConfigNode>();
 			}
 
 			/** Wrapper function for looking up the scenario module
@@ -205,7 +205,25 @@ namespace Starstrider42 {
 			 * @exceptsafe The AsteroidDataRepository must be unchanged in the event of an exception.
 			 */
 			internal void register(Vessel asteroid, CustomAsteroidData data) {
-				unloadedAsteroids.Add(asteroid.id, data);
+				var nodeForm = new ConfigNode();
+				ConfigNode.CreateConfigFromObject(data, nodeForm);
+				register(asteroid, nodeForm);
+			}
+
+			/** Adds data for a particular asteroid to the registry
+			 * 
+			 * @param[in] asteroid The asteroid with which the data will be permanently associated.
+			 * @param[in] node The data to store until the asteroid is loaded.
+			 * 
+			 * @pre @p asteroid has never been loaded
+			 * @pre @p asteroid contains exactly one part that has a CustomAsteroidData module
+			 * 
+			 * @exception ArgumentException Thrown if @p asteroid is already registered.
+			 * 
+			 * @exceptsafe The AsteroidDataRepository must be unchanged in the event of an exception.
+			 */
+			internal void register(Vessel asteroid, ConfigNode node) {
+				unloadedAsteroids.Add(asteroid.id, node);
 			}
 
 			/** Stops storing data for a particular asteroid
@@ -264,11 +282,9 @@ namespace Starstrider42 {
 				AsteroidDataRepository repo = findModule();
 				if (repo != null) {
 					try {
-						CustomAsteroidData archiveData = repo.unloadedAsteroids[asteroid.id];
+						ConfigNode archiveData = repo.unloadedAsteroids[asteroid.id];
 						Debug.Log("CustomAsteroids: CustomAsteroidData found in scenario");
-						var nodeForm = new ConfigNode();
-						ConfigNode.CreateConfigFromObject(archiveData, nodeForm);
-						return nodeForm;
+						return archiveData;
 					} catch (KeyNotFoundException) {}
 				}
 
@@ -313,17 +329,15 @@ namespace Starstrider42 {
 					#if DEBUG
 					Debug.Log("CustomAsteroids: Transferring registration of asteroid " + potato.vessel.vesselName);
 					#endif
-					CustomAsteroidData newData = unloadedAsteroids[potato.vessel.id];
-					ConfigNode newNode = new ConfigNode();
-					ConfigNode.CreateConfigFromObject(newData, newNode);
+					ConfigNode newData = unloadedAsteroids[potato.vessel.id];
 					#if DEBUG
-					Debug.Log("CustomAsteroids: Desired module is " + newNode);
+					Debug.Log("CustomAsteroids: Desired module is " + newData);
 					#endif
 
 					List<CustomAsteroidData> oldData = potato.FindModulesImplementing<CustomAsteroidData>();
 
 					foreach (CustomAsteroidData oldModule in oldData) {
-						oldModule.Load(newNode);
+						oldModule.Load(newData);
 					}
 					unregister(potato.vessel);
 				} // else we're good
@@ -352,10 +366,7 @@ namespace Starstrider42 {
 						foreach (ConfigNode entry in dict.GetNodes("Record")) {
 							Guid key = new Guid(entry.GetValue("Asteroid"));
 
-							CustomAsteroidData value = new CustomAsteroidData();
-							ConfigNode.LoadObjectFromConfig(value, entry.GetNode("Data"));
-
-							unloadedAsteroids.Add(key, value);
+							unloadedAsteroids.Add(key, entry.GetNode("Data").CreateCopy());
 						}
 					}
 				}
@@ -383,13 +394,12 @@ namespace Starstrider42 {
 				ConfigNode.CreateConfigFromObject(this, allData);
 				// Have to add the dictionary by hand
 				ConfigNode dict = new ConfigNode("Repository");
-				foreach (KeyValuePair<Guid, CustomAsteroidData> p in unloadedAsteroids) {
+				foreach (KeyValuePair<Guid, ConfigNode> p in unloadedAsteroids) {
 					ConfigNode entry = new ConfigNode("Record");
 					entry.AddValue("Asteroid", p.Key);
-					ConfigNode data = new ConfigNode();
-						ConfigNode.CreateConfigFromObject(p.Value, data);
-						data.name = "Data";
-						entry.AddNode(data);
+					ConfigNode record = p.Value.CreateCopy();
+					record.name = "Data";
+					entry.AddNode(record);
 					dict.AddNode(entry);
 				}
 				allData.AddNode(dict);
@@ -411,7 +421,7 @@ namespace Starstrider42 {
 			 * 	@see [Anatid's KSP API documentation] (https://github.com/Anatid/XML-Documentation-for-the-KSP-API/blob/master/src/Vessel.cs#L63) 
 			 *  for details
 			 */
-			private SortedDictionary<Guid, CustomAsteroidData> unloadedAsteroids;
+			private SortedDictionary<Guid, ConfigNode> unloadedAsteroids;
 
 			/** Flag to indicate that AsteroidDataRepository is up-to-date
 			 */
