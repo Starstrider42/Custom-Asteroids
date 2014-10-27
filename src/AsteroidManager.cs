@@ -67,6 +67,17 @@ namespace Starstrider42 {
 					}
 				}
 
+				AsteroidDataRepository repo = AsteroidDataRepository.findModule();
+				if (repo != null) {
+					try {
+						ConfigNode asteroidType = (newPop != null ? newPop.drawAsteroidData() : allowedPops.defaultAsteroidData());
+						repo.register(asteroid, asteroidType);
+					} catch (InvalidOperationException e) {
+						throw new BadPopulationException (newPop, 
+							"CustomAsteroids: Selected invalid population " + newPop, e);
+					}
+				}
+
 				if (curOptions.getRenameOption() && asteroid.GetName() != null) {
 					string asteroidId = asteroid.GetName();
 					string    newName = (newPop != null ? newPop.getAsteroidName() : allowedPops.defaultName());
@@ -75,14 +86,6 @@ namespace Starstrider42 {
 						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
 						asteroid.vesselName = newName + " " + asteroidId;
 					} 	// if asteroid name doesn't match expected format, leave it as-is
-				}
-
-				AsteroidDataRepository repo = AsteroidDataRepository.findModule();
-				if (repo != null) {
-					repo.register(asteroid, new CustomAsteroidData());
-					#if DEBUG
-					Debug.Log("CustomAsteroids: added " + asteroid.GetName() + " to repository");
-					#endif
 				}
 			}
 

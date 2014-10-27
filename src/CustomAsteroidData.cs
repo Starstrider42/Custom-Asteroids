@@ -121,14 +121,6 @@ namespace Starstrider42 {
 				if (state != StartState.Editor) {
 					List<ModuleAsteroid> potatoList = this.vessel.FindPartModulesImplementing<ModuleAsteroid>();
 					foreach (ModuleAsteroid ma in potatoList) {
-						#if DEBUG
-						Debug.Log("CustomAsteroids: BEFORE");
-						Debug.Log("CustomAsteroids: experimentId = " + ma.sampleExperimentId);
-						Debug.Log("CustomAsteroids: xmit         = " + ma.sampleExperimentXmitScalar);
-						Debug.Log("CustomAsteroids: density      = " + ma.density);
-						Debug.Log("CustomAsteroids: mass         = " + ma.part.mass);
-						#endif
-
 						// Update asteroid info
 						// Wait to make sure ModuleAsteroid is fully initialized first
 						StartCoroutine("setAsteroid", ma);
@@ -158,15 +150,6 @@ namespace Starstrider42 {
 				float oldDensity = asteroid.density;
 				asteroid.density = this.density;
 				asteroid.part.mass *= (this.density / oldDensity);
-
-				#if DEBUG
-				yield return new WaitForSeconds(5);
-				Debug.Log("CustomAsteroids: FINAL");
-				Debug.Log("CustomAsteroids: experimentId = " + asteroid.sampleExperimentId);
-				Debug.Log("CustomAsteroids: xmit         = " + asteroid.sampleExperimentXmitScalar);
-				Debug.Log("CustomAsteroids: density      = " + asteroid.density);
-				Debug.Log("CustomAsteroids: mass         = " + asteroid.part.mass);
-				#endif
 			}
 		}
 	}

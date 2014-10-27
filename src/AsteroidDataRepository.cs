@@ -101,12 +101,9 @@ namespace Starstrider42 {
 			 * @exceptsafe The game state must be unchanged in the event of an exception.
 			 */
 			internal static ConfigNode getAsteroidData(Vessel asteroid) {
-				// Active module in vessel takes precedence
+				// Active module in loaded vessel takes precedence
 				List<CustomAsteroidData> active = asteroid.FindPartModulesImplementing<CustomAsteroidData>();
 				if (active != null && active.Count > 0) {
-					#if DEBUG
-					Debug.Log("CustomAsteroids: CustomAsteroidData found in vessel");
-					#endif
 					var nodeForm = new ConfigNode();
 					ConfigNode.CreateConfigFromObject(active.First(), nodeForm);
 					return nodeForm;
@@ -116,9 +113,6 @@ namespace Starstrider42 {
 				foreach (ProtoPartSnapshot part in asteroid.protoVessel.protoPartSnapshots) {
 					foreach (ProtoPartModuleSnapshot module in part.modules) {
 						if (module.moduleName == "CustomAsteroidData") {
-							#if DEBUG
-							Debug.Log("CustomAsteroids: CustomAsteroidData found in protovessel");
-							#endif
 							var nodeForm = new ConfigNode();
 							module.Save(nodeForm);
 							return nodeForm;
@@ -131,15 +125,11 @@ namespace Starstrider42 {
 				if (repo != null) {
 					try {
 						ConfigNode archiveData = repo.unloadedAsteroids[asteroid.id];
-						Debug.Log("CustomAsteroids: CustomAsteroidData found in scenario");
 						return archiveData;
 					} catch (KeyNotFoundException) {}
 				}
 
 				// When all else fails, assume default asteroid type
-				#if DEBUG
-				Debug.Log("CustomAsteroids: CustomAsteroidData not found; returning default");
-				#endif
 				var node = new ConfigNode();
 				ConfigNode.CreateConfigFromObject(new CustomAsteroidData(), node);
 				return node;
@@ -178,9 +168,6 @@ namespace Starstrider42 {
 					Debug.Log("CustomAsteroids: Transferring registration of asteroid " + potato.vessel.vesselName);
 					#endif
 					ConfigNode newData = unloadedAsteroids[potato.vessel.id];
-					#if DEBUG
-					Debug.Log("CustomAsteroids: Desired module is " + newData);
-					#endif
 
 					List<CustomAsteroidData> oldData = potato.FindModulesImplementing<CustomAsteroidData>();
 

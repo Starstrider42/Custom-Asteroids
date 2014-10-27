@@ -5,8 +5,10 @@
  */
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Starstrider42 {
@@ -141,6 +143,19 @@ namespace Starstrider42 {
 				return total;
 			}
 
+			/** Generates a random asteroid class consistent with the default population properties
+			 * 
+			 * @return Asteroid type data for a randomly selected member of the default population
+			 * 
+			 * @exception System.InvalidOperationException Thrown if default population produces 
+			 * 	invalid asteroid types.
+			 * 
+			 * @exceptsafe The program is in a consistent state in the event of an exception
+			 */
+			internal ConfigNode defaultAsteroidData() {
+				return untouchedSet.drawAsteroidData();
+			}
+
 			/** Returns the name used for asteroids on stock orbits
 			 * 
 			 * @return The name with which to replace "Ast."
@@ -180,7 +195,7 @@ namespace Starstrider42 {
 
 			/** Contains settings for asteroids that aren't affected by Custom Asteroids
 			 */
-			private sealed class DefaultAsteroids
+			private sealed class DefaultAsteroids : IPersistenceLoad
 			{
 				/** Sets default settings for asteroids with unmodified orbits
 				 * 
@@ -194,6 +209,45 @@ namespace Starstrider42 {
 					this.name         = "default";
 					this.title        = "Ast.";
 					this.spawnRate    = 0.0;
+
+					this.classRatios    = new System.Collections.Generic.List<Pair<string, double>>();
+					this.readableRatios = null;
+				}
+
+				/** Generates a random asteroid class consistent with the default population properties
+				 * 
+				 * @return Asteroid type data for a randomly selected member of the default population
+				 * 
+				 * @exception System.InvalidOperationException Thrown if default population produces invalid 
+				 * 	asteroid types.
+				 * 
+				 * @exceptsafe The program is in a consistent state in the event of an exception
+				 */
+				internal ConfigNode drawAsteroidData() {
+					var data = new CustomAsteroidData();
+
+					try {
+						if (classRatios.Count > 0) {
+							string classId = RandomDist.weightedSample(classRatios);
+							var nodeList = GameDatabase.Instance.GetConfigNodes("ASTEROID_CLASS").Where(node => node.GetValue("name") == classId);
+							if (nodeList.Count() <= 0) {
+								throw new InvalidOperationException("CustomAsteroids: no such asteroid class '" + classId + "'");
+							}
+
+							foreach (ConfigNode asteroidClass in nodeList) {
+								data.composition = asteroidClass.GetValue("title");
+								data.density = Single.Parse(asteroidClass.GetValue("density"));
+								data.sampleExperimentId = asteroidClass.GetValue("sampleExperimentId");
+								data.sampleExperimentXmitScalar = Single.Parse(asteroidClass.GetValue("sampleExperimentXmitScalar"));
+							}
+						}
+
+						var returnNode = new ConfigNode();
+						ConfigNode.CreateConfigFromObject(data, returnNode);
+						return returnNode;
+					} catch (ArgumentOutOfRangeException e) {
+						throw new InvalidOperationException("CustomAsteroids: could not select asteroid class.", e);
+					}
 				}
 
 				/** Returns the rate at which stock-like asteroids are discovered
@@ -226,6 +280,30 @@ namespace Starstrider42 {
 					return name;
 				}
 
+				/** Defines the syntax for a Ratio declaration */
+				private static Regex classOccurrence = new Regex("(?<rate>[-+.e\\d]+)\\s+(?<id>\\w+)", 
+					RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+
+				/** Callback used by ConfigNode.LoadObjectFromConfig()
+				 */
+				void IPersistenceLoad.PersistenceLoad() {
+					if (readableRatios != null) {
+						for (int i = 0; i < readableRatios.Length; i++) {
+							if (classOccurrence.Match(readableRatios[i]).Groups[0].Success) {
+								GroupCollection parsed = classOccurrence.Match(readableRatios[i]).Groups;
+								double rate;
+								if (!Double.TryParse(parsed["rate"].ToString(), out rate)) {
+									throw new ArgumentException("Cannot parse '" + parsed["rate"] + "' as a floating point number");
+								}
+
+								classRatios.Add(new Pair<string, double>(parsed["id"].ToString(), rate));
+							} else {
+								//throw new ArgumentException("Cannot parse '" + readableRatios[i] + "' as a number and name");
+							}
+						}
+					}
+				}
+
 				////////////////////////////////////////////////////////
 				// Population properties
 
@@ -235,6 +313,12 @@ namespace Starstrider42 {
 				[Persistent] private string title;
 				/** The rate, in asteroids per day, at which asteroids appear on stock orbits */
 				[Persistent] private double spawnRate;
+
+				/** Relative ocurrence rates of asteroid classes */
+				private System.Collections.Generic.List<Pair<string, double>> classRatios;
+				/** Config-friendly copy of classRatios */
+				[Persistent(name="asteroidTypes", collectionIndex="key")]
+				private string[] readableRatios;
 			}
 		}
 	}

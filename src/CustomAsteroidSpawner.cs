@@ -22,9 +22,6 @@ namespace Starstrider42 {
 				nextAsteroid = Planetarium.GetUniversalTime() + waitForAsteroid();
 			}
 
-			#if DEBUG
-			private static int debugTick = 0;
-			#endif
 			/** Update is called every frame, if the MonoBehaviour is enabled.
 			 * 
 			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Update.html)
@@ -44,19 +41,6 @@ namespace Starstrider42 {
 					if (stockSpawner == null) {
 						return;
 					}
-
-					#if DEBUG
-					if (++debugTick > 100) {
-						debugTick = 0;
-						foreach(Vessel v in FlightGlobals.fetch.vessels) {
-							Debug.Log("CustomAsteroids: probing " + v.vesselName);
-							Debug.Log("\tname = " + CustomAsteroidData.getAsteroidTypeName(v));
-							Debug.Log("\tdensity = " + CustomAsteroidData.getAsteroidDensity(v));
-							Debug.Log("\texperiment = " + CustomAsteroidData.getAsteroidExperiment(v));
-							Debug.Log("\txmit = " + CustomAsteroidData.getAsteroidXmitScalar(v));
-						}
-					}
-					#endif
 
 					while (Planetarium.GetUniversalTime() > nextAsteroid) {
 						Debug.Log("CustomAsteroids: asteroid discovered at UT " + nextAsteroid);

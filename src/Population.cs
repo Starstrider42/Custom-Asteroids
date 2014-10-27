@@ -23,7 +23,7 @@ namespace Starstrider42 {
 		 * 
 		 * @note To avoid breaking the persistence code, Population may not have subclasses
 		 */
-		internal sealed class Population
+		internal sealed class Population : IPersistenceLoad
 		{
 			/** Creates a dummy population
 			 * 
@@ -49,6 +49,9 @@ namespace Starstrider42 {
 				this.ascNode      = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
 				this.orbitPhase   = new PhaseRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0, 
 					type: PhaseRange.PhaseType.MeanAnomaly, epoch: PhaseRange.EpochType.GameStart);
+
+				this.classRatios    = new System.Collections.Generic.List<Pair<string, double>>();
+				this.readableRatios = null;
 			}
 
 			/** Generates a random orbit consistent with the population properties
@@ -163,6 +166,42 @@ namespace Starstrider42 {
 				}
 			}
 
+			/** Generates a random asteroid class consistent with the population properties
+			 * 
+			 * @return Asteroid type data for a randomly selected member of the population
+			 * 
+			 * @exception System.InvalidOperationException Thrown if population produces invalid 
+			 * 	asteroid types.
+			 * 
+			 * @exceptsafe The program is in a consistent state in the event of an exception
+			 */
+			internal ConfigNode drawAsteroidData() {
+				var data = new CustomAsteroidData();
+
+				try {
+				if (classRatios.Count > 0) {
+					string classId = RandomDist.weightedSample(classRatios);
+					var nodeList = GameDatabase.Instance.GetConfigNodes("ASTEROID_CLASS").Where(node => node.GetValue("name") == classId);
+					if (nodeList.Count() <= 0) {
+						throw new InvalidOperationException("CustomAsteroids: no such asteroid class '" + classId + "'");
+					}
+
+					foreach (ConfigNode asteroidClass in nodeList) {
+						data.composition = asteroidClass.GetValue("title");
+						data.density = Single.Parse(asteroidClass.GetValue("density"));
+						data.sampleExperimentId = asteroidClass.GetValue("sampleExperimentId");
+						data.sampleExperimentXmitScalar = Single.Parse(asteroidClass.GetValue("sampleExperimentXmitScalar"));
+					}
+				}
+
+				var returnNode = new ConfigNode();
+				ConfigNode.CreateConfigFromObject(data, returnNode);
+				return returnNode;
+				} catch (ArgumentOutOfRangeException e) {
+					throw new InvalidOperationException("CustomAsteroids: could not select asteroid class.", e);
+				}
+			}
+
 			/** Returns the rate at which asteroids are discovered in the population
 			 * 
 			 * @return The number of asteroids discovered per Earth day.
@@ -201,6 +240,30 @@ namespace Starstrider42 {
 			 */
 			internal string getAsteroidName() {
 				return title;
+			}
+
+			/** Defines the syntax for a Ratio declaration */
+			private static Regex classOccurrence = new Regex("(?<rate>[-+.e\\d]+)\\s+(?<id>\\w+)", 
+				RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+
+			/** Callback used by ConfigNode.LoadObjectFromConfig()
+			 */
+			void IPersistenceLoad.PersistenceLoad() {
+				if (readableRatios != null) {
+					for (int i = 0; i < readableRatios.Length; i++) {
+						if (classOccurrence.Match(readableRatios[i]).Groups[0].Success) {
+							GroupCollection parsed = classOccurrence.Match(readableRatios[i]).Groups;
+							double rate;
+							if (!Double.TryParse(parsed["rate"].ToString(), out rate)) {
+								throw new ArgumentException("Cannot parse '" + parsed["rate"] + "' as a floating point number");
+							}
+
+							classRatios.Add(new Pair<string, double>(parsed["id"].ToString(), rate));
+						} else {
+							//throw new ArgumentException("Cannot parse '" + readableRatios[i] + "' as a number and name");
+						}
+					}
+				}
 			}
 
 			/** Converts an anomaly to an orbital longitude
@@ -315,10 +378,11 @@ namespace Starstrider42 {
 			[Persistent] private string name;
 			/** The name of asteroids belonging to this population */
 			[Persistent] private string title;
-			/** The name of the celestial object orbited by the asteroids */
-			[Persistent] private string centralBody;
 			/** The rate, in asteroids per Earth day, at which asteroids are discovered */
 			[Persistent] private double spawnRate;
+
+			/** The name of the celestial object orbited by the asteroids */
+			[Persistent] private string centralBody;
 			/** The size (range) of orbits in this population */
 			[Persistent] private  SizeRange orbitSize;
 			/** The eccentricity (range) of orbits in this population */
@@ -332,6 +396,11 @@ namespace Starstrider42 {
 			/** The range of positions along the orbit for asteroids in this population */
 			[Persistent] private PhaseRange orbitPhase;
 
+			/** Relative ocurrence rates of asteroid classes */
+			private System.Collections.Generic.List<Pair<string, double>> classRatios;
+			/** Config-friendly copy of classRatios */
+			[Persistent(name="asteroidTypes", collectionIndex="key")]
+			private string[] readableRatios;
 
 			/** Represents the set of values an orbital element may assume
 			 * 
