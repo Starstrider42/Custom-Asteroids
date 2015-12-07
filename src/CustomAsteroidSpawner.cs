@@ -10,35 +10,7 @@ using UnityEngine;
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any Flight scene
-		 */
-		[KSPAddon(KSPAddon.Startup.Flight, false)]
-		internal class SSFlight : SetupSpawner {
-		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any SpaceCentre scene
-		 */
-		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-		internal class SSSpaceCenter : SetupSpawner {
-		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any TrackingStation scene
-		 */
-		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
-		internal class SSTrackingStation : SetupSpawner {
-		}
-
-		/** Checks relationship between stock and custom spawners
+		/** Checks relationship between stock and custom spawners on scene changes
 		 */
 		internal class SetupSpawner : MonoBehaviour {
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
@@ -49,7 +21,6 @@ namespace Starstrider42 {
 			 */
 			public void Start()
 			{
-				//StartCoroutine(editStockSpawner());
 				StartCoroutine("editStockSpawner");
 				StartCoroutine("confirmCustomSpawner");
 			}
@@ -76,18 +47,13 @@ namespace Starstrider42 {
 			 * 		create asteroids spontaneously
 			 */
 			internal System.Collections.IEnumerator editStockSpawner() {
-				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
-					yield return 0;
-				}
-
 				ScenarioDiscoverableObjects spawner = null;
 				do {
 					// Testing shows that loop condition is met fast enough that return 0 doesn't hurt performance
 					yield return 0;
 					// The spawner may be destroyed and re-created before the spawnInterval condition is met... 
 					// 	Safer to do the lookup every time
-					spawner = (ScenarioDiscoverableObjects)HighLogic.CurrentGame.scenarios.
-						Find(scenario => scenario.moduleRef is ScenarioDiscoverableObjects).moduleRef;
+					spawner = CustomAsteroidSpawner.getStockSpawner();
 					// Sometimes old scenario persists to when custom addons are reloaded...
 					// Check for default value to make sure it's the new one
 				} while (spawner == null || spawner.spawnGroupMaxLimit != 8);
@@ -131,12 +97,13 @@ namespace Starstrider42 {
 			 * 		player changes the setting for a later game session
 			 */
 			internal System.Collections.IEnumerator confirmCustomSpawner() {
-				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
+				while (HighLogic.CurrentGame.scenarios == null) {
 					yield return 0;
 				}
 
+				// Does not require ProtoScenarioModule to have an instantiated ScenarioModule
 				ProtoScenarioModule curSpawner = HighLogic.CurrentGame.scenarios.
-					Find(scenario => scenario.moduleRef is CustomAsteroidSpawner);
+					Find(scenario => scenario.moduleName.Equals(typeof(CustomAsteroidSpawner).Name));
 
 				if (curSpawner == null) {
 					Debug.Log("CustomAsteroids: Adding CustomAsteroidSpawner to game '" + HighLogic.CurrentGame.Title + "'");
@@ -168,13 +135,11 @@ namespace Starstrider42 {
 			 */
 			public void Update() {
 				if(AsteroidManager.getOptions().getCustomSpawner()) {
-					if (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
-						return;
-					}
-					ScenarioDiscoverableObjects stockSpawner = 
-						(ScenarioDiscoverableObjects) HighLogic.CurrentGame.scenarios.
-						Find(scenario => scenario.moduleRef is ScenarioDiscoverableObjects).moduleRef;
+					ScenarioDiscoverableObjects stockSpawner = getStockSpawner();
 					if (stockSpawner == null) {
+						#if DEBUG
+						Debug.Log("Could not find ScenarioDiscoverableObjects");
+						#endif
 						return;
 					}
 
@@ -250,7 +215,8 @@ namespace Starstrider42 {
 
 			/** Returns the time until the next asteroid should be detected
 			 * 
-			 * @return The number of seconds before an asteroid detection
+			 * @return The number of seconds before an asteroid detection, or infinity 
+			 * if asteroids should not spawn.
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
@@ -266,6 +232,25 @@ namespace Starstrider42 {
 				}
 			}
 
+			/**
+			 * Returns the current instance of the stock spawner, if it exists. 
+			 * Otherwise, returns null.
+			 */
+			public static ScenarioDiscoverableObjects getStockSpawner() {
+				if (HighLogic.CurrentGame != null) {
+					if (HighLogic.CurrentGame.scenarios != null) {
+						ProtoScenarioModule protoSpawner = HighLogic.CurrentGame.scenarios
+							.Find(scenario => scenario.moduleName.Equals(typeof(ScenarioDiscoverableObjects).Name));
+						if (protoSpawner != null) {
+							return (ScenarioDiscoverableObjects)protoSpawner.moduleRef;
+						}
+					}
+				}
+
+				return null;
+			}
+
+			// TODO: replace with KSPFields?
 			/** The time at which the next asteroid will be placed */
 			[Persistent(name="NextAsteroidUT")]
 			private double nextAsteroid;
@@ -273,6 +258,34 @@ namespace Starstrider42 {
 			/** Whether the spawner was used previously */
 			[Persistent(name="Enabled")]
 			private bool wasEnabled;
+		}
+
+		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any Flight scene
+		 */
+		[KSPAddon(KSPAddon.Startup.Flight, false)]
+		internal class SSFlight : SetupSpawner {
+		}
+		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any SpaceCentre scene
+		 */
+		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+		internal class SSSpaceCenter : SetupSpawner {
+		}
+		/** Workaround to let SetupSpawner be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any TrackingStation scene
+		 */
+		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
+		internal class SSTrackingStation : SetupSpawner {
 		}
 	}
 }
