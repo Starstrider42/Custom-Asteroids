@@ -27,7 +27,7 @@ namespace Starstrider42 {
 				renameAsteroids      = true;
 				minUntrackedLifetime = 1.0f;
 				maxUntrackedLifetime = 20.0f;
-				useCustomSpawner     = true;
+				useFixedRateSpawner  = true;
 				errorsOnScreen       = true;
 			}
 
@@ -87,6 +87,10 @@ namespace Starstrider42 {
 						if (!optFile.HasValue("VersionNumber")) {
 							allOptions.versionNumber = "0.1.0";
 						}
+						// Backward-compatible with versions 1.1.0 and earlier
+						if (!optFile.HasValue("UseFixedRateSpawner") && optFile.HasValue("UseCustomSpawner")) {
+							allOptions.useFixedRateSpawner = Boolean.Parse(optFile.GetValue("UseCustomSpawner"));
+						}
 					} else {
 						allOptions.versionNumber = "";
 					}
@@ -135,7 +139,7 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			internal bool getCustomSpawner() {
-				return useCustomSpawner;
+				return useFixedRateSpawner;
 			}
 
 			/** Returns whether or not asteroid spawning errors should appear in the game.
@@ -202,8 +206,8 @@ namespace Starstrider42 {
 			private bool renameAsteroids;
 
 			/** Whether or not to use custom spawning behavior */
-			[Persistent(name="UseCustomSpawner")]
-			private bool useCustomSpawner;
+			[Persistent(name="UseFixedRateSpawner")]
+			private bool useFixedRateSpawner;
 
 			/** Whether or not to report failed asteroid spawns in the game. The errors will be logged regardless. */
 			[Persistent(name="ErrorsOnScreen")]
