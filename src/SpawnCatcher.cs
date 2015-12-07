@@ -61,7 +61,7 @@ namespace Starstrider42 {
 				// Ignore asteroids "created" by undocking
 				if (vessel.vesselType == VesselType.SpaceObject && vessel.loaded == false) {
 					// Verify that each asteroid is caught exactly once
-					Debug.Log("CustomAsteroids: caught spawn of " + vessel.GetName());
+					Debug.Log("[CustomAsteroids]: caught spawn of " + vessel.GetName());
 
 					try {
 						AsteroidManager.editAsteroid(vessel);

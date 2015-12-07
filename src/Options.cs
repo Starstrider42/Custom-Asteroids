@@ -53,7 +53,7 @@ namespace Starstrider42 {
 					System.IO.FileInfo outFile = new System.IO.FileInfo(optionList());
 					System.IO.Directory.CreateDirectory(outFile.DirectoryName);
 					allData.Save(outFile.FullName);
-					Debug.Log("CustomAsteroids: settings saved");
+					Debug.Log("[CustomAsteroids]: settings saved");
 				} finally {
 					versionNumber = trueVersion;
 				}
@@ -78,7 +78,7 @@ namespace Starstrider42 {
 					Options allOptions = new Options();
 
 					// Load options
-					Debug.Log("CustomAsteroids: loading settings...");
+					Debug.Log("[CustomAsteroids]: loading settings...");
 
 					ConfigNode optFile = ConfigNode.Load(optionList());
 					if (optFile != null) {
@@ -97,19 +97,19 @@ namespace Starstrider42 {
 						try {
 							allOptions.Save();
 							if (allOptions.versionNumber.Length == 0) {
-								Debug.Log("CustomAsteroids: no config file found at " + optionList() + "; creating new one");
+								Debug.Log("[CustomAsteroids]: no config file found at " + optionList() + "; creating new one");
 							} else {
-								Debug.Log("CustomAsteroids: loaded config file from version " + allOptions.versionNumber +
+								Debug.Log("[CustomAsteroids]: loaded config file from version " + allOptions.versionNumber +
 									"; updating to version " + latestVersion());
 							}
 						} catch (Exception e) {
 							// First priority, just in case Debug.Log*() produce I/O exceptions themselves
-							Debug.LogError("CustomAsteroids: settings could not be saved");
+							Debug.LogError("[CustomAsteroids]: settings could not be saved");
 							Debug.LogException(e);
 						}
 					}
 
-					Debug.Log("CustomAsteroids: settings loaded");
+					Debug.Log("[CustomAsteroids]: settings loaded");
 
 					return allOptions;
 					// No idea what kinds of exceptions are thrown by ConfigNode

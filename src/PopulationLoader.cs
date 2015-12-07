@@ -65,7 +65,7 @@ namespace Starstrider42 {
 									ConfigNode.LoadObjectFromConfig(newPop, curNode);
 									allPops.asteroidSets.Add(newPop);
 								} catch (TypeInitializationException e) {
-									Debug.LogError("CustomAsteroids: failed to load population '" + curNode.GetValue("name") + "'");
+									Debug.LogError("[CustomAsteroids]: failed to load population '" + curNode.GetValue("name") + "'");
 									Debug.LogException(e);
 								}	// Attempt to parse remaining populations
 							}
@@ -79,7 +79,7 @@ namespace Starstrider42 {
 									ConfigNode.LoadObjectFromConfig(oldPop, curNode);
 									allPops.untouchedSet = oldPop;
 								} catch (TypeInitializationException e) {
-									Debug.LogError("CustomAsteroids: failed to load population '" + curNode.GetValue("name") + "'");
+									Debug.LogError("[CustomAsteroids]: failed to load population '" + curNode.GetValue("name") + "'");
 									Debug.LogException(e);
 								}	// Attempt to parse remaining populations
 							}
@@ -123,7 +123,7 @@ namespace Starstrider42 {
 
 					return RandomDist.weightedSample(bins);
 				} catch (ArgumentException e) {
-					throw new InvalidOperationException("CustomAsteroids: could not draw population", e);
+					throw new InvalidOperationException("[CustomAsteroids]: could not draw population", e);
 				}
 			}
 

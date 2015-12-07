@@ -27,7 +27,7 @@ namespace Starstrider42 {
 					curOptions  = Options.Load();
 					allowedPops = PopulationLoader.Load();
 
-					Debug.Log("CustomAsteroids: " + allowedPops.getTotalRate() + " new discoveries per Earth day");
+					Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day");
 				} catch (Exception) {
 					// Ensure the contents of AsteroidManager are predictable even in the event of an exception
 					// Though an exception thrown by a static constructor is basically unrecoverable...
@@ -55,7 +55,14 @@ namespace Starstrider42 {
 			 * @exceptsafe The program is in a consistent state in the event of an exception
 			 */
 			internal static void editAsteroid(Vessel asteroid) {
+				#if DEBUG
+				Debug.Log("[CustomAsteroids]: Generating asteroid properties...");
+				#endif
 				Population newPop = allowedPops.drawPopulation();
+
+				#if DEBUG
+				Debug.Log("[CustomAsteroids]: Target population = " + newPop);
+				#endif
 
 				// newPop == null means "leave asteroid in default population"
 				if (newPop != null) {
@@ -63,18 +70,28 @@ namespace Starstrider42 {
 						asteroid.orbitDriver.orbit = newPop.drawOrbit();
 					} catch (InvalidOperationException e) {
 						throw new BadPopulationException (newPop, 
-							"CustomAsteroids: Selected invalid population " + newPop, e);
+							"[CustomAsteroids]: Selected invalid population " + newPop, e);
 					}
 				}
+				#if DEBUG
+				Debug.Log("[CustomAsteroids]: Orbit selected.");
+				#endif
 
 				if (curOptions.getRenameOption() && asteroid.GetName() != null) {
 					string asteroidId = asteroid.GetName();
+					#if DEBUG
+					Debug.Log("[CustomAsteroids]: Renaming asteroid " + asteroidId);
+					#endif
+
 					string    newName = (newPop != null ? newPop.getAsteroidName() : allowedPops.defaultName());
 					if (asteroidId.IndexOf("Ast. ") >= 0) {
 						// Keep only the ID number
 						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
 						asteroid.vesselName = newName + " " + asteroidId;
 					} 	// if asteroid name doesn't match expected format, leave it as-is
+					#if DEBUG
+					Debug.Log("[CustomAsteroids]: Asteroid renamed to " + asteroid.vesselName);
+					#endif
 				}
 			}
 

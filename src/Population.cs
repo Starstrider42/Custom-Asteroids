@@ -68,12 +68,12 @@ namespace Starstrider42 {
 				try {
 					CelestialBody orbitee  = getPlanetByName(this.centralBody);
 
-					Debug.Log("CustomAsteroids: drawing orbit from " + name);
+					Debug.Log("[CustomAsteroids]: drawing orbit from " + name);
 
 					// Properties with only one reasonable parametrization
 					double e = eccentricity.draw();
 					if (e < 0.0) {
-						throw new InvalidOperationException("CustomAsteroids: cannot have negative eccentricity (generated " 
+						throw new InvalidOperationException("[CustomAsteroids]: cannot have negative eccentricity (generated " 
 							+ e + ")");
 					}
 					// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
@@ -92,7 +92,7 @@ namespace Starstrider42 {
 						aPe = peri - lAn;
 						break;
 					default:
-						throw new InvalidOperationException("CustomAsteroids: cannot describe periapsis position using type " 
+						throw new InvalidOperationException("[CustomAsteroids]: cannot describe periapsis position using type " 
 							+ periapsis.getParam());
 					}
 
@@ -108,13 +108,13 @@ namespace Starstrider42 {
 						break;
 					case SizeRange.SizeType.Apoapsis:
 						if (e > 1.0) {
-							throw new InvalidOperationException("CustomAsteroids: cannot constrain apoapsis on unbound orbits (eccentricity " 
+							throw new InvalidOperationException("[CustomAsteroids]: cannot constrain apoapsis on unbound orbits (eccentricity " 
 							+ e + ")");
 						}
 						a = size / (1.0 + e);
 						break;
 					default:
-						throw new InvalidOperationException("CustomAsteroids: cannot describe orbit size using type " 
+						throw new InvalidOperationException("[CustomAsteroids]: cannot describe orbit size using type " 
 							+ orbitSize.getParam());
 					}
 
@@ -130,7 +130,7 @@ namespace Starstrider42 {
 						mEp = Math.PI/180.0 * longToAnomaly(phase, i, aPe, lAn);
 						break;
 					default:
-						throw new InvalidOperationException("CustomAsteroids: cannot describe orbit position using type " 
+						throw new InvalidOperationException("[CustomAsteroids]: cannot describe orbit position using type " 
 							+ orbitSize.getParam());
 					}
 					switch (orbitPhase.getEpoch()) {
@@ -141,7 +141,7 @@ namespace Starstrider42 {
 						epoch = Planetarium.GetUniversalTime();
 						break;
 					default:
-						throw new InvalidOperationException("CustomAsteroids: cannot describe orbit position using type " 
+						throw new InvalidOperationException("[CustomAsteroids]: cannot describe orbit position using type " 
 							+ orbitSize.getParam());
 					}
 
@@ -150,7 +150,7 @@ namespace Starstrider42 {
 						a = -a;
 					}
 
-					Debug.Log("CustomAsteroids: new orbit at " + a + " m, e = " + e + ", i = " + i 
+					Debug.Log("[CustomAsteroids]: new orbit at " + a + " m, e = " + e + ", i = " + i 
 						+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp + " at epoch " + epoch);
 
 					// Does Orbit(...) throw exceptions?
@@ -159,7 +159,7 @@ namespace Starstrider42 {
 
 					return newOrbit;
 				} catch (ArgumentException e) {
-					throw new InvalidOperationException("CustomAsteroids: could not create orbit", e);
+					throw new InvalidOperationException("[CustomAsteroids]: could not create orbit", e);
 				}
 			}
 
@@ -278,7 +278,7 @@ namespace Starstrider42 {
 				//		be initialized after FlightGlobals
 				CelestialBody theBody = FlightGlobals.Bodies.Find(body => body.name == name);
 				if (theBody == null) {
-					throw new ArgumentException("CustomAsteroids: could not find celestial body named " + name, 
+					throw new ArgumentException("[CustomAsteroids]: could not find celestial body named " + name, 
 						"name");
 				}
 				return theBody;
@@ -501,7 +501,7 @@ namespace Starstrider42 {
 						return body.sphereOfInfluence;
 					default:
 						if (body.GetOrbitDriver() == null) {
-							throw new ArgumentException("CustomAsteroids: celestial body '" + planet + "' does not have an orbit", 
+							throw new ArgumentException("[CustomAsteroids]: celestial body '" + planet + "' does not have an orbit", 
 								"planet");
 						}
 						Orbit orbit = body.GetOrbit();
@@ -530,7 +530,7 @@ namespace Starstrider42 {
 							return Population.anomalyToLong(orbit.meanAnomalyAtEpoch * 180.0 / Math.PI, 
 								orbit.inclination, orbit.argumentOfPeriapsis, orbit.LAN);
 						default:
-							throw new ArgumentException("CustomAsteroids: celestial bodies do not have a " + property + " value", 
+							throw new ArgumentException("[CustomAsteroids]: celestial bodies do not have a " + property + " value", 
 								"property");
 						}
 					}
