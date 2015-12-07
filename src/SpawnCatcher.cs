@@ -10,34 +10,6 @@ using UnityEngine;
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
-		/** Workaround to let SpawnCatcher be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any Flight scene
-		 */
-		[KSPAddon(KSPAddon.Startup.Flight, false)]
-		internal class SCFlight : SpawnCatcher {
-		}
-		/** Workaround to let SpawnCatcher be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any SpaceCentre scene
-		 */
-		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-		internal class SCSpaceCenter : SpawnCatcher {
-		}
-		/** Workaround to let SpawnCatcher be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any TrackingStation scene
-		 */
-		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
-		internal class SCTrackingStation : SpawnCatcher {
-		}
-				
 		/** Class for identifying and manipulating new asteroids before they are seen by the player
 		 * 
 		 * @invariant At most one instance of this class exists
@@ -108,6 +80,34 @@ namespace Starstrider42 {
 					}
 				}
 			}
+		}
+
+		/** Workaround to let SpawnCatcher be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any Flight scene
+		 */
+		[KSPAddon(KSPAddon.Startup.Flight, false)]
+		internal class SCFlight : SpawnCatcher {
+		}
+		/** Workaround to let SpawnCatcher be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any SpaceCentre scene
+		 */
+		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+		internal class SCSpaceCenter : SpawnCatcher {
+		}
+		/** Workaround to let SpawnCatcher be run in multiple specific scenes
+		 * 
+		 * Shamelessly stolen from Trigger Au, thanks for the idea!
+		 * 
+		 * Loaded on entering any TrackingStation scene
+		 */
+		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
+		internal class SCTrackingStation : SpawnCatcher {
 		}
 	}
 }
