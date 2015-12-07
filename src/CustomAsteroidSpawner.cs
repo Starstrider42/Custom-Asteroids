@@ -4,6 +4,7 @@
  * @date Created May 14, 2014
  */
 
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -143,11 +144,45 @@ namespace Starstrider42 {
 						return;
 					}
 
-					while (Planetarium.GetUniversalTime() > nextAsteroid) {
-						Debug.Log("CustomAsteroids: asteroid discovered at UT " + nextAsteroid);
-						stockSpawner.SpawnAsteroid();
+					if (Planetarium.GetUniversalTime() > nextAsteroid) {
+						// Stock spawner shuts down at high time warps... don't rely on it!
+						forceDespawnCheck();
 
-						nextAsteroid += waitForAsteroid();
+						// More than one asteroid per tick is unlikely even at 100,000×
+						while (Planetarium.GetUniversalTime() > nextAsteroid) {
+							Debug.Log("CustomAsteroids: asteroid discovered at UT " + nextAsteroid);
+							stockSpawner.SpawnAsteroid();
+
+							nextAsteroid += waitForAsteroid();
+						}
+					}
+				}
+			}
+
+			/**
+			 * Removes any untracked asteroids that have expired. Does not affect actively tracked asteroids or ordinary vessels.
+			 */
+			private static void forceDespawnCheck() {
+				ScenarioDiscoverableObjects stockSpawner = getStockSpawner();
+
+				if (FlightGlobals.Vessels != null) {
+					// Not sure if C# lists support concurrent modification; play it safe
+					List<Vessel> toDelete = new List<Vessel>();
+
+					foreach (Vessel v in FlightGlobals.Vessels) {
+						DiscoveryInfo trackState = v.DiscoveryInfo;
+						// This test will fail if and only if v is an unvisited, untracked asteroid
+						// It does not matter whether or not it was tracked in the past
+						if (trackState != null && !trackState.HaveKnowledgeAbout(DiscoveryLevels.StateVectors)) {
+							if (Planetarium.GetUniversalTime() > trackState.fadeUT) {
+								toDelete.Add(v);
+							}
+						}
+					}
+
+					foreach (Vessel oldAsteroid in toDelete) {
+						Debug.Log("CustomAsteroids: manually removing asteroid " + oldAsteroid.GetName());
+						oldAsteroid.Die();
 					}
 				}
 			}
@@ -215,12 +250,11 @@ namespace Starstrider42 {
 
 			/** Returns the time until the next asteroid should be detected
 			 * 
-			 * @return The number of seconds before an asteroid detection, or infinity 
-			 * if asteroids should not spawn.
+			 * @return The number of seconds before an asteroid detection, or infinity if asteroids should not spawn.
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
-			private double waitForAsteroid() {
+			private static double waitForAsteroid() {
 				double rate = AsteroidManager.spawnRate();	// asteroids per day
 
 				if (rate > 0.0) {
