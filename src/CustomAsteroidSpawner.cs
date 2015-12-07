@@ -18,10 +18,12 @@ namespace Starstrider42 {
 		[KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 		public class CustomAsteroidSpawner : ScenarioModule {
 			internal CustomAsteroidSpawner() {
-				wasEnabled   = AsteroidManager.getOptions().getCustomSpawner();
+				canFindAsteroids = GameVariables.Instance.UnlockedSpaceObjectDiscovery(
+					ScenarioUpgradeableFacilities.GetFacilityLevel(
+						SpaceCenterFacility.TrackingStation));
 
 				// Yay for memoryless distributions -- we don't care how long it's been since an asteroid was detected
-				nextAsteroid = Planetarium.GetUniversalTime() + waitForAsteroid();
+				resetAsteroidSearches();
 			}
 
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
@@ -102,7 +104,7 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			public void Update() {
-				if(AsteroidManager.getOptions().getCustomSpawner()) {
+				if(canFindAsteroids && AsteroidManager.getOptions().getCustomSpawner()) {
 					ScenarioDiscoverableObjects stockSpawner = getStockSpawner();
 					if (stockSpawner == null) {
 						#if DEBUG
@@ -180,15 +182,6 @@ namespace Starstrider42 {
 				if (thisNode != null) {
 					ConfigNode.LoadObjectFromConfig(this, thisNode);
 				}
-
-				// Prevent a backlog of asteroids if the player suddenly switched
-				if (!wasEnabled && AsteroidManager.getOptions().getCustomSpawner()) {
-					Debug.Log("CustomAsteroids: custom spawner activated, clearing asteroid queue");
-					nextAsteroid = Planetarium.GetUniversalTime() + waitForAsteroid();
-				}
-
-				// Stored value only needed for preceding block
-				wasEnabled = AsteroidManager.getOptions().getCustomSpawner();
 			}
 
 			/** Called when the save game including the module is saved
@@ -213,6 +206,10 @@ namespace Starstrider42 {
 				ConfigNode.CreateConfigFromObject(this, allData);
 				allData.name = "SpawnState";
 				node.AddNode(allData);
+			}
+
+			private void resetAsteroidSearches() {
+				nextAsteroid = Planetarium.GetUniversalTime() + waitForAsteroid();
 			}
 
 			/** Returns the time until the next asteroid should be detected
@@ -251,14 +248,11 @@ namespace Starstrider42 {
 				return null;
 			}
 
-			// TODO: replace with KSPFields?
 			/** The time at which the next asteroid will be placed */
-			[Persistent(name="NextAsteroidUT")]
 			private double nextAsteroid;
 
-			/** Whether the spawner was used previously */
-			[Persistent(name="Enabled")]
-			private bool wasEnabled;
+			/** Tracking station status. */
+			private bool canFindAsteroids;
 		}
 	}
 }
