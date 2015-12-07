@@ -11,19 +11,27 @@ using UnityEngine;
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
-		/** Checks relationship between stock and custom spawners on scene changes
+		/** Class determining when and where asteroids may be spawned
+		 * 
+		 * @todo Make this class sufficiently generic to be replaceable by third-party implementations
 		 */
-		internal class SetupSpawner : MonoBehaviour {
+		[KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
+		public class CustomAsteroidSpawner : ScenarioModule {
+			internal CustomAsteroidSpawner() {
+				wasEnabled   = AsteroidManager.getOptions().getCustomSpawner();
+
+				// Yay for memoryless distributions -- we don't care how long it's been since an asteroid was detected
+				nextAsteroid = Planetarium.GetUniversalTime() + waitForAsteroid();
+			}
+
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
 			 * 
 			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
 			 * 
 			 * @todo What exceptions are thrown by StartCoroutine?
 			 */
-			public void Start()
-			{
+			public void Start() {
 				StartCoroutine("editStockSpawner");
-				StartCoroutine("confirmCustomSpawner");
 			}
 
 			/** This function is called when the object will be destroyed.
@@ -34,7 +42,6 @@ namespace Starstrider42 {
 			 */
 			public void OnDestroy() {
 				StopCoroutine("editStockSpawner");
-				StopCoroutine("confirmCustomSpawner");
 			}
 
 			/** Modifies the stock spawner to match Custom Asteroids settings
@@ -84,46 +91,6 @@ namespace Starstrider42 {
 					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
 					#endif
 				}
-			}
-
-			/** Ensures the current game has a custom spawner ready for use
-			 * 
-			 * @return Controls the delay before execution resumes
-			 * 
-			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
-			 * 
-			 * @post The currently loaded game has a CustomAsteroidSpawner scenario
-			 * 
-			 * @note The spawner must be loaded whether or not custom spawning is enabled, in case the 
-			 * 		player changes the setting for a later game session
-			 */
-			internal System.Collections.IEnumerator confirmCustomSpawner() {
-				while (HighLogic.CurrentGame.scenarios == null) {
-					yield return 0;
-				}
-
-				// Does not require ProtoScenarioModule to have an instantiated ScenarioModule
-				ProtoScenarioModule curSpawner = HighLogic.CurrentGame.scenarios.
-					Find(scenario => scenario.moduleName.Equals(typeof(CustomAsteroidSpawner).Name));
-
-				if (curSpawner == null) {
-					Debug.Log("CustomAsteroids: Adding CustomAsteroidSpawner to game '" + HighLogic.CurrentGame.Title + "'");
-					HighLogic.CurrentGame.AddProtoScenarioModule(typeof(CustomAsteroidSpawner), 
-						GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
-				}
-			}
-		}
-
-		/** Class determining when and where asteroids may be spawned
-		 * 
-		 * @todo Make this class sufficiently generic to be replaceable by third-party implementations
-		 */
-		public class CustomAsteroidSpawner : ScenarioModule {
-			internal CustomAsteroidSpawner() {
-				wasEnabled   = AsteroidManager.getOptions().getCustomSpawner();
-
-				// Yay for memoryless distributions -- we don't care how long it's been since an asteroid was detected
-				nextAsteroid = Planetarium.GetUniversalTime() + waitForAsteroid();
 			}
 
 			/** Update is called every frame, if the MonoBehaviour is enabled.
@@ -270,7 +237,7 @@ namespace Starstrider42 {
 			 * Returns the current instance of the stock spawner, if it exists. 
 			 * Otherwise, returns null.
 			 */
-			public static ScenarioDiscoverableObjects getStockSpawner() {
+			private static ScenarioDiscoverableObjects getStockSpawner() {
 				if (HighLogic.CurrentGame != null) {
 					if (HighLogic.CurrentGame.scenarios != null) {
 						ProtoScenarioModule protoSpawner = HighLogic.CurrentGame.scenarios
@@ -292,34 +259,6 @@ namespace Starstrider42 {
 			/** Whether the spawner was used previously */
 			[Persistent(name="Enabled")]
 			private bool wasEnabled;
-		}
-
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any Flight scene
-		 */
-		[KSPAddon(KSPAddon.Startup.Flight, false)]
-		internal class SSFlight : SetupSpawner {
-		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any SpaceCentre scene
-		 */
-		[KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
-		internal class SSSpaceCenter : SetupSpawner {
-		}
-		/** Workaround to let SetupSpawner be run in multiple specific scenes
-		 * 
-		 * Shamelessly stolen from Trigger Au, thanks for the idea!
-		 * 
-		 * Loaded on entering any TrackingStation scene
-		 */
-		[KSPAddon(KSPAddon.Startup.TrackingStation, false)]
-		internal class SSTrackingStation : SetupSpawner {
 		}
 	}
 }
