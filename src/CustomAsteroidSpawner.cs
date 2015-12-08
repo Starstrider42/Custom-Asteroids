@@ -13,8 +13,10 @@ namespace Starstrider42 {
 	namespace CustomAsteroids {
 		/** Class determining when and where asteroids may be spawned
 		 * 
-		 * @todo Make this class sufficiently generic to be replaceable by third-party implementations
+		 * @todo Remove this class when implementing 3rd party spawner support for version 2.0.0
 		 */
+		// This class is, for better or worse, part of the Custom Asteroids API, so it can't 
+		// be properly refactored or even renamed before version 2.0.0.
 		[KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 		public class CustomAsteroidSpawner : ScenarioModule {
 			internal CustomAsteroidSpawner() {
@@ -32,7 +34,7 @@ namespace Starstrider42 {
 			 * 
 			 * @todo What exceptions are thrown by StartCoroutine?
 			 */
-			public void Start() {
+			internal void Start() {
 				StartCoroutine("editStockSpawner");
 			}
 
@@ -42,7 +44,7 @@ namespace Starstrider42 {
 			 * 
 			 * @todo What exceptions are thrown by StopCoroutine?
 			 */
-			public void OnDestroy() {
+			internal void OnDestroy() {
 				StopCoroutine("editStockSpawner");
 			}
 

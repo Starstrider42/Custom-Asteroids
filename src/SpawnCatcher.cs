@@ -29,7 +29,7 @@ namespace Starstrider42 {
 			 * @todo What exceptions are thrown by GameEvents.onVesselCreate.*?
 			 */
 			// MUST be called on Start(), and not Awake(), to avoid accidentally editing existing vessels
-			public void Start() {
+			internal void Start() {
 				GameEvents.onVesselCreate.Add(catchAsteroidSpawn);
 			}
 
@@ -41,7 +41,7 @@ namespace Starstrider42 {
 			 * 
 			 * @todo What exceptions are thrown by GameEvents.onVesselCreate.*?
 			 */
-			public void OnDestroy() {
+			internal void OnDestroy() {
 				// Keep things tidy, since I'm not sure when (or if) onVesselCreate gets automatically cleaned up
 				GameEvents.onVesselCreate.Remove(catchAsteroidSpawn);
 			}

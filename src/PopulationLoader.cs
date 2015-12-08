@@ -116,8 +116,6 @@ namespace Starstrider42 {
 			 * 
 			 * @exception System.InvalidOperationException Thrown if there are no populations from 
 			 * 		which to choose, or if all spawn rates are zero, or if any rate is negative
-			 * 
-			 * @exceptsafe Does not throw exceptions
 			 */
 			internal Population drawPopulation() {
 				try {
