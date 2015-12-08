@@ -18,7 +18,7 @@ namespace Starstrider42 {
 			public static void ErrorToPlayer(string format, params object[] param) {
 				if (AsteroidManager.getOptions().getErrorReporting()) {
 					ScreenMessages.PostScreenMessage(new ScreenMessage(
-						String.Format("CustomAsteroids: " + format, param), 5.0f, ScreenMessageStyle.UPPER_RIGHT));
+						String.Format("[CustomAsteroids]: " + format, param), 5.0f, ScreenMessageStyle.UPPER_RIGHT));
 				}
 			}
 		}

@@ -31,7 +31,7 @@ namespace Starstrider42 {
 				untouchedSet = new DefaultAsteroids();
 			}
 
-			/** Factory method obtaining Custom Asteroids settings from a config file
+			/** Factory method obtaining Custom Asteroids settings from KSP config state
 			 * 
 			 * @return A newly constructed PopulationLoader object containing a full list
 			 * 		of all valid asteroid groups in asteroid config files
@@ -59,7 +59,7 @@ namespace Starstrider42 {
 							if (curNode.name == "ASTEROIDGROUP") {
 								try {
 									#if DEBUG
-									Debug.Log("Customasteroids: ConfigNode '" + curNode + "' loaded");
+									Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
 									#endif
 									Population newPop = new Population();
 									ConfigNode.LoadObjectFromConfig(newPop, curNode);
@@ -72,7 +72,7 @@ namespace Starstrider42 {
 							else if (curNode.name == "DEFAULT") {
 								try {
 									#if DEBUG
-									Debug.Log("Customasteroids: ConfigNode '" + curNode + "' loaded");
+									Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
 									#endif
 									// Construct-and-swap for better exception safety
 									DefaultAsteroids oldPop = new DefaultAsteroids();
@@ -89,9 +89,16 @@ namespace Starstrider42 {
 
 					#if DEBUG
 					foreach (Population x in allPops.asteroidSets) {
-						Debug.Log("Customasteroids: Population '" + x + "' loaded");
+						Debug.Log("[CustomAsteroids]: Population '" + x + "' loaded");
 					}
 					#endif
+
+					if (allPops.asteroidSets.Count == 0) {
+						Debug.LogWarning("[CustomAsteroids]: Custom Asteroids could not find any configs in GameData!");
+						ScreenMessages.PostScreenMessage(
+							"Custom Asteroids could not find any configs in GameData.\nAsteroids will not appear.", 
+							10.0f, ScreenMessageStyle.UPPER_CENTER);
+					}
 
 					return allPops;
 				// No idea what kinds of exceptions are thrown by ConfigNode
