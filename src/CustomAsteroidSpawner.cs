@@ -69,7 +69,7 @@ namespace Starstrider42 {
 				} while (spawner == null || spawner.spawnGroupMaxLimit != 8);
 
 				#if DEBUG
-				Debug.Log("CustomAsteroids: editing stock spawner...");
+				Debug.Log("[CustomAsteroids]: editing stock spawner...");
 				#endif
 
 				spawner.minUntrackedLifetime = AsteroidManager.getOptions().getUntrackedTimes().First;
@@ -81,16 +81,14 @@ namespace Starstrider42 {
 					spawner.spawnGroupMinLimit = 0;
 					spawner.spawnGroupMaxLimit = 0;
 					#if DEBUG
-					Debug.Log("CustomAsteroids: stock spawner disabled");
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.sizeCurve = " + spawner.sizeCurve.ToString());
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnOddsAgainst = " + spawner.spawnOddsAgainst);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnInterval = " + spawner.spawnInterval);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.maxUntrackedLifetime = " + spawner.maxUntrackedLifetime);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.minUntrackedLifetime = " + spawner.minUntrackedLifetime);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
-					Debug.Log("CustomAsteroids: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
+					Debug.Log("[CustomAsteroids]: stock spawner disabled");
+					Debug.Log("[CustomAsteroids]: ScenarioDiscoverableObjects.spawnGroupMinLimit = " + spawner.spawnGroupMinLimit);
+					Debug.Log("[CustomAsteroids]: ScenarioDiscoverableObjects.spawnGroupMaxLimit = " + spawner.spawnGroupMaxLimit);
+					Debug.Log("[CustomAsteroids]: ScenarioDiscoverableObjects.sizeCurve = " + spawner.sizeCurve.ToString());
+					Debug.Log("[CustomAsteroids]: ScenarioDiscoverableObjects.spawnOddsAgainst = " + spawner.spawnOddsAgainst);
+					Debug.Log("[CustomAsteroids]: ScenarioDiscoverableObjects.spawnInterval = " + spawner.spawnInterval);
+					Debug.Log("[CustomAsteroids]: ScenarioDiscoverableObjects.maxUntrackedLifetime = " + spawner.maxUntrackedLifetime);
+					Debug.Log("[CustomAsteroids]: ScenarioDiscoverableObjects.minUntrackedLifetime = " + spawner.minUntrackedLifetime);
 					#endif
 				}
 			}
@@ -119,7 +117,7 @@ namespace Starstrider42 {
 
 						// More than one asteroid per tick is unlikely even at 100,000×
 						while (Planetarium.GetUniversalTime() > nextAsteroid) {
-							Debug.Log("CustomAsteroids: asteroid discovered at UT " + nextAsteroid);
+							Debug.Log("[CustomAsteroids]: asteroid discovered at UT " + nextAsteroid);
 							stockSpawner.SpawnAsteroid();
 
 							nextAsteroid += waitForAsteroid();
@@ -150,7 +148,7 @@ namespace Starstrider42 {
 					}
 
 					foreach (Vessel oldAsteroid in toDelete) {
-						Debug.Log("CustomAsteroids: manually removing asteroid " + oldAsteroid.GetName());
+						Debug.Log("[CustomAsteroids]: manually removing asteroid " + oldAsteroid.GetName());
 						oldAsteroid.Die();
 					}
 				}
@@ -176,7 +174,7 @@ namespace Starstrider42 {
 				base.OnLoad(node);
 
 				#if DEBUG
-				Debug.Log("CustomAsteroids: full node = " + node);
+				Debug.Log("[CustomAsteroids]: full node = " + node);
 				#endif
 				ConfigNode thisNode = node.GetNode("SpawnState");
 				if (thisNode != null) {
