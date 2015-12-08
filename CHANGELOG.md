@@ -20,6 +20,7 @@ Unreleased
 ### Bug Fixes
 
 * Asteroids will now be properly removed at very high (larger than 100,000×) time warps. Players may see substantial lag as the despawner works, however.
+* Asteroid groups using `orbitPhase {epoch = GameStart}` will now work correctly in RealSolarSystem.
 
 Version 1.1.0
 ------------

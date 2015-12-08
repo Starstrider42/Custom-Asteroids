@@ -135,7 +135,7 @@ namespace Starstrider42 {
 					}
 					switch (orbitPhase.getEpoch()) {
 					case PhaseRange.EpochType.GameStart:
-						epoch = getStartUt();
+						epoch = 0.0;
 						break;
 					case PhaseRange.EpochType.Now:
 						epoch = Planetarium.GetUniversalTime();
@@ -282,30 +282,6 @@ namespace Starstrider42 {
 						"name");
 				}
 				return theBody;
-			}
-
-			/** Returns the time at the start of the game
-			 * 
-			 * @return If playing stock KSP, returns 0 UT. If playing Real Solar System, returns 
-			 * 		`RealSolarSystem.cfg/REALSOLARSYSTEM.Epoch`
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			private static double getStartUt() {
-				double epoch = 0.0;
-
-				// Even if the RSS config file exists, ignore it if the mod itself is inactive
-				if (AssemblyLoader.loadedAssemblies.Any (assemb => assemb.assembly.GetName().Name == "RealSolarSystem")) {
-					UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("REALSOLARSYSTEM");
-					if (configList.Length >= 1) {
-						string epochSearch = configList[0].config.GetValue("Epoch");
-						if (!Double.TryParse(epochSearch, out epoch)) {
-							epoch = 0.0;
-						}
-					}
-				}
-
-				return epoch;
 			}
 
 			////////////////////////////////////////////////////////
