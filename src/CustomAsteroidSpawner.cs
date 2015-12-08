@@ -106,7 +106,7 @@ namespace Starstrider42 {
 					ScenarioDiscoverableObjects stockSpawner = getStockSpawner();
 					if (stockSpawner == null) {
 						#if DEBUG
-						Debug.Log("Could not find ScenarioDiscoverableObjects");
+						Debug.Log("[CustomAsteroids]: Could not find ScenarioDiscoverableObjects");
 						#endif
 						return;
 					}
