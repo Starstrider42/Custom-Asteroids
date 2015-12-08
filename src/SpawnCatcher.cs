@@ -28,7 +28,8 @@ namespace Starstrider42 {
 			 * 
 			 * @todo What exceptions are thrown by GameEvents.onVesselCreate.*?
 			 */
-			public void Awake() {
+			// MUST be called on Start(), and not Awake(), to avoid accidentally editing existing vessels
+			public void Start() {
 				GameEvents.onVesselCreate.Add(catchAsteroidSpawn);
 			}
 

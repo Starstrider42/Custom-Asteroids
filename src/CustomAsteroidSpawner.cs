@@ -75,7 +75,7 @@ namespace Starstrider42 {
 				spawner.minUntrackedLifetime = AsteroidManager.getOptions().getUntrackedTimes().First;
 				spawner.maxUntrackedLifetime = AsteroidManager.getOptions().getUntrackedTimes().Second;
 
-				if (AsteroidManager.getOptions().getCustomSpawner()) {
+				if (AsteroidManager.getOptions().getSpawner() != SpawnerType.Stock) {
 					// Thou Shalt Not adjust spawnInterval -- it's needed to clean up old asteroids
 					spawner.spawnOddsAgainst   = 10000;
 					spawner.spawnGroupMinLimit = 0;
@@ -102,7 +102,7 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			public void Update() {
-				if(canFindAsteroids && AsteroidManager.getOptions().getCustomSpawner()) {
+				if(canFindAsteroids && AsteroidManager.getOptions().getSpawner() == SpawnerType.FixedRate) {
 					ScenarioDiscoverableObjects stockSpawner = getStockSpawner();
 					if (stockSpawner == null) {
 						#if DEBUG

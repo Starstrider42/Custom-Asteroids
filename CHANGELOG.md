@@ -9,13 +9,14 @@ Unreleased
 
 ### New Features
 
-* Support for KSP 1.0
+* Support for KSP 1.0.
 * A prominent warning will now be displayed in-game if CustomAsteroids is installed without any asteroid configs.
 
 ### Changes
 
 * Configs updated to reflect KSP 1.0 and popular solar system mods.
-* Logs now follow the standard convention (prefixed by "[CustomAsteroids]")
+* Logs now follow the standard convention (prefixed by "[CustomAsteroids]").
+* The setting "UseCustomSpawner" has been replaced by a more flexible setting, "Spawner". Old settings files are supported and will be migrated automatically.
 
 ### Bug Fixes
 
