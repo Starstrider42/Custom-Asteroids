@@ -139,7 +139,7 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			internal double getTotalRate() {
-				double total = 0.0;
+				double total = untouchedSet.getSpawnRate();
 				foreach (Population x in asteroidSets) {
 					total += x.getSpawnRate();
 				}
