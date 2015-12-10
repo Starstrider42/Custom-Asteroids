@@ -1,9 +1,9 @@
 Custom Asteroids v1.1.0
 ============
 
-Custom Asteroids is a mod for [Kerbal Space Program](http://www.kerbalspaceprogram.com/) that expands the asteroid functionality introduced in version 0.23.5 of the game. It is designed to be easily and naturally extended by players.
+Custom Asteroids is a mod for [Kerbal Space Program](http://www.kerbalspaceprogram.com/) that expands the asteroid functionality introduced in version 0.23.5 of the game. It is designed to be easily and naturally extended by players. API documentation is available at http://starstrider42.github.io/Custom-Asteroids/.
 
-Custom Asteroids preserves the basic mechanics of Kerbal Space Program, in that asteroids must first be discovered, then tracked to give them a known orbit. However, under Custom Asteroids most asteroids will not be on a flyby course for Kerbin. Instead, the mod places asteroids in specific populations throughout the stock kerbol system. Additional populations, such as belts suitable for mods such as Real Solar System, Alternis Kerbol, or PlanetFactory, may be added by third parties.
+Custom Asteroids preserves the basic mechanics of Kerbal Space Program, in that asteroids must first be discovered, then tracked to give them a known orbit. However, under Custom Asteroids most asteroids will not be on a flyby course for Kerbin. Instead, the mod places asteroids in specific populations throughout the stock kerbol system. Additional populations, such as belts suitable for mods such as Real Solar System or Alternis Kerbol, may be added by third parties.
 
 To use Custom Asteroids, install the mod in your `GameData` directory. New asteroids in both new and old save games will immediately be generated according to the new rules. Asteroids already created, including untracked asteroids, will not be affected. There is no in-game interface; Custom Asteroids works entirely in the background. Several options may be set in a [separate file](@ref options).
 

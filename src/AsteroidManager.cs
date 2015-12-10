@@ -15,7 +15,8 @@ using UnityEngine;
 namespace Starstrider42 {
 
 	namespace CustomAsteroids {
-		/** Central class for controlling asteroid orbits
+		/** 
+		 * Central class for controlling Custom Asteroids configuration.
 		 */
 		internal static class AsteroidManager {
 			/** Loads all Custom Asteroids settings
@@ -27,71 +28,13 @@ namespace Starstrider42 {
 					curOptions  = Options.Load();
 					allowedPops = PopulationLoader.Load();
 
-					Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day");
+					Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day.");
 				} catch (Exception) {
 					// Ensure the contents of AsteroidManager are predictable even in the event of an exception
 					// Though an exception thrown by a static constructor is basically unrecoverable...
 					curOptions  = new Options();
 					allowedPops = new PopulationLoader();
 					throw;
-				}
-			}
-
-			/** Customizes an asteroid, based on the settings loaded to Custom Asteroids
-			 * 
-			 * @param[in,out] asteroid The asteroid to be modified
-			 * 
-			 * @pre @p asteroid is a valid asteroid object in the game
-			 * @pre @p asteroid has never been loaded in physics range
-			 * 
-			 * @post @p asteroid has properties consistent with membership in a randomly 
-			 * 		chosen population
-			 * 
-			 * @exception System.InvalidOperationException Thrown if there are no populations in 
-			 * 		which to place the asteroid
-			 * @exception AsteroidManager.BadPopulationException Thrown if a 
-			 * 		population exists, but cannot generate valid data
-			 * 
-			 * @exceptsafe The program is in a consistent state in the event of an exception
-			 */
-			internal static void editAsteroid(Vessel asteroid) {
-				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Generating asteroid properties...");
-				#endif
-				Population newPop = allowedPops.drawPopulation();
-
-				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Target population = " + newPop);
-				#endif
-
-				// newPop == null means "leave asteroid in default population"
-				if (newPop != null) {
-					try {
-						asteroid.orbitDriver.orbit = newPop.drawOrbit();
-					} catch (InvalidOperationException e) {
-						throw new BadPopulationException (newPop, 
-							"[CustomAsteroids]: Selected invalid population " + newPop, e);
-					}
-				}
-				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Orbit selected.");
-				#endif
-
-				if (curOptions.getRenameOption() && asteroid.GetName() != null) {
-					string asteroidId = asteroid.GetName();
-					#if DEBUG
-					Debug.Log("[CustomAsteroids]: Renaming asteroid " + asteroidId);
-					#endif
-
-					string    newName = (newPop != null ? newPop.getAsteroidName() : allowedPops.defaultName());
-					if (asteroidId.IndexOf("Ast. ") >= 0) {
-						// Keep only the ID number
-						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
-						asteroid.vesselName = newName + " " + asteroidId;
-					} 	// if asteroid name doesn't match expected format, leave it as-is
-					#if DEBUG
-					Debug.Log("[CustomAsteroids]: Asteroid renamed to " + asteroid.vesselName);
-					#endif
 				}
 			}
 
@@ -115,97 +58,34 @@ namespace Starstrider42 {
 				return allowedPops.getTotalRate();
 			}
 
+			/** Randomly selects an asteroid population
+			 * 
+			 * The selection is weighted by the spawn rate of each population; a population with 
+			 * 		a rate of 2.0 is twice as likely to be chosen as one with a rate of 1.0.
+			 * 
+			 * @return A reference to the selected population
+			 * 
+			 * @exception System.InvalidOperationException Thrown if there are no populations from 
+			 * 		which to choose, or if all spawn rates are zero, or if any rate is negative
+			 */
+			internal static Population drawPopulation() {
+				return allowedPops.drawPopulation();
+			}
+
+			/** Returns info about the default population.
+			 * 
+			 * @return the object used to represent stock-like asteroids. 
+			 * 		SHALL NOT be null, but MAY have a spawn rate of zero.
+			 */
+			internal static DefaultAsteroids defaultPopulation() {
+				return allowedPops.defaultAsteroids();
+			}
+
 			/** Singleton object responsible for handling Custom Asteroids configurations */
 			private static PopulationLoader allowedPops;
 
 			/** Singleton object responsible for handling Custom Asteroids options */
 			private static Options curOptions;
-
-			/** Exception indicating that a Population is in an invalid state
-			 */
-			internal class BadPopulationException : InvalidOperationException {
-				/** Constructs an exception with no specific information
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 */
-				public BadPopulationException() : base() {
-					badPop = null;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] which The population that triggered the exception
-				 *
-				 * @post getPop() = @p which
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 */
-				public BadPopulationException(Population which) : base() {
-					badPop = which;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] which The population that triggered the exception
-				 * @param[in] message A description of the detected problem
-				 *
-				 * @post getPop() = @p which
-				 * @post @p base.Message = @p message
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 * 
-				 * @see [InvalidOperationException(string)](http://msdn.microsoft.com/en-us/library/7yaybx04%28v=vs.90%29.aspx)
-				 */
-				public BadPopulationException(Population which, string message) : base(message) {
-					badPop = which;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] which The population that triggered the exception
-				 * @param[in] message A description of the detected problem
-				 * @param[in] inner The exception thrown when the problem was detected
-				 *
-				 * @post getPop() = @p which
-				 * @post @p base.Message = @p message
-				 * @post @p base.InnerException = @p inner
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 * 
-				 * @see [InvalidOperationException(string, Exception)](http://msdn.microsoft.com/en-us/library/x4zw1bf5%28v=vs.90%29.aspx)
-				 */
-				public BadPopulationException(Population which, string message, Exception inner) 
-					: base(message, inner) {
-					badPop = which;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] info The object that holds the serialized object data.
-				 * @param[in] context The contextual information about the source or destination. 
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 * 
-				 * @see [InvalidOperationException(SerializationInfo, StreamingContext)](http://msdn.microsoft.com/en-us/library/x5c916ac%28v=vs.90%29.aspx)
-				 */
-				protected BadPopulationException(System.Runtime.Serialization.SerializationInfo info, 
-						System.Runtime.Serialization.StreamingContext context)
-					: base(info, context) {}
-
-				/** Provides the invalid Population that triggered the exception
-				 *
-				 * @return A reference to the faulty object, or `null` if no 
-				 *	object was stored.
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 */
-				public Population getPop() {
-					return badPop;
-				}
-
-				/** The invalid Population that triggered the exception */
-				private Population badPop;
-			}
 		}
 	}
 }

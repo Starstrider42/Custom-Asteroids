@@ -1,11 +1,11 @@
 Custom(izing) Asteroids                         {#newbelts}
 ============
 
-Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. The only such file included in the Custom Asteroids download is `GameData/CustomAsteroids/config/Basic Asteroids.cfg`. However, any .cfg file that follows the same format will be parsed by Custom Asteroids.
+Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. There are two example files in the Custom Asteroids download, both in `GameData/CustomAsteroids/config/`. However, any .cfg file anywhere in `GameData` that follows the same format will be parsed by Custom Asteroids. If you are distributiong asteroid definition files with your mod, please put them in your mod directory rather than the CustomAsteroids directory so that players know where the files came from. If you need to suppress or modify the default asteroid definitions, they are fully ModuleManager-compatible.
 
 Within each file, each `ASTEROIDGROUP` block represents a single group of orbits. There is no limit to the number of `ASTEROIDGROUP` blocks you can place in a file.
 
-There may also be up to one `DEFAULT` block across all files, which controls how many asteroids are found on a Kerbin intercept trajectory as in the stock game. If the player has multiple files with a `DEFAULT` block, only one will be used.
+There may also be up to one `DEFAULT` block across all files, which controls how many asteroids are found on a Kerbin intercept trajectory or in the Dres ring. If the player has multiple files with a `DEFAULT` block, only one will be used.
 
 Basic Usage
 ------------
