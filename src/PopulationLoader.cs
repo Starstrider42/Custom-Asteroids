@@ -61,6 +61,13 @@ namespace Starstrider42 {
 								} catch (TypeInitializationException e) {
 									Debug.LogError("[CustomAsteroids]: failed to load population '" + curNode.GetValue("name") + "'");
 									Debug.LogException(e);
+									if (e.InnerException != null) {
+										Util.ErrorToPlayer("Could not load asteroid group. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
+											e.Message, e.GetBaseException().Message);
+									} else {
+										Util.ErrorToPlayer("Could not load asteroid group. Cause: \"{0}\".", 
+											e.Message);
+									}
 								}	// Attempt to parse remaining populations
 							}
 							else if (curNode.name == "DEFAULT") {
@@ -75,6 +82,13 @@ namespace Starstrider42 {
 								} catch (TypeInitializationException e) {
 									Debug.LogError("[CustomAsteroids]: failed to load population '" + curNode.GetValue("name") + "'");
 									Debug.LogException(e);
+									if (e.InnerException != null) {
+										Util.ErrorToPlayer("Could not load default asteroids. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
+											e.Message, e.GetBaseException().Message);
+									} else {
+										Util.ErrorToPlayer("Could not load default asteroids. Cause: \"{0}\".", 
+											e.Message);
+									}
 								}	// Attempt to parse remaining populations
 							}
 							// ignore any other nodes present

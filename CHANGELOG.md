@@ -16,6 +16,7 @@ Version 1.2.0
 
 * Configs updated to reflect KSP 1.0 and popular solar system mods.
 * Logs now follow the standard convention (prefixed by "[CustomAsteroids]").
+* More consistent feedback for bad population definitions.
 * The setting "UseCustomSpawner" has been replaced by a more flexible setting, "Spawner". Old settings files are supported and will be migrated automatically.
 * The "Stock" value of "Spawner" will no longer use the KSP spawner, but an internal emulation. This change will make future improvements to the mod much easier to implement.
 * The previous public API has been marked as deprecated (though it is unlikely that anyone was using it, as it was never finished). It will be removed in version 2.0.0.
