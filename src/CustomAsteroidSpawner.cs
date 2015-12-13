@@ -57,6 +57,9 @@ namespace Starstrider42 {
 					Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
 					#endif
 				}
+
+				// Temporary workaround for bug in UnityEngine.Random
+				Random.seed = System.Guid.NewGuid().GetHashCode();
 			}
 
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
