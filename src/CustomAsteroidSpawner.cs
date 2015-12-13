@@ -45,34 +45,17 @@ namespace Starstrider42 {
 				// Stock spawner only needs to be unloaded when first loading the game
 				// It will stay unloaded through future scene changes
 				if (HighLogic.CurrentGame.RemoveProtoScenarioModule(typeof(ScenarioDiscoverableObjects))) {
+					// RemoveProtoScenarioModule doesn't remove the actual Scenario
+					foreach(ScenarioDiscoverableObjects scen in 
+						Resources.FindObjectsOfTypeAll(typeof(ScenarioDiscoverableObjects))) {
+						scen.StopAllCoroutines();
+						Destroy(scen);
+					}
 					Debug.Log("[CustomAsteroids]: stock spawner has been shut down.");
 				} else {
 					#if DEBUG
 					Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
 					#endif
-				}
-
-				GameEvents.onVesselCreate.Add(catchAsteroidSpawn);
-			}
-
-			/** 
-			 * Workaround for a bug in which stock spawner continues to create asteroids 
-			 * for one frame after being removed.
-			 * 
-			 * @param[in] vessel a newly created ship object
-			 * 
-			 * @post if @p vessel is a newly created asteroid, it is deleted
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			private void catchAsteroidSpawn(Vessel vessel) {
-				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Detected vessel " + vessel.GetName());
-				#endif
-				if (vessel.vesselType == VesselType.SpaceObject) {
-					// Verify that each asteroid is caught exactly once
-					Debug.Log("[CustomAsteroids]: Blocked stock spawn of " + vessel.GetName());
-					vessel.Die();
 				}
 			}
 
@@ -83,14 +66,6 @@ namespace Starstrider42 {
 			 * @todo What exceptions are thrown by StartCoroutine?
 			 */
 			internal void Start() {
-				// Just in case, on some platforms, ScenarioDiscoverableObjects was added after calling
-				// CustomAsteroidSpawner.onAwake()
-				if (HighLogic.CurrentGame.RemoveProtoScenarioModule(typeof(ScenarioDiscoverableObjects))) {
-					Debug.LogWarning("[CustomAsteroids]: stock spawner has been shut down later than expected.");
-				}
-
-				GameEvents.onVesselCreate.Remove(catchAsteroidSpawn);
-
 				#if DEBUG
 				Debug.Log("[CustomAsteroids]: Booting asteroid driver...");
 				#endif
