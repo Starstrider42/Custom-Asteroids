@@ -1,6 +1,7 @@
 var class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner =
 [
-    [ "OnLoad", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a5004b2e2fccf95672af5da392153a3bb", null ],
-    [ "OnSave", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#ac689288c9eac88d1c7221720004672b3", null ],
-    [ "Update", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#aec0783b5a136e042adcc47bae4fe5291", null ]
+    [ "OnAwake", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a5a476cb908710ed98f34205decd0e142", null ],
+    [ "OnLoad", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a96d2f419d9d17f2fb403dc5d5c3a269f", null ],
+    [ "OnSave", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a8db943c13c0ea5ba9a739c0391f5d3d8", null ],
+    [ "Update", "class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#ae38e27a508bdcff809dced4bd945e887", null ]
 ];
