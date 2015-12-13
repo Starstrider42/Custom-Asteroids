@@ -2,20 +2,23 @@ Version History                         {#changelog}
 ============
 
 Custom Asteroids conforms to version 2.0.0 of the [Semantic Versioning specification](http://semver.org/spec/v2.0.0.html). 
-All version numbers are to be interpreted as described therein. In addition to the actual [public API](http://starstrider42.github.io/Custom-Asteroids/), the [format of asteroid population files](@ref newbelts) will be considered the API for the purpose of versioning.
+All version numbers are to be interpreted as described therein. In addition to the actual [public API](http://starstrider42.github.io/Custom-Asteroids/), the [format of asteroid population files](@ref newbelts) and the information stored in KSP save files will be considered part of the API for the purpose of versioning.
 
 Unreleased
 ------------
 
 ### New Features
 
-* Support for KSP 1.0
+* Support for KSP 1.0.
 * A prominent warning will now be displayed in-game if CustomAsteroids is installed without any asteroid configs.
 
 ### Changes
 
 * Configs updated to reflect KSP 1.0 and popular solar system mods.
-* Logs now follow the standard convention (prefixed by "[CustomAsteroids]")
+* Logs now follow the standard convention (prefixed by "[CustomAsteroids]").
+* The setting "UseCustomSpawner" has been replaced by a more flexible setting, "Spawner". Old settings files are supported and will be migrated automatically.
+* The "Stock" value of "Spawner" will no longer use the KSP spawner, but an internal emulation. This change will make future improvements to the mod much easier to implement.
+* The previous public API has been marked as deprecated (though it is unlikely that anyone was using it, as it was never finished). It will be removed in version 2.0.0.
 
 ### Bug Fixes
 

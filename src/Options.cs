@@ -13,6 +13,8 @@ namespace Starstrider42 {
 
 	namespace CustomAsteroids {
 
+		internal enum SpawnerType {Stock, FixedRate};
+
 		/** Stores a set of configuration options for Custom Asteroids
 		 * 
 		 * ConfigNodes are used to manage option persistence
@@ -27,7 +29,7 @@ namespace Starstrider42 {
 				renameAsteroids      = true;
 				minUntrackedLifetime = 1.0f;
 				maxUntrackedLifetime = 20.0f;
-				useCustomSpawner     = true;
+				spawner              = SpawnerType.FixedRate;
 				errorsOnScreen       = true;
 			}
 
@@ -87,6 +89,11 @@ namespace Starstrider42 {
 						if (!optFile.HasValue("VersionNumber")) {
 							allOptions.versionNumber = "0.1.0";
 						}
+						// Backward-compatible with versions 1.1.0 and earlier
+						if (!optFile.HasValue("Spawner") && optFile.HasValue("UseCustomSpawner")) {
+							allOptions.spawner = optFile.GetValue("UseCustomSpawner").Equals("False") 
+								? SpawnerType.Stock : SpawnerType.FixedRate;
+						}
 					} else {
 						allOptions.versionNumber = "";
 					}
@@ -134,8 +141,8 @@ namespace Starstrider42 {
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
-			internal bool getCustomSpawner() {
-				return useCustomSpawner;
+			internal SpawnerType getSpawner() {
+				return spawner;
 			}
 
 			/** Returns whether or not asteroid spawning errors should appear in the game.
@@ -202,8 +209,8 @@ namespace Starstrider42 {
 			private bool renameAsteroids;
 
 			/** Whether or not to use custom spawning behavior */
-			[Persistent(name="UseCustomSpawner")]
-			private bool useCustomSpawner;
+			[Persistent(name="Spawner")]
+			private SpawnerType spawner;
 
 			/** Whether or not to report failed asteroid spawns in the game. The errors will be logged regardless. */
 			[Persistent(name="ErrorsOnScreen")]

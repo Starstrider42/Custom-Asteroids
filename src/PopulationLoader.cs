@@ -116,8 +116,6 @@ namespace Starstrider42 {
 			 * 
 			 * @exception System.InvalidOperationException Thrown if there are no populations from 
 			 * 		which to choose, or if all spawn rates are zero, or if any rate is negative
-			 * 
-			 * @exceptsafe Does not throw exceptions
 			 */
 			internal Population drawPopulation() {
 				try {
@@ -141,21 +139,22 @@ namespace Starstrider42 {
 			 * @exceptsafe Does not throw exceptions
 			 */
 			internal double getTotalRate() {
-				double total = 0.0;
+				double total = untouchedSet.getSpawnRate();
 				foreach (Population x in asteroidSets) {
 					total += x.getSpawnRate();
 				}
 				return total;
 			}
 
-			/** Returns the name used for asteroids on stock orbits
+			/** Returns the object used to spawn asteroids on stock orbits.
 			 * 
-			 * @return The name with which to replace "Ast."
+			 * @return the default asteroid spawner. SHALL NOT be null, but MAY
+			 * 		have a spawn rate of 0.
 			 * 
 			 * @exceptsafe Does not throw exceptions
 			 */
-			internal string defaultName() {
-				return untouchedSet.getAsteroidName();
+			internal DefaultAsteroids defaultAsteroids() {
+				return untouchedSet;
 			}
 
 			/** Debug function for traversing node tree
@@ -184,65 +183,108 @@ namespace Starstrider42 {
 			 * @note Initialized via ConfigNode
 			 */
 			private DefaultAsteroids untouchedSet;
+		}
 
-			/** Contains settings for asteroids that aren't affected by Custom Asteroids
+		/** Contains settings for asteroids that aren't affected by Custom Asteroids
+		 */
+		internal sealed class DefaultAsteroids
+		{
+			/** Sets default settings for asteroids with unmodified orbits
+			 * 
+			 * @post The object is initialized to a state in which it will not be expected to generate orbits.
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 * 
+			 * @note Required by interface of ConfigNode.LoadObjectFromConfig()
 			 */
-			private sealed class DefaultAsteroids
-			{
-				/** Sets default settings for asteroids with unmodified orbits
-				 * 
-				 * @post The object is initialized to a state in which it will not be expected to generate orbits.
-				 * 
-				 * @exceptsafe Does not throw exceptions.
-				 * 
-				 * @note Required by interface of ConfigNode.LoadObjectFromConfig()
-				 */
-				internal DefaultAsteroids() {
-					this.name         = "default";
-					this.title        = "Ast.";
-					this.spawnRate    = 0.0;
-				}
-
-				/** Returns the rate at which stock-like asteroids are discovered
-				 * 
-				 * @return The rate relative to the rates of all other populations.
-				 * 
-				 * @exceptsafe Does not throw exceptions.
-				 */
-				internal double getSpawnRate() {
-					return spawnRate;
-				}
-
-				/** Returns the name used for stock-like asteroids
-				 * 
-				 * @return A human-readable string identifying the population. May not be unique.
-				 * 
-				 * @exceptsafe Does not throw exceptions.
-				 */
-				internal string getAsteroidName() {
-					return title;
-				}
-
-				/** Returns a string that represents the current object.
-				 *
-				 * @return A simple string identifying the object
-				 * 
-				 * @see [Object.ToString()](http://msdn.microsoft.com/en-us/library/system.object.tostring%28v=vs.90%29.aspx)
-				 */
-				public override string ToString() {
-					return name;
-				}
-
-				////////////////////////////////////////////////////////
-				// Population properties
-
-				/** The name of the group */
-				[Persistent] private string name;
-				/** The name of asteroids with unmodified orbits */
-				[Persistent] private string title;
-				/** The rate, in asteroids per day, at which asteroids appear on stock orbits */
-				[Persistent] private double spawnRate;
+			internal DefaultAsteroids() {
+				this.name         = "default";
+				this.title        = "Ast.";
+				this.spawnRate    = 0.0;
 			}
+
+			/** Returns the rate at which stock-like asteroids are discovered
+			 * 
+			 * @return The rate relative to the rates of all other populations.
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal double getSpawnRate() {
+				return spawnRate;
+			}
+
+			/** Returns the name used for stock-like asteroids
+			 * 
+			 * @return A human-readable string identifying the population. May not be unique.
+			 * 
+			 * @exceptsafe Does not throw exceptions.
+			 */
+			internal string getAsteroidName() {
+				return title;
+			}
+
+			/** Returns a string that represents the current object.
+			 *
+			 * @return A simple string identifying the object
+			 * 
+			 * @see [Object.ToString()](http://msdn.microsoft.com/en-us/library/system.object.tostring%28v=vs.90%29.aspx)
+			 */
+			public override string ToString() {
+				return name;
+			}
+
+			/** Generates a random orbit in as similar a manner to stock as possible.
+			 * 
+			 * @return The orbit of a randomly selected member of the population
+			 * 
+			 * @exception System.InvalidOperationException Thrown if cannot produce stockalike orbits.
+			 * 
+			 * @exceptsafe The program is in a consistent state in the event of an exception
+			 */
+			internal Orbit drawOrbit() {
+				CelestialBody kerbin = FlightGlobals.Bodies.Find(body => body.isHomeWorld);
+				CelestialBody dres = FlightGlobals.Bodies.Find(body => body.name.Equals("Dres"));
+
+				if (dres != null && reachedBody(dres) && UnityEngine.Random.Range(0, 4) == 0) {
+					// Drestroids
+					double a = RandomDist.drawLogUniform(0.55, 0.65) * dres.sphereOfInfluence;
+					double e = RandomDist.drawRayleigh(0.005);
+					double i = RandomDist.drawRayleigh(0.005);	// lAn takes care of negative inclinations
+					double lAn = RandomDist.drawAngle();
+					double aPe = RandomDist.drawAngle();
+					double mEp = Math.PI/180.0 * RandomDist.drawAngle();
+					double epoch = Planetarium.GetUniversalTime();
+
+					Debug.Log("[CustomAsteroids]: new orbit at " + a + " m, e = " + e + ", i = " + i 
+						+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp + " at epoch " + epoch);
+					return new Orbit(i, e, a, lAn, aPe, mEp, epoch, dres);
+				} else if (kerbin != null) {
+					// Kerbin interceptors
+					double delay = RandomDist.drawUniform(50.0, 220.0);
+					Debug.Log("[CustomAsteroids]: new orbit will pass by kerbin in " + delay + " days");
+					return Orbit.CreateRandomOrbitFlyBy(kerbin, delay);
+				} else {
+					throw new InvalidOperationException("Cannot create stockalike orbits; Kerbin not found!");
+				}
+			}
+
+			// Determines whether a body was already visited
+			// Borrowed from Kopernicus
+			private bool reachedBody(CelestialBody body)
+			{
+				KSPAchievements.CelestialBodySubtree bodyTree = ProgressTracking.Instance.GetBodyTree(body.name);
+				return bodyTree != null && bodyTree.IsReached;
+			}
+
+			////////////////////////////////////////////////////////
+			// Population properties
+
+			/** The name of the group */
+			[Persistent] private string name;
+			/** The name of asteroids with unmodified orbits */
+			[Persistent] private string title;
+			/** The rate, in asteroids per day, at which asteroids appear on stock orbits */
+			[Persistent] private double spawnRate;
 		}
 	}
 }
