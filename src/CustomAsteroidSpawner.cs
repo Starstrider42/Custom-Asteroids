@@ -1,9 +1,3 @@
-﻿/** Allows manual control of asteroid detections
- * @file CustomAsteroidSpawner.cs
- * @author %Starstrider42
- * @date Created May 14, 2014
- */
-
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,7 +7,7 @@ namespace Starstrider42 {
 	namespace CustomAsteroids {
 		/** Manages asteroid spawning behaviour, including the choice of spawner.
 		 * 
-		 * @todo Remove this class when implementing 3rd party spawner support for version 2.0.0
+		 * @deprecated Remove this class when implementing 3rd party spawner support for version 2.0.0
 		 */
 		// This class is, for better or worse, part of the Custom Asteroids API, so it can't 
 		// be properly refactored or even renamed before version 2.0.0.
@@ -111,9 +105,9 @@ namespace Starstrider42 {
 			 * 
 			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Update.html)
 			 * 
-			 * Tests whether it's time to create an asteroid
-			 * 
 			 * @exceptsafe Does not throw exceptions
+			 * 
+			 * @deprecated This method is kept public for backward-compatibility, but no longer does anything.
 			 */
 			[System.Obsolete("Improved spawn code does not work every tick; Update() no longer does anything.")]
 			public void Update() {
@@ -123,15 +117,6 @@ namespace Starstrider42 {
 			/** Called when the module is either constructed or loaded as part of a save game
 			 * 
 			 * @param[in] node The ConfigNode representing this ScenarioModule
-			 * 
-			 * @pre @p node is assumed to have the following format:
-			 * @code{.cfg}
-			 * SpawnState
-			 * {
-			 * 	NextAsteroidUT = 12345.6789
-			 * 	Enabled = True
-			 * }
-			 * @endcode
 			 * 
 			 * @post The module is initialized with any settings in @p node
 			 */
@@ -153,14 +138,6 @@ namespace Starstrider42 {
 			 * @param[out] node The ConfigNode representing this ScenarioModule
 			 * 
 			 * @post @p node is initialized with the persistent contents of this object
-			 * @post @p node has the following format:
-			 * @code{.cfg}
-			 * SpawnState
-			 * {
-			 * 	NextAsteroidUT = 12345.6789
-			 * 	Enabled = True
-			 * }
-			 * @endcode
 			 */
 			public override void OnSave(ConfigNode node)
 			{

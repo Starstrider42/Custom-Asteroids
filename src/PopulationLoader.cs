@@ -1,9 +1,3 @@
-/** Manages asteroid group configs
- * @file PopulationLoader.cs
- * @author %Starstrider42
- * @date Created October 26, 2014
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;

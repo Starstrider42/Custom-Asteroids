@@ -1,4 +1,4 @@
-ï»¿using System;
+using System;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -42,14 +42,14 @@ namespace Starstrider42.CustomAsteroids {
 		 * @return number of KSP seconds between consecutive spawn/despawn checks
 		 */
 		protected override float checkInterval() {
-			// If player suddenly jumps from 1Ã— to 100,000Ã—, each second of interval will 
+			// If player suddenly jumps from 1× to 100,000×, each second of interval will 
 			// delay asteroid check by 1.16 days
 			return 5.0f;
 		}
 
 		protected override void checkSpawn() {
 			if(areAsteroidsTrackable()) {
-				// More than one asteroid per tick is unlikely even at 100,000Ã—
+				// More than one asteroid per tick is unlikely even at 100,000×
 				while (Planetarium.GetUniversalTime() > nextAsteroid) {
 					Debug.Log("[FixedRateSpawner]: asteroid discovered at UT " + nextAsteroid);
 					spawnAsteroid();

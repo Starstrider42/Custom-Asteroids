@@ -1,9 +1,3 @@
-/** Determines which asteroid gets which orbit
- * @file AsteroidManager.cs
- * @author %Starstrider42
- * @date Created April 10, 2014
- */
-
 using System;
 using System.Collections.Generic;
 using System.Reflection;

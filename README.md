@@ -1,4 +1,4 @@
-Custom Asteroids v1.1.0
+Custom Asteroids v1.2.0
 ============
 
 Custom Asteroids is a mod for [Kerbal Space Program](http://www.kerbalspaceprogram.com/) that expands the asteroid functionality introduced in version 0.23.5 of the game. It is designed to be easily and naturally extended by players. API documentation is available at http://starstrider42.github.io/Custom-Asteroids/.
@@ -15,6 +15,6 @@ Credits
 ------------
 Custom Asteroids is created and maintained by %Starstrider42. Contact him by private message or report an issue on [GitHub](https://github.com/Starstrider42/Custom-Asteroids/issues).
 
-xEvilReeperx deserves full credit for figuring out how to manipulate asteroids from within a plugin, making Custom Asteroids possible. Many thanks also to Trueborn for developing Custom Biomes, which in addition to filling a huge gap in the early access game inspired this mod.
+xEvilReeperx deserves full credit for figuring out how to manipulate asteroids from within a plugin, making Custom Asteroids possible. The current, more stable, codebase is based on work by Thomas P./ThomasKerman.
 
-Thanks to rbray89, NathanKell, and Thomas P. for coding help in developing this mod!
+Many thanks also to Trueborn for developing Custom Biomes, which in addition to filling a huge gap in the early access game inspired this mod. Additional thanks to rbray89 and NathanKell for coding help in developing this mod.

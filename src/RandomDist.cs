@@ -1,9 +1,3 @@
-﻿/** Implements random number generators appropriate for minor planet models
- * @file Random.cs
- * @author %Starstrider42
- * @date Created April 9, 2014
- */
-
 using System;
 
 namespace Starstrider42 {

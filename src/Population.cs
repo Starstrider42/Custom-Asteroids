@@ -1,12 +1,4 @@
-﻿/** Code for generating asteroid orbits
- * @file Population.cs
- * @author %Starstrider42
- * @date Created April 9, 2014
- *
- * @todo Refactor this file
- */
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
