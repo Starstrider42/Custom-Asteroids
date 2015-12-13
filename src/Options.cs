@@ -78,15 +78,25 @@ namespace Starstrider42 {
 
 					ConfigNode optFile = ConfigNode.Load(optionList());
 					if (optFile != null) {
-						ConfigNode.LoadObjectFromConfig(allOptions, optFile);
-						// Backward-compatible with initial release
-						if (!optFile.HasValue("VersionNumber")) {
-							allOptions.versionNumber = "0.1.0";
-						}
-						// Backward-compatible with versions 1.1.0 and earlier
-						if (!optFile.HasValue("Spawner") && optFile.HasValue("UseCustomSpawner")) {
-							allOptions.spawner = optFile.GetValue("UseCustomSpawner").Equals("False") 
-								? SpawnerType.Stock : SpawnerType.FixedRate;
+						try {
+							ConfigNode.LoadObjectFromConfig(allOptions, optFile);
+							// Backward-compatible with initial release
+							if (!optFile.HasValue("VersionNumber")) {
+								allOptions.versionNumber = "0.1.0";
+							}
+							// Backward-compatible with versions 1.1.0 and earlier
+							if (!optFile.HasValue("Spawner") && optFile.HasValue("UseCustomSpawner")) {
+								allOptions.spawner = optFile.GetValue("UseCustomSpawner").Equals("False") 
+									? SpawnerType.Stock : SpawnerType.FixedRate;
+							}
+						} catch (ArgumentException e) {
+							Debug.LogError("Could not load options; reverting to default.");
+							Debug.LogException(e);
+							ScreenMessages.PostScreenMessage(
+								"[CustomAsteroids]: Could not load CustomAsteroids options. Cause: " + e.Message, 
+								10.0f, ScreenMessageStyle.UPPER_CENTER);
+							// Short-circuit things to prevent default from being saved
+							return new Options();
 						}
 					} else {
 						allOptions.versionNumber = "";
