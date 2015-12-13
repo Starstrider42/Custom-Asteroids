@@ -14,6 +14,11 @@ namespace Starstrider42 {
 		[KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
 		[System.Obsolete("Spawner should no longer be a ScenarioModule; this class will be replaced with a dedicated management class in 2.0.0.")]
 		public class CustomAsteroidSpawner : ScenarioModule {
+			static CustomAsteroidSpawner() {
+				// Ensure each game has different asteroids
+				Random.seed = System.Guid.NewGuid().GetHashCode();
+			}
+
 			internal CustomAsteroidSpawner() {
 				this.driverRoutine = null;
 
@@ -51,9 +56,6 @@ namespace Starstrider42 {
 					Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
 					#endif
 				}
-
-				// Temporary workaround for bug in UnityEngine.Random
-				Random.seed = System.Guid.NewGuid().GetHashCode();
 			}
 
 			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
