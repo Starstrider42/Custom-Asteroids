@@ -21,7 +21,7 @@ namespace Starstrider42 {
 		[System.Obsolete("Spawner should no longer be a ScenarioModule; this class will be replaced with a dedicated management class in 2.0.0.")]
 		public class CustomAsteroidSpawner : ScenarioModule {
 			internal CustomAsteroidSpawner() {
-				this.coroutine = null;
+				this.driverRoutine = null;
 
 				switch (AsteroidManager.getOptions().getSpawner()) {
 				case SpawnerType.FixedRate:
@@ -31,7 +31,6 @@ namespace Starstrider42 {
 					this.spawner = new StockalikeSpawner();
 					break;
 				default:
-					this.spawner = null;
 					throw new System.InvalidOperationException("Unknown spawner type: " + AsteroidManager.getOptions().getSpawner());
 				}
 			}
@@ -47,6 +46,33 @@ namespace Starstrider42 {
 				// It will stay unloaded through future scene changes
 				if (HighLogic.CurrentGame.RemoveProtoScenarioModule(typeof(ScenarioDiscoverableObjects))) {
 					Debug.Log("[CustomAsteroids]: stock spawner has been shut down.");
+				} else {
+					#if DEBUG
+					Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
+					#endif
+				}
+
+				GameEvents.onVesselCreate.Add(catchAsteroidSpawn);
+			}
+
+			/** 
+			 * Workaround for a bug in which stock spawner continues to create asteroids 
+			 * for one frame after being removed.
+			 * 
+			 * @param[in] vessel a newly created ship object
+			 * 
+			 * @post if @p vessel is a newly created asteroid, it is deleted
+			 * 
+			 * @exceptsafe Does not throw exceptions
+			 */
+			private void catchAsteroidSpawn(Vessel vessel) {
+				#if DEBUG
+				Debug.Log("[CustomAsteroids]: Detected vessel " + vessel.GetName());
+				#endif
+				if (vessel.vesselType == VesselType.SpaceObject) {
+					// Verify that each asteroid is caught exactly once
+					Debug.Log("[CustomAsteroids]: Blocked stock spawn of " + vessel.GetName());
+					vessel.Die();
 				}
 			}
 
@@ -57,11 +83,19 @@ namespace Starstrider42 {
 			 * @todo What exceptions are thrown by StartCoroutine?
 			 */
 			internal void Start() {
+				// Just in case, on some platforms, ScenarioDiscoverableObjects was added after calling
+				// CustomAsteroidSpawner.onAwake()
+				if (HighLogic.CurrentGame.RemoveProtoScenarioModule(typeof(ScenarioDiscoverableObjects))) {
+					Debug.LogWarning("[CustomAsteroids]: stock spawner has been shut down later than expected.");
+				}
+
+				GameEvents.onVesselCreate.Remove(catchAsteroidSpawn);
+
 				#if DEBUG
 				Debug.Log("[CustomAsteroids]: Booting asteroid driver...");
 				#endif
-				coroutine = driver();
-				StartCoroutine(coroutine);
+				driverRoutine = driver();
+				StartCoroutine(driverRoutine);
 			}
 
 			/** This function is called when the object will be destroyed.
@@ -71,11 +105,11 @@ namespace Starstrider42 {
 			 * @todo What exceptions are thrown by StopCoroutine?
 			 */
 			internal void OnDestroy() {
-				if (coroutine != null) {
+				if (driverRoutine != null) {
 					#if DEBUG
 					Debug.Log("[CustomAsteroids]: Shutting down asteroid driver...");
 					#endif
-					StopCoroutine(coroutine);
+					StopCoroutine(driverRoutine);
 				}
 			}
 
@@ -164,7 +198,7 @@ namespace Starstrider42 {
 			private readonly AbstractSpawner spawner;
 
 			/** Unity trick to get start/stop behaviour without a method name. */
-			private IEnumerator<WaitForSeconds> coroutine;
+			private IEnumerator<WaitForSeconds> driverRoutine;
 		}
 	}
 }
