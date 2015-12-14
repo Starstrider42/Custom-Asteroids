@@ -348,10 +348,48 @@ namespace Starstrider42 {
 					case Distribution.Gaussian: 
 					case Distribution.Normal: 
 						return RandomDist.drawNormal(avg, stdDev);
+					case Distribution.Lognormal:
+						if (avg <= 0.0) {
+							throw new System.InvalidOperationException("Lognormal distribution must have positive mean (gave " + avg + ").");
+						}
+						if (stdDev <= 0.0) {
+							throw new System.InvalidOperationException("Lognormal distribution must have positive standard deviation (gave " + stdDev + ").");
+						}
+						double quad = Math.Sqrt(avg * avg + stdDev * stdDev);
+						double mu = Math.Log(avg * avg / quad);
+						double sigma = Math.Sqrt(2 * Math.Log(quad / avg));
+						return RandomDist.drawLognormal(mu, sigma);
 					case Distribution.Rayleigh: 
-						return RandomDist.drawRayleigh(avg);
+						return RandomDist.drawRayleigh(avg * Math.Sqrt(2.0 / Math.PI));
 					case Distribution.Exponential:
 						return RandomDist.drawExponential(avg);
+					case Distribution.Gamma:
+						if (avg <= 0.0) {
+							throw new System.InvalidOperationException("Gamma distribution must have positive mean (gave " + avg + ").");
+						}
+						if (stdDev <= 0.0) {
+							throw new System.InvalidOperationException("Gamma distribution must have positive standard deviation (gave " + stdDev + ").");
+						}
+						double k = (avg / stdDev);
+						k = k * k;
+						double theta = stdDev * stdDev / avg;
+						return RandomDist.drawGamma(k, theta);
+					case Distribution.Beta:
+						if (avg <= min || avg >= max) {
+							throw new System.InvalidOperationException(
+								String.Format("Beta distribution must have mean between min and max (gave {0} < {1} < {2}).", 
+									min, avg, max));
+						}
+						if (stdDev <= 0.0) {
+							throw new System.InvalidOperationException("Beta distribution must have positive standard deviation (gave " + stdDev + ").");
+						}
+						double scaledMean = (avg - min) / (max - min);
+						double scaledStdDev = stdDev / (max - min);
+						double scaledVar = scaledStdDev * scaledStdDev;
+						double factor = (scaledMean - scaledMean * scaledMean - scaledVar) / scaledVar;
+						double alpha = scaledMean * factor;
+						double beta = (1.0 - scaledMean) * factor;
+						return min + (max - min) * RandomDist.drawBeta(alpha, beta);
 					case Distribution.Isotropic: 
 						return RandomDist.drawIsotropic();
 					default: 
@@ -506,7 +544,7 @@ namespace Starstrider42 {
 
 				/** Defines the type of probability distribution from which the value is drawn
 				 */
-				internal enum Distribution {Uniform, LogUniform, Gaussian, Normal, Rayleigh, Exponential, Isotropic};
+				internal enum Distribution {Uniform, LogUniform, Gaussian, Normal, Lognormal, Rayleigh, Exponential, Gamma, Beta, Isotropic};
 
 				/** Parse format for planet names. */
 				protected const string planetFormat = "(?<planet>.+)";

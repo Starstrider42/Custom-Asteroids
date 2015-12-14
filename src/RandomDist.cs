@@ -37,6 +37,11 @@ namespace Starstrider42 {
 		/** Contains static methods for random number distributions
 		 */
 		internal static class RandomDist {
+			/// <summary>Caches the next normal random variate to return from <c>drawNormal()</c>.</summary>
+			private static double nextNormal;
+			/// <summary><c>nextNormal</c> is valid if and only if <c>isNextNormal</c> is true.</summary>
+			private static bool isNextNormal;
+
 			static RandomDist() {
 				isNextNormal = false;
 				nextNormal = 0.0;
@@ -203,28 +208,20 @@ namespace Starstrider42 {
 				return -mean * Math.Log(UnityEngine.Random.value);
 			}
 
-			/** Draws a value from a Rayleigh distribution
-			 * 
-			 * @param[in] mean The mean of the distribution. This is not the standard 
-			 * 	parametrization of the Rayleigh distribution, but it is easier to pick 
-			 * 	values for
-			 * 
-			 * @return A Rayleigh random variate. The return value has the same units as @p mean
-			 * 
-			 * @pre @p mean &ge; 0
-			 * 
-			 * @exception System.ArgumentOutOfRangeException Thrown if @p mean < 0
-			 * 
-			 * @exceptsafe This method is atomic
-			 */
-			internal static double drawRayleigh(double mean) {
-				if (mean < 0.0) {
-					throw new ArgumentOutOfRangeException("mean",
-						"drawRayleigh(): A Rayleigh distribution cannot have a negative mean (gave " + mean + ")");
+			/// <summary>
+			/// Draws a value from a Rayleigh distribution.
+			/// </summary>
+			/// <param name="sigma">The standard parameter of the distribution. Must not be negative.</param>
+			/// <returns>A Rayleigh random variate. The return value has the same units as <c>sigma</c>.</returns>
+			/// 
+			/// <exception cref="System.ArgumentOutOfRangeException">Thrown if <c>sigma &lt; 0</c>.</exception>
+			internal static double drawRayleigh(double sigma) {
+				if (sigma < 0.0) {
+					throw new ArgumentOutOfRangeException("sigma",
+						"drawRayleigh(): A Rayleigh distribution cannot have a negative sigma (gave " + sigma + ")");
 				}
-				double sigmaSquared = mean * mean * 2.0 / Math.PI;
 				// IMPORTANT: don't let anything throw beyond this point
-				return Math.Sqrt(-2.0*sigmaSquared*Math.Log(UnityEngine.Random.value));
+				return Math.Sqrt(-2.0*sigma*sigma*Math.Log(UnityEngine.Random.value));
 			}
 
 			/** Draws a value from a normal distribution
@@ -262,10 +259,93 @@ namespace Starstrider42 {
 					return mean + stddev*(u * Math.Sin(2 * Math.PI * v));
 				}
 			}
-			/** Caches the next normal random variate to return from drawNormal() */
-			private static double nextNormal;
-			/** @p nextNormal is valid if and only if @p isNextNormal is true */
-			private static bool isNextNormal;
+
+			/// <summary>
+			/// Draws a value from a log-normal distribution. Parameters are the mean and standard 
+			/// deviation of the natural log of the value.
+			/// </summary>
+			/// 
+			/// <param name="mu">The standard position parameter of this distribution.</param>
+			/// <param name="sigma">The standard width parameter of this distribution. MUST NOT be negative.</param>
+			/// <returns>A lognormal random variate. The return value has the same units as <c>e<sup>mu</sup></c> 
+			/// or <c>e<sup>sigma</sup></c>.</returns>
+			/// 
+			/// <exception cref="System.ArgumentOutOfRangeException">Thrown if <c>sigma &lt; 0</c>.</exception> 
+			internal static double drawLognormal(double mu, double sigma) {
+				if (sigma < 0.0) {
+					throw new ArgumentOutOfRangeException("sigma",
+						"drawLognormal(): A lognormal distribution cannot have a negative width (gave " + sigma + ")");
+				}
+
+				return Math.Exp(drawNormal(mu, sigma));
+			}
+
+			/// <summary>
+			/// Draws a value from a Gamma distribution. The distribution is given using the shape-scale 
+			/// parametrization (called α-θ by Wolfram, and k-θ by Wikipedia).
+			/// </summary>
+			/// <remarks>The method arguments use Wikipedia's notation.</remarks>
+			/// 
+			/// <param name="k">The shape parameter for the distribution. MUST be positive.</param>
+			/// <param name="theta">The scale parameter for the distribution. MUST be positive.</param>
+			/// <returns>A gamma random variate. The return value has the same units as <c>theta</c>.</returns>
+			/// 
+			/// <exception cref="System.ArgumentOutOfRangeException">Thrown if <c>k &le; 0</c> 
+			/// or <c>theta &le; 0</c>.</exception> 
+			internal static double drawGamma(double k, double theta) {
+				if (k <= 0.0) {
+					throw new ArgumentOutOfRangeException("k",
+						"drawGamma(): A gamma distribution cannot have a negative shape parameter (gave k = " + k + ")");
+				}
+				if (theta <= 0.0) {
+					throw new ArgumentOutOfRangeException("theta",
+						"drawGamma(): A gamma distribution cannot have a negative scale parameter (gave theta = " + theta + ")");
+				}
+
+				// Marsaglia's method works for a broad range of parameters
+				if (k >= 1) {
+					double d = k - 1.0 / 3.0;
+					double c = 1.0 / Math.Sqrt(9.0*d);
+
+					double x = 0, v = 0;
+					do {
+						x = drawNormal(0, 1);
+						double factor = 1.0 + c*x;
+						v = factor * factor * factor;
+					} while (v <= 0 || Math.Log(drawUniform(0,1)) >= x*x/2 + d - d*v + d*Math.Log(v));
+
+					return theta * d * v;
+				} else {
+					return drawGamma(k + 1, theta) * Math.Pow(drawUniform(0, 1), 1.0/k);
+				}
+			}
+
+			/// <summary>
+			/// Draws a value from a Beta distribution. The distribution is given using the parametrization 
+			/// where both parameters must be positive (preferred by both Wolfram and Wikipedia).
+			/// </summary>
+			/// 
+			/// <param name="alpha">The &alpha; parameter for the distribution. MUST be positive.</param>
+			/// <param name="beta">The &beta; parameter for the distribution. MUST be positive.</param>
+			/// <returns>A beta random variate. The return value will be in [0, 1].</returns>
+			/// 
+			/// <exception cref="System.ArgumentOutOfRangeException">Thrown if <c>alpha &le; 0</c> 
+			/// or <c>beta &le; 0</c>.</exception>
+			internal static double drawBeta(double alpha, double beta) {
+				if (alpha <= 0.0) {
+					throw new ArgumentOutOfRangeException("alpha",
+						"drawBeta(): A beta distribution cannot have a negative shape parameter (gave alpha = " + alpha + ")");
+				}
+				if (beta <= 0.0) {
+					throw new ArgumentOutOfRangeException("beta",
+						"drawBeta(): A beta distribution cannot have a negative shape parameter (gave beta = " + beta + ")");
+				}
+
+				// Transform from two independent Gamma variates
+				double x = drawGamma(alpha, 1.0);
+				double y = drawGamma(beta, 1.0);
+				return x / (x + y);
+			}
 
 			/** Draws the inclination of a randomly oriented plane
 			 * 

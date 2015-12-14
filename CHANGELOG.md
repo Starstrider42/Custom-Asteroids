@@ -9,6 +9,7 @@ Unreleased
 
 ### New Features
 
+* Asteroid population blocks now support the lognormal, (rescaled) beta, and gamma distributions.
 
 ### Changes
 
@@ -16,6 +17,7 @@ Unreleased
 ### Bug Fixes
 
 * Invalid populations will no longer stop other populations from loading.
+* Near-Kerbin asteroids will no longer appear on unbound orbits, and are much less likely to appear in the main belt.
 
 Version 1.2.0
 ------------
