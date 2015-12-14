@@ -58,7 +58,7 @@ namespace Starstrider42 {
 									Population newPop = new Population();
 									ConfigNode.LoadObjectFromConfig(newPop, curNode);
 									allPops.asteroidSets.Add(newPop);
-								} catch (TypeInitializationException e) {
+								} catch (Exception e) {
 									Debug.LogError("[CustomAsteroids]: failed to load population '" + curNode.GetValue("name") + "'");
 									Debug.LogException(e);
 									if (e.InnerException != null) {
