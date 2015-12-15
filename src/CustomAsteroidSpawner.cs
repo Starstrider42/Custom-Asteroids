@@ -1,161 +1,158 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-namespace Starstrider42 {
+namespace Starstrider42.CustomAsteroids {
+	/// <summary>
+	/// Manages asteroid spawning behaviour, including the choice of spawner.
+	/// </summary>
+	/// 
+	/// @deprecated Remove this class when implementing 3rd party spawner support for version 2.0.0.
+	[KSPScenario(
+		ScenarioCreationOptions.AddToAllGames,
+		GameScenes.SPACECENTER,
+		GameScenes.TRACKSTATION,
+		GameScenes.FLIGHT)]
+	[System.Obsolete("Spawner should no longer be a ScenarioModule; "
+		+ "this class will be replaced with a dedicated management class in 2.0.0.")]
+	public class CustomAsteroidSpawner : ScenarioModule {
+		/// <summary>Handles game-wide asteroid initialization.</summary>
+		static CustomAsteroidSpawner() {
+			// Ensure each game has different asteroids
+			Random.seed = System.Guid.NewGuid().GetHashCode();
+		}
 
-	namespace CustomAsteroids {
-		/** Manages asteroid spawning behaviour, including the choice of spawner.
-		 * 
-		 * @deprecated Remove this class when implementing 3rd party spawner support for version 2.0.0
-		 */
-		// This class is, for better or worse, part of the Custom Asteroids API, so it can't 
-		// be properly refactored or even renamed before version 2.0.0.
-		[KSPScenario(ScenarioCreationOptions.AddToAllGames, GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT)]
-		[System.Obsolete("Spawner should no longer be a ScenarioModule; this class will be replaced with a dedicated management class in 2.0.0.")]
-		public class CustomAsteroidSpawner : ScenarioModule {
-			static CustomAsteroidSpawner() {
-				// Ensure each game has different asteroids
-				Random.seed = System.Guid.NewGuid().GetHashCode();
+		/// <summary>Handles asteroid spawning behaviour.</summary>
+		private readonly AbstractSpawner spawner;
+
+		/// <summary>Unity trick to get start/stop behaviour without a method name.</summary>
+		private IEnumerator<WaitForSeconds> driverRoutine;
+
+		/// <summary>Initializes the scenario prior to loading persistent data. Custom Asteroids options 
+		/// must have already been loaded.</summary>
+		internal CustomAsteroidSpawner() {
+			this.driverRoutine = null;
+
+			switch (AsteroidManager.getOptions().getSpawner()) {
+			case SpawnerType.FixedRate:
+				this.spawner = new FixedRateSpawner();
+				break;
+			case SpawnerType.Stock:
+				this.spawner = new StockalikeSpawner();
+				break;
+			default:
+				throw new System.InvalidOperationException("Unknown spawner type: "
+					+ AsteroidManager.getOptions().getSpawner());
 			}
+		}
 
-			internal CustomAsteroidSpawner() {
-				this.driverRoutine = null;
+		/// <summary>
+		/// Called on the frame when a script is first loaded, before any are enabled.
+		/// </summary>
+		/// 
+		/// @see[Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Awake.html)
+		public override sealed void OnAwake() {
+			base.OnAwake();
 
-				switch (AsteroidManager.getOptions().getSpawner()) {
-				case SpawnerType.FixedRate:
-					this.spawner = new FixedRateSpawner();
-					break;
-				case SpawnerType.Stock:
-					this.spawner = new StockalikeSpawner();
-					break;
-				default:
-					throw new System.InvalidOperationException("Unknown spawner type: " + AsteroidManager.getOptions().getSpawner());
+			// Stock spawner only needs to be unloaded when first loading the game
+			// It will stay unloaded through future scene changes
+			if (HighLogic.CurrentGame.RemoveProtoScenarioModule(typeof(ScenarioDiscoverableObjects))) {
+				// RemoveProtoScenarioModule doesn't remove the actual Scenario
+				foreach (ScenarioDiscoverableObjects scen in 
+					Resources.FindObjectsOfTypeAll(typeof(ScenarioDiscoverableObjects))) {
+					scen.StopAllCoroutines();
+					Destroy(scen);
 				}
-			}
-
-			/** Called on the frame when a script is first loaded, before any are enabled.
-			 * 
-			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Awake.html)
-			 */
-			public override sealed void OnAwake() {
-				base.OnAwake();
-
-				// Stock spawner only needs to be unloaded when first loading the game
-				// It will stay unloaded through future scene changes
-				if (HighLogic.CurrentGame.RemoveProtoScenarioModule(typeof(ScenarioDiscoverableObjects))) {
-					// RemoveProtoScenarioModule doesn't remove the actual Scenario
-					foreach(ScenarioDiscoverableObjects scen in 
-						Resources.FindObjectsOfTypeAll(typeof(ScenarioDiscoverableObjects))) {
-						scen.StopAllCoroutines();
-						Destroy(scen);
-					}
-					Debug.Log("[CustomAsteroids]: stock spawner has been shut down.");
-				} else {
-					#if DEBUG
-					Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
-					#endif
-				}
-			}
-
-			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
-			 * 
-			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
-			 * 
-			 * @todo What exceptions are thrown by StartCoroutine?
-			 */
-			internal void Start() {
+				Debug.Log("[CustomAsteroids]: stock spawner has been shut down.");
+			} else {
 				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Booting asteroid driver...");
+				Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
 				#endif
-				driverRoutine = driver();
-				StartCoroutine(driverRoutine);
 			}
+		}
 
-			/** This function is called when the object will be destroyed.
-			 * 
-			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
-			 * 
-			 * @todo What exceptions are thrown by StopCoroutine?
-			 */
-			internal void OnDestroy() {
-				if (driverRoutine != null) {
-					#if DEBUG
-					Debug.Log("[CustomAsteroids]: Shutting down asteroid driver...");
-					#endif
-					StopCoroutine(driverRoutine);
-				}
-			}
+		/// <summary>
+		/// Called on the frame when a script is enabled just before any of the Update methods is called the first time.
+		/// </summary>
+		/// 
+		/// @see[Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
+		internal void Start() {
+			#if DEBUG
+			Debug.Log("[CustomAsteroids]: Booting asteroid driver...");
+			#endif
+			driverRoutine = driver();
+			StartCoroutine(driverRoutine);
+		}
 
-			private IEnumerator<WaitForSeconds> driver()
-			{
+		/// <summary>
+		/// This function is called when the object will be destroyed.
+		/// </summary>
+		/// 
+		/// @see [Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
+		internal void OnDestroy() {
+			if (driverRoutine != null) {
 				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Asteroid driver started.");
+				Debug.Log("[CustomAsteroids]: Shutting down asteroid driver...");
 				#endif
-				// Loop will be terminated by StopCoroutine
-				while (true)
-				{
-					float waitSeconds = spawner.asteroidCheck();
-					#if DEBUG
-					Debug.Log("[CustomAsteroids]: Next check in " + waitSeconds + " s.");
-					#endif
-					yield return new WaitForSeconds(waitSeconds);
-				}
+				StopCoroutine(driverRoutine);
 			}
+		}
 
-			/** Update is called every frame, if the MonoBehaviour is enabled.
-			 * 
-			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Update.html)
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 * 
-			 * @deprecated This method is kept public for backward-compatibility, but no longer does anything.
-			 */
-			[System.Obsolete("Improved spawn code does not work every tick; Update() no longer does anything.")]
-			public void Update() {
-				// This method is obsolete, but can't be removed before 2.0.0
-			}
-
-			/** Called when the module is either constructed or loaded as part of a save game
-			 * 
-			 * @param[in] node The ConfigNode representing this ScenarioModule
-			 * 
-			 * @post The module is initialized with any settings in @p node
-			 */
-			public override void OnLoad(ConfigNode node)
-			{
-				base.OnLoad(node);
-
+		/// <summary>Controls scheduling of asteroid discovery and loss. Actual asteroid code is 
+		/// delegated to <c>spawner</c>.</summary>
+		private IEnumerator<WaitForSeconds> driver() {
+			#if DEBUG
+			Debug.Log("[CustomAsteroids]: Asteroid driver started.");
+			#endif
+			// Loop will be terminated by StopCoroutine
+			while (true) {
+				float waitSeconds = spawner.asteroidCheck();
 				#if DEBUG
-				Debug.Log("[CustomAsteroids]: full node = " + node);
+				Debug.Log("[CustomAsteroids]: Next check in " + waitSeconds + " s.");
 				#endif
-				ConfigNode thisNode = node.GetNode("SpawnState");
-				if (thisNode != null) {
-					ConfigNode.LoadObjectFromConfig(this, thisNode);
-				}
+				yield return new WaitForSeconds(waitSeconds);
 			}
+		}
 
-			/** Called when the save game including the module is saved
-			 * 
-			 * @param[out] node The ConfigNode representing this ScenarioModule
-			 * 
-			 * @post @p node is initialized with the persistent contents of this object
-			 */
-			public override void OnSave(ConfigNode node)
-			{
-				base.OnSave(node);
+		/// <summary>
+		/// Update is called every frame, if the MonoBehaviour is enabled. Does not throw exceptions.
+		/// </summary>
+		/// 
+		/// @see [Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Update.html)
+		/// @deprecated This method is kept public for backward-compatibility, but no longer does anything.
+		[System.Obsolete("Improved spawn code does not work every tick; Update() no longer does anything.")]
+		public void Update() {
+			// This method is obsolete, but can't be removed before 2.0.0
+		}
 
-				ConfigNode allData = new ConfigNode();
-				ConfigNode.CreateConfigFromObject(this, allData);
-				allData.name = "SpawnState";
-				node.AddNode(allData);
+		/// <summary>
+		/// Called when the module is either constructed or loaded as part of a save game. After this method returns, 
+		/// the module will be initialized with any settings in <c>node</c>.
+		/// </summary>
+		/// <param name="node">The ConfigNode representing this ScenarioModule.</param>
+		public override void OnLoad(ConfigNode node) {
+			base.OnLoad(node);
+
+			#if DEBUG
+			Debug.Log("[CustomAsteroids]: full node = " + node);
+			#endif
+			ConfigNode thisNode = node.GetNode("SpawnState");
+			if (thisNode != null) {
+				ConfigNode.LoadObjectFromConfig(this, thisNode);
 			}
+		}
 
-			/** Handles asteroid spawning behaviour. */
-			private readonly AbstractSpawner spawner;
+		/// <summary>
+		/// Called when the save game including the module is saved. <c>node</c> is initialized with the persistent contents 
+		/// of this object.
+		/// </summary>
+		/// <param name="node">The ConfigNode representing this ScenarioModule.</param>
+		public override void OnSave(ConfigNode node) {
+			base.OnSave(node);
 
-			/** Unity trick to get start/stop behaviour without a method name. */
-			private IEnumerator<WaitForSeconds> driverRoutine;
+			ConfigNode allData = new ConfigNode();
+			ConfigNode.CreateConfigFromObject(this, allData);
+			allData.name = "SpawnState";
+			node.AddNode(allData);
 		}
 	}
 }

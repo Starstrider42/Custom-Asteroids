@@ -42,12 +42,12 @@ The average number of known asteroids in each group -- if none are tracked -- wi
 
 Each `ASTEROIDGROUP` block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:
 * `dist`: the distribution from which the parameter will be drawn. Allowed values are Uniform, 
-    LogUniform, Gaussian (Normal also accepted), Lognormal, Rayleigh, Gamma, Beta, or Exponential. Note that 
+    LogUniform, Gaussian (Normal also accepted), LogNormal, Rayleigh, Gamma, Beta, or Exponential. Note that 
     the Beta distribution is rescaled from its usual interval `(0, 1)` to `(min, max)`.
 * `min`: the minimum value of the parameter. Currently used by Uniform, LogUniform, and Beta.
 * `max`: the maximum value of the parameter. Currently used by Uniform, LogUniform, and Beta.
-* `avg`: the average value of the parameter. Currently used by Gaussian, Lognormal, Rayleigh, Gamma, Beta, and Exponential.
-* `stddev`: the standard deviation of the parameter. Currently used by Gaussian, Lognormal, Gamma, and Beta.
+* `avg`: the average value of the parameter. Currently used by Gaussian, LogNormal, Rayleigh, Gamma, Beta, and Exponential.
+* `stddev`: the standard deviation of the parameter. Currently used by Gaussian, LogNormal, Gamma, and Beta.
 
 Allowed values of `min`, `max`, `avg`, and `stddev` are:
 * A floating-point number, giving the exact value (in appropriate units) for the parameter

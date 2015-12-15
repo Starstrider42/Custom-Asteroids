@@ -1,46 +1,42 @@
-using System;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
-	internal sealed class FixedRateSpawner : AbstractSpawner {
-		/**
-		 * Initializes this spawner's state.
-		 */
-		internal FixedRateSpawner() : base() {
+	sealed class FixedRateSpawner : AbstractSpawner {
+		/// <summary>The time at which the next asteroid will be placed.</summary>
+		private double nextAsteroid;
+
+		/// <summary>
+		/// Initializes this spawner's state.
+		/// </summary>
+		internal FixedRateSpawner() {
 			// Yay for memoryless distributions -- we don't care how long it's been since an asteroid was detected
 			resetAsteroidSearches();
 		}
 
-		/**
-		 * Forgets this spawner's previous state, recalculating when the next asteroid will be detected.
-		 */
+		/// <summary>
+		/// Forgets this spawner's previous state, recalculating when the next asteroid will be detected.
+		/// </summary>
 		private void resetAsteroidSearches() {
-			nextAsteroid = Planetarium.GetUniversalTime() + waitForAsteroid();
+			nextAsteroid = Planetarium.GetUniversalTime() + asteroidWaitTime();
 		}
 
-		/** Returns the time until the next asteroid should be detected
-		 * 
-		 * @return The number of seconds before an asteroid detection, or infinity if asteroids should not spawn.
-		 * 
-		 * @exceptsafe Does not throw exceptions
-		 */
-		private static double waitForAsteroid() {
+		/// <summary>
+		/// Returns the time until the next asteroid should be detected. Does not throw exceptions.
+		/// </summary>
+		/// <returns>The number of seconds before an asteroid detection, or infinity if asteroids should not 
+		/// spawn.</returns>
+		private static double asteroidWaitTime() {
 			double rate = AsteroidManager.spawnRate();	// asteroids per day
 
 			if (rate > 0.0) {
 				rate /= SECONDS_PER_EARTH_DAY;			// asteroids per second
 				// Waiting time in a Poisson process follows an exponential distribution
-				return RandomDist.drawExponential(1.0/rate);
+				return RandomDist.drawExponential(1.0 / rate);
 			} else {
 				return double.PositiveInfinity;
 			}
 		}
 
-		/**
-		 * The interval, in in-game seconds, at which the spawner checks for asteroid creation or deletion.
-		 * 
-		 * @return number of KSP seconds between consecutive spawn/despawn checks
-		 */
 		protected override float checkInterval() {
 			// If player suddenly jumps from 1× to 100,000×, each second of interval will 
 			// delay asteroid check by 1.16 days
@@ -48,19 +44,16 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		protected override void checkSpawn() {
-			if(areAsteroidsTrackable()) {
+			if (areAsteroidsTrackable()) {
 				// More than one asteroid per tick is unlikely even at 100,000×
 				while (Planetarium.GetUniversalTime() > nextAsteroid) {
 					Debug.Log("[FixedRateSpawner]: asteroid discovered at UT " + nextAsteroid);
 					spawnAsteroid();
 
-					nextAsteroid += waitForAsteroid();
+					nextAsteroid += asteroidWaitTime();
 				}
 			}
 		}
-
-		/** The time at which the next asteroid will be placed */
-		private double nextAsteroid;
 	}
 }
 
