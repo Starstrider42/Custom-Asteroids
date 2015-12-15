@@ -120,8 +120,8 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		/// <para>Creates a new asteroid from a randomly chosen population. The asteroid will be given the properties 
-		/// specified by that population.</para>
+		/// <para>Creates a new asteroid from a randomly chosen asteroid set. The asteroid will be given the 
+		/// properties specified by that set, and added to the game as an untracked object.</para>
 		/// <para>If asteroid creation failed for any reason, this method will log the error rather than propagating 
 		/// the exception into client code.</para>
 		/// </summary>
@@ -130,7 +130,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// registered in the game.</returns>
 		protected ProtoVessel spawnAsteroid() {
 			try {
-				return spawnAsteroid(AsteroidManager.drawPopulation());
+				return spawnAsteroid(AsteroidManager.drawAsteroidSet());
 			} catch (Exception e) {
 				if (e.InnerException != null) {
 					Util.errorToPlayer("Could not create new asteroid. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
@@ -145,27 +145,26 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		/// Creates a new asteroid from the specific population. The asteroid will be given appropriate properties as 
-		/// specified in the population config file, and added to the game as an untracked object.
+		/// Creates a new asteroid from the specific asteroid set. The asteroid will be given appropriate properties 
+		/// as specified in the set's config node, and added to the game as an untracked object.
 		/// </summary>
 		/// <remarks>Based heavily on Kopernicus's <c>DiscoverableObjects.SpawnAsteroid</c> by ThomasKerman. Thanks 
 		/// for reverse-engineering everything!</remarks>
 		/// 
-		/// <param name="pop">The population to which the asteroid belongs. May be null to represent the default 
-		/// population.</param>
+		/// <param name="group">The set to which the asteroid belongs.</param>
 		/// <returns>The asteroid that was added.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>pop</c> cannot generate valid data. The 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
 		/// program state will be unchanged in the event of an exception.</exception> 
-		private ProtoVessel spawnAsteroid(Population pop) {
-			Orbit orbit = makeOrbit(pop);
-			string name = makeName(pop);
-			ConfigNode trackingInfo = makeDiscoveryInfo(pop);
-			ConfigNode[] partList = makeAsteroidParts(pop);
+		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
+		private ProtoVessel spawnAsteroid(AsteroidSet group) {
+			Orbit orbit = makeOrbit(group);
+			string name = makeName(group);
+			ConfigNode trackingInfo = makeDiscoveryInfo(group);
+			ConfigNode[] partList = makeAsteroidParts(group);
 
 			// Stock spawner reports its module name, so do the same for custom spawns
-			Debug.Log("[" + GetType().Name + "]: New object found: " + name + " in population "
-				+ (pop != null ? pop.ToString() : AsteroidManager.defaultPopulation().ToString()) + ".");
+			Debug.Log(string.Format("[{0}]: New object found: {1} in asteroid set {2}.", GetType().Name, name, group));
 
 			ConfigNode vessel = ProtoVessel.CreateVesselNode(name, VesselType.SpaceObject, orbit, 
 				                    0, partList, new ConfigNode("ACTIONGROUPS"), trackingInfo);
@@ -176,37 +175,36 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		///Generates a new asteroid orbit appropriate for the chosen population.
+		///Generates a new asteroid orbit appropriate for the chosen set.
 		/// </summary>
 		/// 
-		/// <param name="pop">The population to which the asteroid belongs. May be null to represent the 
-		/// default population.</param>
-		/// <returns>A randomly generated orbit. If @p pop is not null, the orbit will be generated from the 
+		/// <param name="group">The set to which the asteroid belongs.</param>
+		/// <returns>A randomly generated orbit. If <c>group</c> is not null, the orbit will be generated from the 
 		/// corresponding config information; otherwise, it will be generated using a hardcoded approximation to the 
 		/// stock asteroid spawner.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>pop</c> cannot generate valid data. The 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
 		/// program state will be unchanged in the event of an exception.</exception> 
-		private static Orbit makeOrbit(Population pop) {
-			return pop != null ? pop.drawOrbit() : AsteroidManager.defaultPopulation().drawOrbit();
+		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
+		private static Orbit makeOrbit(AsteroidSet group) {
+			return group.drawOrbit();
 		}
 
 		/// <summary>
-		/// Generates a new asteroid name appropriate for the chosen population.
+		/// Generates a new asteroid name appropriate for the chosen set.
 		/// </summary>
 		/// 
-		/// <param name="pop">The population to which the asteroid belongs. May be null to represent the 
-		/// default population.</param>
+		/// <param name="group">The set to which the asteroid belongs.</param>
 		/// <returns>A randomly generated name. The name will be prefixed by a population-specific name if custom 
 		/// names are enabled, or by "Ast." if they are disabled.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>pop</c> cannot generate valid data. The 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
 		/// program state will be unchanged in the event of an exception.</exception> 
-		private static string makeName(Population pop) {
+		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
+		private static string makeName(AsteroidSet group) {
 			string name = DiscoverableObjectsUtil.GenerateAsteroidName();
 			if (AsteroidManager.getOptions().getRenameOption()) {
-				string newBase = pop != null 
-					? pop.getAsteroidName() : AsteroidManager.defaultPopulation().getAsteroidName();
+				string newBase = group.getAsteroidName();
 				if (name.IndexOf("Ast. ") >= 0) {
 					// Keep only the ID number
 					string id = name.Substring(name.IndexOf("Ast. ") + "Ast. ".Length);
@@ -222,16 +220,16 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		/// Generates tracking station info appropriate for the chosen population.
+		/// Generates tracking station info appropriate for the chosen set.
 		/// </summary>
 		/// 
-		/// <param name="pop">The population to which the asteroid belongs. May be null to represent the 
-		/// default population.</param>
+		/// <param name="group">The set to which the asteroid belongs.</param>
 		/// <returns>A ConfigNode storing the asteroid's DiscoveryInfo object.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>pop</c> cannot generate valid data. The 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
 		/// program state will be unchanged in the event of an exception.</exception> 
-		private static ConfigNode makeDiscoveryInfo(Population pop) {
+		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
+		private static ConfigNode makeDiscoveryInfo(AsteroidSet group) {
 			Pair<float, float> trackTimes = AsteroidManager.getOptions().getUntrackedTimes();
 			double lifetime = UnityEngine.Random.Range(trackTimes.first, trackTimes.second) * SECONDS_PER_EARTH_DAY;
 			double maxLifetime = trackTimes.second * SECONDS_PER_EARTH_DAY;
@@ -244,17 +242,17 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		/// Generates vessel parts and resources appropriate for the chosen population.
+		/// Generates vessel parts and resources appropriate for the chosen set.
 		/// </summary>
 		///
-		/// <param name="pop">The population to which the asteroid belongs. May be null to represent the 
-		/// default population.</param>
+		/// <param name="group">The set to which the asteroid belongs.</param>
 		/// <returns>An array of ConfigNodes storing the asteroid's parts. The first element MUST be the root 
 		/// part.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>pop</c> cannot generate valid data. The 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
 		/// program state will be unchanged in the event of an exception.</exception> 
-		private static ConfigNode[] makeAsteroidParts(Population pop) {
+		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
+		private static ConfigNode[] makeAsteroidParts(AsteroidSet group) {
 			// The same "seed" that shows up in ProceduralAsteroid?
 			uint seed = (uint) UnityEngine.Random.Range(0, Int32.MaxValue);
 			ConfigNode potato = ProtoVessel.CreatePartNode("PotatoRoid", seed);

@@ -8,17 +8,14 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// <remarks>TODO: Clean up this class.</remarks>
 	class PopulationLoader {
-		/// <summary>The set of loaded asteroid Population objects.</summary>
-		private List<Population> asteroidSets;
-		/// <summary>Settings related to stock-like asteroids.</summary>
-		private DefaultAsteroids untouchedSet;
+		/// <summary>The set of loaded AsteroidSet objects.</summary>
+		private List<AsteroidSet> asteroidPops;
 
 		/// <summary>
 		/// Creates an empty solar system. Does not throw exceptions.
 		/// </summary>
 		internal PopulationLoader() {
-			asteroidSets = new List<Population>();
-			untouchedSet = new DefaultAsteroids();
+			asteroidPops = new List<AsteroidSet>();
 		}
 
 		/// <summary>
@@ -44,59 +41,42 @@ namespace Starstrider42.CustomAsteroids {
 				UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("AsteroidSets");
 				foreach (UrlDir.UrlConfig curSet in configList) {
 					foreach (ConfigNode curNode in curSet.config.nodes) {
-						if (curNode.name == "ASTEROIDGROUP") {
-							try {
-								#if DEBUG
-								Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
-								#endif
+						#if DEBUG
+						Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
+						#endif
+						try {
+							if (curNode.name == "ASTEROIDGROUP") {
 								Population newPop = new Population();
 								ConfigNode.LoadObjectFromConfig(newPop, curNode);
-								allPops.asteroidSets.Add(newPop);
-							} catch (Exception e) {
-								Debug.LogError("[CustomAsteroids]: failed to load population '"
-									+ curNode.GetValue("name") + "'");
-								Debug.LogException(e);
-								if (e.InnerException != null) {
-									Util.errorToPlayer("Could not load asteroid group. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
-										e.Message, e.GetBaseException().Message);
-								} else {
-									Util.errorToPlayer("Could not load asteroid group. Cause: \"{0}\".", 
-										e.Message);
-								}
-							}	// Attempt to parse remaining populations
-						} else if (curNode.name == "DEFAULT") {
-							try {
-								#if DEBUG
-								Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
-								#endif
-								// Construct-and-swap for better exception safety
+								allPops.asteroidPops.Add(newPop);
+							} else if (curNode.name == "DEFAULT") {
 								DefaultAsteroids oldPop = new DefaultAsteroids();
 								ConfigNode.LoadObjectFromConfig(oldPop, curNode);
-								allPops.untouchedSet = oldPop;
-							} catch (TypeInitializationException e) {
-								Debug.LogError("[CustomAsteroids]: failed to load population '"
-									+ curNode.GetValue("name") + "'");
-								Debug.LogException(e);
-								if (e.InnerException != null) {
-									Util.errorToPlayer("Could not load default asteroids. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
-										e.Message, e.GetBaseException().Message);
-								} else {
-									Util.errorToPlayer("Could not load default asteroids. Cause: \"{0}\".", 
-										e.Message);
-								}
-							}	// Attempt to parse remaining populations
-						}
-						// ignore any other nodes present
+								allPops.asteroidPops.Add(oldPop); 
+							}
+							// ignore any other nodes present
+						} catch (Exception e) {
+							Debug.LogError("[CustomAsteroids]: failed to load population '"
+								+ curNode.GetValue("name") + "'");
+							Debug.LogException(e);
+							if (e.InnerException != null) {
+								Util.errorToPlayer("Could not load asteroid group. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
+									e.Message, e.GetBaseException().Message);
+							} else {
+								Util.errorToPlayer("Could not load asteroid group. Cause: \"{0}\".", 
+									e.Message);
+							}
+						}	// Attempt to parse remaining populations
 					}
 				}
 
 				#if DEBUG
-				foreach (Population x in allPops.asteroidSets) {
-					Debug.Log("[CustomAsteroids]: Population '" + x + "' loaded");
+				foreach (AsteroidSet x in allPops.asteroidPops) {
+					Debug.Log("[CustomAsteroids]: Asteroid set '" + x + "' loaded");
 				}
 				#endif
 
-				if (allPops.asteroidSets.Count == 0) {
+				if (allPops.asteroidPops.Count == 0) {
 					Debug.LogWarning("[CustomAsteroids]: Custom Asteroids could not find any configs in GameData!");
 					ScreenMessages.PostScreenMessage(
 						"Custom Asteroids could not find any configs in GameData.\nAsteroids will not appear.", 
@@ -110,23 +90,21 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		/// Randomly selects an asteroid population. The selection is weighted by the spawn rate of 
-		/// each population; a population with a rate of 2.0 is twice as likely to be chosen as one 
+		/// Randomly selects an asteroid set. The selection is weighted by the spawn rate of 
+		/// each population; a set with a rate of 2.0 is twice as likely to be chosen as one 
 		/// with a rate of 1.0.
 		/// </summary>
-		/// <returns>A reference to the selected population.</returns>
+		/// <returns>A reference to the selected asteroid set. Shall not be null.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if there are no populations from 
+		/// <exception cref="System.InvalidOperationException">Thrown if there are no sets from 
 		/// which to choose, or if all spawn rates are zero, or if any rate is negative</exception> 
-		internal Population drawPopulation() {
+		internal AsteroidSet drawAsteroidSet() {
 			try {
 				// A typedef! A typedef! My kerbdom for a typedef!
-				List<Pair<Population, double>> bins = new List<Pair<Population, double>>();
-				bins.Add(new Pair<Population, double>(null, untouchedSet.getSpawnRate()));
-				foreach (Population x in asteroidSets) {
-					bins.Add(new Pair<Population, double>(x, x.getSpawnRate()));
+				List<Pair<AsteroidSet, double>> bins = new List<Pair<AsteroidSet, double>>();
+				foreach (AsteroidSet x in asteroidPops) {
+					bins.Add(new Pair<AsteroidSet, double>(x, x.getSpawnRate()));
 				}
-
 				return RandomDist.weightedSample(bins);
 			} catch (ArgumentException e) {
 				throw new InvalidOperationException("[CustomAsteroids]: could not draw population", e);
@@ -134,23 +112,15 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		/// Returns the total spawn rate of all asteroid populations. Does not throw exceptions.
+		/// Returns the total spawn rate of all asteroid sets. Does not throw exceptions.
 		/// </summary>
-		/// <returns>The sum of all spawn rates for all populations, in asteroids per day.</returns>
+		/// <returns>The sum of all spawn rates for all sets, in asteroids per day.</returns>
 		internal double getTotalRate() {
-			double total = untouchedSet.getSpawnRate();
-			foreach (Population x in asteroidSets) {
+			double total = 0.0;
+			foreach (AsteroidSet x in asteroidPops) {
 				total += x.getSpawnRate();
 			}
 			return total;
-		}
-
-		/// <summary>
-		/// Returns the object used to spawn asteroids on stock orbits. Does not throw exceptions.
-		/// </summary>
-		/// <returns>The the default asteroid spawner. Shall not be null, but may have a spawn rate of 0.</returns>
-		internal DefaultAsteroids defaultAsteroids() {
-			return untouchedSet;
 		}
 
 		/// <summary>
@@ -172,7 +142,8 @@ namespace Starstrider42.CustomAsteroids {
 	/// <summary>
 	/// Contains settings for asteroids that aren't affected by Custom Asteroids.
 	/// </summary>
-	sealed class DefaultAsteroids {
+	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
+	sealed class DefaultAsteroids : AsteroidSet {
 		/// <summary>The name of the group.</summary>
 		[Persistent] private string name;
 		/// <summary>The name of asteroids with unmodified orbits.</summary>
@@ -190,19 +161,15 @@ namespace Starstrider42.CustomAsteroids {
 			this.spawnRate = 0.0;
 		}
 
-		/// <summary>
-		/// Returns the rate at which stock-like asteroids are discovered. Does not throw exceptions.
-		/// </summary>
-		/// <returns>The spawn rate in asteroids per day.</returns>
-		internal double getSpawnRate() {
+		public double getSpawnRate() {
 			return spawnRate;
 		}
 
-		/// <summary>
-		/// Returns the name used for stock-like asteroids. Does not throw exceptions.
-		/// </summary>
-		/// <returns>A human-readable string that can be used as an asteroid prefix.</returns>
-		internal string getAsteroidName() {
+		public string getName() {
+			return name;
+		}
+
+		public string getAsteroidName() {
 			return title;
 		}
 
@@ -213,7 +180,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// <seealso cref="Object.ToString()"/> 
 		public override string ToString() {
-			return name;
+			return getName();
 		}
 
 		/// <summary>
@@ -223,7 +190,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// <exception cref="System.InvalidOperationException">Thrown if cannot produce stockalike orbits. The program 
 		/// will be in a consistent state in the event of an exception.</exception> 
-		internal Orbit drawOrbit() {
+		public Orbit drawOrbit() {
 			CelestialBody kerbin = FlightGlobals.Bodies.Find(body => body.isHomeWorld);
 			CelestialBody dres = FlightGlobals.Bodies.Find(body => body.name.Equals("Dres"));
 

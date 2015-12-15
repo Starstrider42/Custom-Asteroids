@@ -8,7 +8,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
-	sealed class Population {
+	sealed class Population : AsteroidSet {
 		/// <summary>A unique name for the population.</summary>
 		[Persistent] private string name;
 		/// <summary>The name of asteroids belonging to this population.</summary>
@@ -52,17 +52,7 @@ namespace Starstrider42.CustomAsteroids {
 				type: PhaseRange.PhaseType.MeanAnomaly, epoch: PhaseRange.EpochType.GameStart);
 		}
 
-		/// <summary>
-		/// Generates a random orbit consistent with the population properties. The program will be in a consistent 
-		/// state in the event of an exception.
-		/// </summary>
-		/// <returns>The orbit of a randomly selected member of the population.</returns>
-		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if population's parameter values cannot produce 
-		/// valid orbits.</exception>
-		/// 
-		/// @todo Break up this function.
-		internal Orbit drawOrbit() {
+		public Orbit drawOrbit() {
 			// Would like to only calculate this once, but I don't know for sure that this object will 
 			//		be initialized after FlightGlobals
 			try {
@@ -163,12 +153,16 @@ namespace Starstrider42.CustomAsteroids {
 			}
 		}
 
-		/// <summary>
-		/// Returns the rate at which asteroids are discovered in the population. Does not throw exceptions.
-		/// </summary>
-		/// <returns>The number of asteroids discovered per Earth day.</returns>
-		internal double getSpawnRate() {
+		public double getSpawnRate() {
 			return spawnRate;
+		}
+
+		public string getName() {
+			return name;
+		}
+
+		public string getAsteroidName() {
+			return title;
 		}
 
 		/// <summary>
@@ -179,22 +173,6 @@ namespace Starstrider42.CustomAsteroids {
 		/// <seealso cref="Object.ToString()"/> 
 		public override string ToString() {
 			return getName();
-		}
-
-		/// <summary>
-		/// Returns the name of the population. Does not throw exceptions.
-		/// </summary>
-		/// <returns>A human-readable string identifying the population.</returns>
-		internal string getName() {
-			return name;
-		}
-
-		/// <summary>
-		/// Returns the name of asteroids within the population. Does not throw exceptions.
-		/// </summary>
-		/// <returns>A human-readable string that can be used as an asteroid prefix.</returns>
-		internal string getAsteroidName() {
-			return title;
 		}
 
 		/// <summary>

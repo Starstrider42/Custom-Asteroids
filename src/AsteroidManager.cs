@@ -45,31 +45,21 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>
 		/// Provides rate at which asteroids should be created. Does not throw exceptions.
 		/// </summary>
-		/// <returns>The total spawn rate, in asteroids per day, of all loaded Populations.</returns>
+		/// <returns>The total spawn rate, in asteroids per day, of all loaded asteroid sets.</returns>
 		internal static double spawnRate() {
 			return allowedPops.getTotalRate();
 		}
 
 		/// <summary>
-		/// Randomly selects an asteroid population. The selection is weighted by the spawn rate 
-		/// of each population; a population with a rate of 2.0 is twice as likely to be chosen as 
-		/// one with a rate of 1.0.
+		/// Randomly selects an asteroid set. The selection is weighted by the spawn rate of each set; a set with 
+		/// a rate of 2.0 is twice as likely to be chosen as one with a rate of 1.0.
 		/// </summary>
-		/// <returns>A reference to the selected population.</returns>
+		/// <returns>A reference to the selected asteroid set. Shall not be null.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if there are no populations from 
-		/// 	which to choose, or if all spawn rates are zero, or if any rate is negative.</exception> 
-		internal static Population drawPopulation() {
-			return allowedPops.drawPopulation();
-		}
-
-		/// <summary>
-		/// Returns info about the default population.
-		/// </summary>
-		/// <returns>The object used to represent stock-like asteroids. Shall not be null, but may have a 
-		/// 	spawn rate of zero.</returns>
-		internal static DefaultAsteroids defaultPopulation() {
-			return allowedPops.defaultAsteroids();
+		/// <exception cref="System.InvalidOperationException">Thrown if there are no sets from which to choose, 
+		/// or if all spawn rates are zero, or if any rate is negative.</exception> 
+		internal static AsteroidSet drawAsteroidSet() {
+			return allowedPops.drawAsteroidSet();
 		}
 	}
 }
