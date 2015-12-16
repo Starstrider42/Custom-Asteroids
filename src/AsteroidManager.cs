@@ -61,5 +61,25 @@ namespace Starstrider42.CustomAsteroids {
 		internal static AsteroidSet drawAsteroidSet() {
 			return allowedPops.drawAsteroidSet();
 		}
+
+		/// <summary>
+		/// Searches KSP for a celestial body. Assumes all loaded celestial bodies have unique names.
+		/// </summary>
+		/// 
+		/// <param name="name">The exact, case-sensitive name of the celestial body to recover.</param>
+		/// <returns>The celestial body named <c>name</c>.</returns>
+		/// 
+		/// <exception cref="ArgumentException">Thrown if no celestial body named <c>name</c> exists. The program state 
+		/// will be unchanged in the event of an exception.</exception> 
+		internal static CelestialBody getPlanetByName(string name) {
+			// Would like to only calculate this once, but I don't know for sure that this object will 
+			//		be initialized after FlightGlobals
+			CelestialBody theBody = FlightGlobals.Bodies.Find(body => body.name == name);
+			if (theBody == null) {
+				throw new ArgumentException("[CustomAsteroids]: could not find celestial body named " + name, 
+					"name");
+			}
+			return theBody;
+		}
 	}
 }
