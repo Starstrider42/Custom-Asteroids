@@ -44,14 +44,14 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		protected override void checkSpawn() {
-			if (areAsteroidsTrackable()) {
-				// More than one asteroid per tick is unlikely even at 100,000×
-				while (Planetarium.GetUniversalTime() > nextAsteroid) {
+			// More than one asteroid per tick is unlikely even at 100,000×
+			while (Planetarium.GetUniversalTime() > nextAsteroid) {
+				if (areAsteroidsTrackable()) {
 					Debug.Log("[FixedRateSpawner]: asteroid discovered at UT " + nextAsteroid);
 					spawnAsteroid();
-
-					nextAsteroid += asteroidWaitTime();
 				}
+
+				nextAsteroid += asteroidWaitTime();
 			}
 		}
 	}
