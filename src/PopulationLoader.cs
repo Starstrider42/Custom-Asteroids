@@ -209,7 +209,7 @@ namespace Starstrider42.CustomAsteroids {
 				return new Orbit(i, e, a, lAn, aPe, mEp, epoch, dres);
 			} else if (kerbin != null) {
 				// Kerbin interceptors
-				double delay = RandomDist.drawUniform(50.0, 220.0);
+				double delay = RandomDist.drawUniform(12.5, 55.0);
 				Debug.Log("[CustomAsteroids]: new orbit will pass by kerbin in " + delay + " days");
 				return Orbit.CreateRandomOrbitFlyBy(kerbin, delay);
 			} else {
