@@ -42,12 +42,15 @@ The average number of known asteroids in each group -- if none are tracked -- wi
 
 Each `ASTEROIDGROUP` block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:
 * `dist`: the distribution from which the parameter will be drawn. Allowed values are Uniform, 
-    LogUniform, Gaussian (Normal also accepted), LogNormal, Rayleigh, Gamma, Beta, or Exponential. Note that 
-    the Beta distribution is rescaled from its usual interval `(0, 1)` to `(min, max)`.
+    LogUniform, Gaussian (Normal also accepted), LogNormal, Rayleigh, Gamma, Beta, or Exponential. 
+    Note that the Beta distribution is rescaled from its usual interval `(0, 1)` to `(min, max)`. 
+    LogNormal, Gamma, and Beta are only available in Custom Asteroids 1.3 or later.
 * `min`: the minimum value of the parameter. Currently used by Uniform, LogUniform, and Beta.
 * `max`: the maximum value of the parameter. Currently used by Uniform, LogUniform, and Beta.
-* `avg`: the average value of the parameter. Currently used by Gaussian, LogNormal, Rayleigh, Gamma, Beta, and Exponential.
-* `stddev`: the standard deviation of the parameter. Currently used by Gaussian, LogNormal, Gamma, and Beta.
+* `avg`: the average value of the parameter. Currently used by Gaussian, LogNormal, Rayleigh, Gamma, 
+    Beta, and Exponential.
+* `stddev`: the standard deviation of the parameter. Currently used by Gaussian, LogNormal, Gamma, 
+    and Beta.
 
 Allowed values of `min`, `max`, `avg`, and `stddev` are:
 * A floating-point number, giving the exact value (in appropriate units) for the parameter
@@ -66,14 +69,22 @@ Allowed values of `min`, `max`, `avg`, and `stddev` are:
     - lan: the longitude of ascending node of &lt;planet&gt;, in degrees
     - mna0: the mean anomaly (at game start) of &lt;planet&gt;, in degrees
     - mnl0: the mean longitude (at game start) of &lt;planet&gt;, in degrees
+    - prot: the sidereal rotation period of &lt;planet&gt;, in seconds
+    - psol: the solar day of &lt;planet&gt;, in seconds
+    - porb: the orbital period of &lt;planet&gt;, in seconds
+    - vesc: the escape speed of &lt;planet&gt;, in m/s
+    - vorb: the current orbital speed, relative to the body being orbited, of &lt;planet&gt;, in m/s
+    - vmin: the apoapsis orbital speed of &lt;planet&gt;, in m/s
+    - vmax: the periapsis orbital speed of &lt;planet&gt;, in m/s
 
-  For example, the string `Ratio(Jool.sma, 0.5)` means "half of Jool's semimajor axis, in meters".
+  For example, the string `Ratio(Jool.sma, 0.5)` means "half of Jool's semimajor axis, in meters". Time 
+  and velocity stats are only available in Custom Asteroids 1.3 or later.
 * A string of the form 'Offset(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; 
     and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to 
     the celestial body's orbital element (units determined by &lt;stat&gt;). Again, whitesapce is 
     ignored. For example, the string `Offset(Duna.per, -50000000)` means "50,000,000 meters less 
     than Duna's periapsis", or just beyond its sphere of influence.
-
+    
 The six orbital elements are:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 
     only orbital element that must *always* be given. Distribution defaults to LogUniform if 

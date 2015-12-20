@@ -14,22 +14,23 @@ namespace Starstrider42.CustomAsteroids {
 	 * @todo Find a way to make values private!
 	 */
 	class ValueRange : IPersistenceLoad {
-		/// <summary>Parse format for planet names..</summary>
+		/// <summary>Parse format for planet names.</summary>
 		protected const string PLANET_FORMAT = "(?<planet>.+)";
-		/// <summary>Parse format for planet properties..</summary>
-		protected const string PROP_FORMAT = "(?<prop>rad|soi|sma|per|apo|ecc|inc|(a|l)pe|lan|mn(a|l)0)";
-		/// <summary>Parse format for planets, with properties..</summary>
+		/// <summary>Parse format for planet properties.</summary>
+		protected const string PROP_FORMAT = "(?<prop>rad|soi|sma|per|apo|ecc|inc|(a|l)pe|lan|mn(a|l)0"
+		                                     + "|p(rot|sol|orb)|v(esc|orb|min|max))";
+		/// <summary>Parse format for planets, with properties.</summary>
 		protected const string PLANET_PROP = PLANET_FORMAT + "\\s*\\.\\s*" + PROP_FORMAT;
 
 		// Unfortunately, planet name can have pretty much any character
 		/// <summary>Defines the syntax for a Ratio declaration.</summary>
 		private static readonly Regex ratioDecl = new Regex("Ratio\\(\\s*" + PLANET_PROP + "\\s*,"
-			+ "\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
-			RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+			                                          + "\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
+			                                          RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 		/// <summary>Defines the syntax for an Offset declaration.</summary>
 		private static readonly Regex sumDecl = new Regex("Offset\\(\\s*" + PLANET_PROP + "\\s*,"
-			+ "\\s*(?<incr>[-+.e\\d]+)\\s*\\)", 
-			RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+			                                        + "\\s*(?<incr>[-+.e\\d]+)\\s*\\)", 
+			                                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
 		// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these
 		//	members -- even though ConfigNodes seem to completely ignore permissions in all other cases
@@ -237,8 +238,9 @@ namespace Starstrider42.CustomAsteroids {
 		/// <param name="planet">The exact, case-sensitive name of the celestial body. Assumes all loaded 
 		/// 	celestial bodies have unique names.</param>
 		/// <param name="property">The short name of the property to recover. Must be one 
-		/// 	of ("rad", "soi", "sma", "per", "apo", "ecc", "inc", "ape", "lan", "mna0", or "mnl0"). 
-		/// 	The only properties supported for Sun are "rad" and "soi".</param>
+		/// 	of ("rad", "soi", "sma", "per", "apo", "ecc", "inc", "ape", "lan", "mna0", "mnl0", 
+		/// 	"prot", "psun", "porb", "vesc", "vorb", "vmin", or "vmax"). 
+		/// 	The only properties supported for Sun are "rad", "soi", "prot", and "vesc".</param>
 		/// <returns>The value of <c>property</c> appropriate for <c>planet</c>. Distances are given 
 		/// 	in meters, angles are given in degrees.</returns>
 		/// 
@@ -253,6 +255,17 @@ namespace Starstrider42.CustomAsteroids {
 				return body.Radius;
 			case "soi":
 				return body.sphereOfInfluence;
+			case "prot":
+				return body.rotates ? body.rotationPeriod : Double.PositiveInfinity;
+			case "psol":
+				if (body.solarRotationPeriod) {
+					return body.solarDayLength;
+				} else {
+					throw new ArgumentException("[CustomAsteroids]: celestial body '" + planet
+						+ "' does not have a solar day", "property");
+				}
+			case "vesc":
+				return Math.Sqrt(2 * body.gravParameter / body.Radius);
 			default:
 				if (body.GetOrbitDriver() == null) {
 					throw new ArgumentException("[CustomAsteroids]: celestial body '" + planet
@@ -283,6 +296,14 @@ namespace Starstrider42.CustomAsteroids {
 				case "mnl0":
 					return anomalyToLong(orbit.meanAnomalyAtEpoch * 180.0 / Math.PI, 
 						orbit.inclination, orbit.argumentOfPeriapsis, orbit.LAN);
+				case "porb":
+					return orbit.period;
+				case "vorb":
+					return orbit.getOrbitalSpeedAt(Planetarium.GetUniversalTime());
+				case "vmin":
+					return orbit.getOrbitalSpeedAtDistance(orbit.ApR);
+				case "vmax":
+					return orbit.getOrbitalSpeedAtDistance(orbit.PeR);
 				default:
 					throw new ArgumentException("[CustomAsteroids]: celestial bodies do not have a " + property
 						+ " value", "property");

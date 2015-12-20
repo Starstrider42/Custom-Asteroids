@@ -78,7 +78,8 @@ namespace Starstrider42.CustomAsteroids {
 		/// 	<item><description>a string representation of a floating-point number</description></item>
 		/// 	<item><description>a string of the format "Ratio(&lt;Planet&gt;.&lt;stat&gt;, &lt;value&gt;)", where 
 		/// 		&lt;Planet&gt; is the name of a loaded celestial body, &lt;stat&gt; is one of 
-		/// 		(rad, soi, sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0), 
+		/// 		(rad, soi, sma, per, apo, ecc, inc, ape, lpe, lan, mna0, mnl0, prot, psun, porb, 
+		/// 		vesc, vorb, vmin, vmax), 
 		/// 		and &lt;value&gt; is a string representation of a floating-point number</description></item>
 		/// 	<item><description>a string of the format "Offset(&lt;Planet&gt;.&lt;stat&gt;, &lt;value&gt;)", where 
 		/// 		&lt;Planet&gt;, &lt;stat&gt;, and &lt;value&gt; are as above.</description></item>

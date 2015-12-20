@@ -10,6 +10,7 @@ Unreleased
 ### New Features
 
 * Asteroid population blocks now support the log-normal, (rescaled) beta, and gamma distributions.
+* Asteroid .values now include several time and velocity values.
 
 ### Changes
 
