@@ -18,5 +18,43 @@ namespace Starstrider42.CustomAsteroids {
 					5.0f, ScreenMessageStyle.UPPER_RIGHT);
 			}
 		}
+
+		/// <summary>
+		/// Computes the factorial of <c>n</c>.
+		/// </summary>
+		/// <returns><c>n!</c></returns>
+		/// 
+		/// <param name="n">The number whose factorial is desired.</param>
+		/// 
+		/// <exception cref="System.ArgumentException">Thrown if <c>n</c> is negative. The program state shall be 
+		/// unchanged in the event of an exception.</exception>
+		internal static double factorial(int n) {
+			if (n < 0) {
+				throw new ArgumentException("Negative numbers do not have factorials (gave " + n + ")", "n");
+			} else if (n == 0) {
+				return 1;
+			} else {
+				return n * factorial(n - 1);
+			}
+		}
+
+		/// <summary>
+		/// Computes the double factorial of <c>n</c>.
+		/// </summary>
+		/// <returns><c>n!!</c></returns>
+		/// 
+		/// <param name="n">The number whose double factorial is desired.</param>
+		/// 
+		/// <exception cref="System.ArgumentException">Thrown if <c>n</c> is negative. The program state shall be 
+		/// unchanged in the event of an exception.</exception>
+		internal static double doubleFactorial(int n) {
+			if (n < 0) {
+				throw new ArgumentException("Negative numbers do not have double factorials (gave " + n + ")", "n");
+			} else if (n <= 1) {	// Cover both base cases at once
+				return 1;
+			} else {
+				return n * doubleFactorial(n - 2);
+			}
+		}
 	}
 }

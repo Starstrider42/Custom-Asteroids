@@ -46,7 +46,7 @@ namespace Starstrider42.CustomAsteroids {
 			return epoch;
 		}
 
-		/// <summary>Defines the parametrization of orbit size that is used.</summary>
+		/// <summary>Defines the parametrization of orbit phase that is used.</summary>
 		internal enum PhaseType {
 			MeanLongitude,
 			MeanAnomaly

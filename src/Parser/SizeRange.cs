@@ -17,7 +17,7 @@ namespace Starstrider42.CustomAsteroids {
 			RegexOptions.IgnoreCase);
 
 		/// <summary>The type of parameter describing the orbit.</summary>
-		[Persistent] private SizeType type;
+		[Persistent] private Type type;
 
 		/// <summary>
 		/// Assigns situation-specific default values to the ValueRange. The given values will be used by draw() 
@@ -29,7 +29,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// <param name="max">The maximum value allowed for distributions. May be unused.</param>
 		/// <param name="avg">The mean value returned. May be unused.</param>
 		/// <param name="stddev">The standard deviation of values returned. May be unused.</param>
-		internal SizeRange(Distribution dist, SizeType type = SizeType.SemimajorAxis, 
+		internal SizeRange(Distribution dist, Type type = Type.SemimajorAxis, 
 			double min = 0.0, double max = 1.0, double avg = 0.0, double stddev = 0.0)
 			: base(dist, min, max, avg, stddev) {
 			this.type = type;
@@ -39,7 +39,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// Returns the parametrization used by this ValueRange. Does not throw exceptions.
 		/// </summary>
 		/// <returns>The orbit size parameter represented by this object.</returns>
-		internal SizeType getParam() {
+		internal Type getParam() {
 			return type;
 		}
 
@@ -123,7 +123,7 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>Defines the parametrization of orbit size that is used.</summary>
-		internal enum SizeType {
+		internal enum Type {
 			SemimajorAxis,
 			Periapsis,
 			Apoapsis

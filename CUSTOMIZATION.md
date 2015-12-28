@@ -1,29 +1,30 @@
 Custom(izing) Asteroids                         {#newbelts}
 ============
 
-Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. There are two example files in the Custom Asteroids download, both in `GameData/CustomAsteroids/config/`. However, any .cfg file anywhere in `GameData` that follows the same format will be parsed by Custom Asteroids. If you are distributiong asteroid definition files with your mod, please put them in your mod directory rather than the CustomAsteroids directory so that players know where the files came from. If you need to suppress or modify the default asteroid definitions, they are fully ModuleManager-compatible.
+Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. There are two example files in the Custom Asteroids download, both in `GameData/CustomAsteroids/config/`. However, any .cfg file anywhere in `GameData` that follows the same format will be parsed by Custom Asteroids. If you are distributing asteroid definition files with your mod, please put them in your mod directory rather than the CustomAsteroids directory so that players know where the files came from. If you need to suppress or modify the default asteroid definitions, they are fully ModuleManager-compatible.
 
-Within each file, each `ASTEROIDGROUP` block represents a single group of orbits. There is no limit to the number of `ASTEROIDGROUP` blocks you can place in a file.
+Within each file, each `ASTEROIDGROUP` block represents a single group of stable orbits. Each `INTERCEPT` block represents asteroids on a collision (or near-collision) course with a celestial body. There is no limit to the number of `ASTEROIDGROUP` or `INTERCEPT` blocks you can place in a file. `INTERCEPT` blocks are only available starting from Custom Asteroids 1.3.
 
-There may also be up to one `DEFAULT` block across all files, which controls how many asteroids are found on a Kerbin intercept trajectory or in the Dres ring. If the player has multiple files with a `DEFAULT` block, only one will be used.
+Older config files may have `DEFAULT` blocks that represent asteroids on stock orbits. With the introduction of `INTERCEPT` blocks in version 1.3, `DEFAULT` blocks are deprecated and should not be used in new config files. Support for `DEFAULT` blocks will be removed in Custom Asteroids 2.0.
 
 Basic Usage
 ------------
 
 The most frequently used fields in each `ASTEROIDGROUP` block are the following:
-
 * `name`: a unique, machine-readable name. Must not contain spaces.
-* `title`: a descriptive name. If `RenameAsteroids = True` is set in the [settings file](@ref options), 
+* `title`: a descriptive name. If `RenameAsteroids = True` is set in the [settings file](http://starstrider42.github.io/Custom-Asteroids/options.html), 
     this name will replace the generic "Ast." in the asteroids' name.
 * `centralBody`: the name of the object the asteroids will orbit. Must exactly match the name of an 
     in-game celestial body.
 * `spawnRate`: must be a nonnegative number. If `Spawner = FixedRate` is set in the 
-    [settings file](@ref options), this value gives the number of asteroids detected per Earth day. 
-    If `Spawner = Stock`, only the ratio to all the other `spawnRate` values matters.
+    [settings file](http://starstrider42.github.io/Custom-Asteroids/options.html), this value gives 
+    the number of asteroids detected per Earth day. If `Spawner = Stock`, only the ratio to all the 
+    other `spawnRate` values matters.
 * `orbitSize`: a block describing how far from `centralBody` the asteroid's orbit is found. Parameters:
     - `type`: Describes which orbital element is constrained by `min` and `max`. Allowed values are 
-        SemimajorAxis, Periapsis, or Apoapsis.
-    - `min`: The smallest value an asteroid from this group may have, in meters.
+        SemimajorAxis, Periapsis, or Apoapsis. Default is SemimajorAxis.
+    - `min`: The smallest value an asteroid from this group may have, in meters. Always measured from 
+        the center of `centralBody`, regardless of the value of `type`.
     - `max`: The largest value an asteroid from this group may have.
 * `eccentricity`: a block describing what eccentricities an asteroid from the group may have.
     - `avg`: the average eccentricity of an asteroid in this population. Must be a nonnegative number. 
@@ -33,14 +34,26 @@ The most frequently used fields in each `ASTEROIDGROUP` block are the following:
     - `avg`: the average inclination of an asteroid in this population, in degrees. Should be a 
         nonnegative number. As with eccentricities, you may occasionally get some extreme values.
 
-The `DEFAULT` block, if present, has only the `name` and `spawnRate` fields. These work analogously to the `name` and `spawnRate` fields for `ASTEROIDGROUP`. If no `DEFAULT` block is present, all asteroids will appear in one of the asteroid groups.
+The most frequently used fields in each `INTERCEPT` block are the following:
+* `name`, `title`, `spawnRate`: have the same meanings as above
+* `targetBody`: the name of the object the asteroids will approach. Must exactly match the name of an 
+    in-game celestial body.
+* `approach`: a block describing how far from `targetBody` the asteroid would pass if not for the 
+    planet's gravity. Parameters:
+    - `max`: the maximum approach distance any asteroid from this group will have, in meters. The special 
+        value `Ratio(&lt;targetBody&gt;.soi, 1.0)` allows all trajectories that intercept the target's 
+        sphere of influence, no matter where (fill in `&lt;targetBody&gt;` with the correct name).
+* `warnTime`: a block describing how long before closest approach the asteroid may be detected. Negative values are allowed and represent detections _after_ closest approach. Parameters:
+    - `min`: The minimum lead time (i.e., the latest moment) at which an asteroid may be detected, 
+        in seconds.
+    - `max`: The maximum lead time at which an asteroid may be detected.
 
 Advanced Usage
 ------------
 
 The average number of known asteroids in each group -- if none are tracked -- will equal `spawnRate` times the average of `Options.MinUntrackedTime` and `Options.MaxUntrackedTime`. Set the value for `spawnRate` accordingly.
 
-Each `ASTEROIDGROUP` block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:
+Each `ASTEROIDGROUP` or `INTERCEPT` block has several subfields describing how asteroid parameters are generated. Each parameter is a block with the following values:
 * `dist`: the distribution from which the parameter will be drawn. Allowed values are Uniform, 
     LogUniform, Gaussian (Normal also accepted), LogNormal, Rayleigh, Gamma, Beta, or Exponential. 
     Note that the Beta distribution is rescaled from its usual interval `(0, 1)` to `(min, max)`. 
@@ -73,7 +86,7 @@ Allowed values of `min`, `max`, `avg`, and `stddev` are:
     - psol: the solar day of &lt;planet&gt;, in seconds
     - porb: the orbital period of &lt;planet&gt;, in seconds
     - vesc: the escape speed of &lt;planet&gt;, in m/s
-    - vorb: the current orbital speed, relative to the body being orbited, of &lt;planet&gt;, in m/s
+    - vorb: the mean orbital speed, relative to the body being orbited, of &lt;planet&gt;, in m/s
     - vmin: the apoapsis orbital speed of &lt;planet&gt;, in m/s
     - vmax: the periapsis orbital speed of &lt;planet&gt;, in m/s
 
@@ -81,14 +94,15 @@ Allowed values of `min`, `max`, `avg`, and `stddev` are:
   and velocity stats are only available in Custom Asteroids 1.3 or later.
 * A string of the form 'Offset(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; 
     and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to 
-    the celestial body's orbital element (units determined by &lt;stat&gt;). Again, whitesapce is 
+    the celestial body's orbital element (units determined by &lt;stat&gt;). Again, whitespace is 
     ignored. For example, the string `Offset(Duna.per, -50000000)` means "50,000,000 meters less 
     than Duna's periapsis", or just beyond its sphere of influence.
-    
-The six orbital elements are:
+
+Each `ASTEROIDGROUP` block can have up to six parameters, corresponding to the six orbital elements:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 
-    only orbital element that must *always* be given. Distribution defaults to LogUniform if 
-    unspecified. The `orbitSize` node also has two additional options:
+    only orbital element that must *always* be given. All distances are from the body's center. 
+    Distribution defaults to LogUniform if unspecified. The `orbitSize` node also has two additional 
+    options:
     - `type`: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.
     - The `min`, `max`, or `avg` fields of `orbitSize` may take a string of the form 
     'Resonance(&lt;planet&gt;, &lt;m&gt;:&lt;n&gt;)', where &lt;planet&gt; is the name of a 
@@ -118,3 +132,19 @@ The six orbital elements are:
         proportional to time since zero phase angle). Defaults to MeanAnomaly.
     - `epoch`: the time at which the mean anomaly or mean longitude is measured. May be GameStart 
         or Now. Defaults to GameStart.
+
+Each `INTERCEPT` block can have up to three parameters:
+* `approach`: the closest approach distance, in meters. This is one of two parameters that must always be 
+    given. Distribution defaults to Uniform if unspecified. `min` defaults to 0 if unspecified. The 
+    `approach` node has one additional option:
+    - `type`: the definition of closest approach used. May be ImpactParameter (distance ignoring the 
+        planet's gravity) or Periapsis (distance after allowing for planet's gravity, but ignoring the 
+        SoI boundary). Defaults to Periapsis. Both types are measured from the center of the target body.
+* `warnTime`: the time before closest approach, in seconds, at which the asteroid is discovered; does not 
+    account for the target planet's gravity. This is one of two parameters that must always be given. 
+    Distribution defaults to Uniform if unspecified. Negative values of `min` or `max` are allowed and 
+    represent discoveries after closest approach.
+* `vSoi`: the speed, in meters per second, at which the asteroid enters the planet's sphere of influence. 
+    This indirectly controls the asteroid's eccentricity and inclination (higher approach speeds 
+    correspond to eccentric, inclined orbits). If omitted, a range of speeds that allows easy capture 
+    is used. Distribution defaults to LogNormal if unspecified.

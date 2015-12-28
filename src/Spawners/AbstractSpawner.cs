@@ -78,7 +78,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// </summary>
 		protected virtual void checkDespawn() {
 			if (FlightGlobals.Vessels != null) {
-				// Not sure if C# lists support concurrent modification; play it safe
+				// Not sure if C# iterators support concurrent modification; play it safe
 				List<Vessel> toDelete = new List<Vessel>();
 
 				foreach (Vessel v in FlightGlobals.Vessels) {
@@ -179,12 +179,10 @@ namespace Starstrider42.CustomAsteroids {
 		/// </summary>
 		/// 
 		/// <param name="group">The set to which the asteroid belongs.</param>
-		/// <returns>A randomly generated orbit. If <c>group</c> is not null, the orbit will be generated from the 
-		/// corresponding config information; otherwise, it will be generated using a hardcoded approximation to the 
-		/// stock asteroid spawner.</returns>
+		/// <returns>A randomly generated orbit.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
-		/// program state will be unchanged in the event of an exception.</exception> 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid orbits. The 
+		/// program state will be unchanged in the event of an exception.</exception>
 		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
 		private static Orbit makeOrbit(AsteroidSet group) {
 			return group.drawOrbit();
@@ -198,8 +196,8 @@ namespace Starstrider42.CustomAsteroids {
 		/// <returns>A randomly generated name. The name will be prefixed by a population-specific name if custom 
 		/// names are enabled, or by "Ast." if they are disabled.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
-		/// program state will be unchanged in the event of an exception.</exception> 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid names. The 
+		/// program state will be unchanged in the event of an exception.</exception>
 		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
 		private static string makeName(AsteroidSet group) {
 			string name = DiscoverableObjectsUtil.GenerateAsteroidName();
@@ -227,7 +225,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// <returns>A ConfigNode storing the asteroid's DiscoveryInfo object.</returns>
 		/// 
 		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
-		/// program state will be unchanged in the event of an exception.</exception> 
+		/// program state will be unchanged in the event of an exception.</exception>
 		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
 		private static ConfigNode makeDiscoveryInfo(AsteroidSet group) {
 			Pair<float, float> trackTimes = AsteroidManager.getOptions().getUntrackedTimes();
@@ -249,8 +247,8 @@ namespace Starstrider42.CustomAsteroids {
 		/// <returns>An array of ConfigNodes storing the asteroid's parts. The first element MUST be the root 
 		/// part.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid data. The 
-		/// program state will be unchanged in the event of an exception.</exception> 
+		/// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate valid parts. The 
+		/// program state will be unchanged in the event of an exception.</exception>
 		/// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is null.</exception> 
 		private static ConfigNode[] makeAsteroidParts(AsteroidSet group) {
 			// The same "seed" that shows up in ProceduralAsteroid?

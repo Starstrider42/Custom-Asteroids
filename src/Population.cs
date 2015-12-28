@@ -41,10 +41,10 @@ namespace Starstrider42.CustomAsteroids {
 			this.centralBody = "Sun";
 			this.spawnRate = 0.0;			// Safeguard: don't make asteroids until the values are set
 
-			this.orbitSize = new  SizeRange(ValueRange.Distribution.LogUniform, SizeRange.SizeType.SemimajorAxis);
+			this.orbitSize = new  SizeRange(ValueRange.Distribution.LogUniform, SizeRange.Type.SemimajorAxis);
 			this.eccentricity = new ValueRange(ValueRange.Distribution.Rayleigh, min: 0.0, max: 1.0);
 			this.inclination = new ValueRange(ValueRange.Distribution.Rayleigh);
-			this.periapsis = new  PeriRange(ValueRange.Distribution.Uniform, PeriRange.PeriType.Argument, 
+			this.periapsis = new  PeriRange(ValueRange.Distribution.Uniform, PeriRange.Type.Argument, 
 				min: 0.0, max: 360.0);
 			this.ascNode = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
 			this.orbitPhase = new PhaseRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0, 
@@ -74,10 +74,10 @@ namespace Starstrider42.CustomAsteroids {
 				double aPe;
 				double peri = periapsis.draw();		// argument of periapsis
 				switch (periapsis.getParam()) {
-				case PeriRange.PeriType.Argument:
+				case PeriRange.Type.Argument:
 					aPe = peri;
 					break;
-				case PeriRange.PeriType.Longitude:
+				case PeriRange.Type.Longitude:
 					aPe = peri - lAn;
 					break;
 				default:
@@ -89,13 +89,13 @@ namespace Starstrider42.CustomAsteroids {
 				double a;
 				double size = orbitSize.draw();
 				switch (orbitSize.getParam()) {
-				case SizeRange.SizeType.SemimajorAxis:
+				case SizeRange.Type.SemimajorAxis:
 					a = size;
 					break;
-				case SizeRange.SizeType.Periapsis:
+				case SizeRange.Type.Periapsis:
 					a = size / (1.0 - e);
 					break;
-				case SizeRange.SizeType.Apoapsis:
+				case SizeRange.Type.Apoapsis:
 					if (e > 1.0) {
 						throw new InvalidOperationException("[CustomAsteroids]: cannot constrain apoapsis on "
 							+ "unbound orbits (eccentricity " + e + ")");

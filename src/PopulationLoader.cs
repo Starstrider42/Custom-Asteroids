@@ -45,16 +45,25 @@ namespace Starstrider42.CustomAsteroids {
 						Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
 						#endif
 						try {
-							if (curNode.name == "ASTEROIDGROUP") {
-								Population newPop = new Population();
-								ConfigNode.LoadObjectFromConfig(newPop, curNode);
-								allPops.asteroidPops.Add(newPop);
-							} else if (curNode.name == "DEFAULT") {
-								DefaultAsteroids oldPop = new DefaultAsteroids();
-								ConfigNode.LoadObjectFromConfig(oldPop, curNode);
-								allPops.asteroidPops.Add(oldPop); 
+							AsteroidSet pop = null;
+							switch (curNode.name) {
+							case "ASTEROIDGROUP":
+								pop = new Population();
+								break;
+							case "INTERCEPT":
+								pop = new Flyby();
+								break;
+							case "DEFAULT":
+								#pragma warning disable 0618	// DefaultAsteroids is deprecated
+								pop = new DefaultAsteroids();
+								#pragma warning restore 0618
+								break;
+							// silently ignore any other nodes present
 							}
-							// ignore any other nodes present
+							if (pop != null) {
+								ConfigNode.LoadObjectFromConfig(pop, curNode);
+								allPops.asteroidPops.Add(pop);
+							}
 						} catch (Exception e) {
 							Debug.LogError("[CustomAsteroids]: failed to load population '"
 								+ curNode.GetValue("name") + "'");
@@ -142,7 +151,10 @@ namespace Starstrider42.CustomAsteroids {
 	/// <summary>
 	/// Contains settings for asteroids that aren't affected by Custom Asteroids.
 	/// </summary>
-	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
+	/// <remarks>To avoid breaking the persistence code, DefaultAsteroids may not have subclasses.</remarks>
+	/// 
+	/// @deprecated Deprecated in favor of <see cref="Flyby"/>; to be removed in version 2.0.0.
+	[Obsolete("DefaultAsteroids will be removed in 2.0.0; use Flyby instead.")]
 	sealed class DefaultAsteroids : AsteroidSet {
 		/// <summary>The name of the group.</summary>
 		[Persistent] private string name;

@@ -299,7 +299,17 @@ namespace Starstrider42.CustomAsteroids {
 				case "porb":
 					return orbit.period;
 				case "vorb":
-					return orbit.getOrbitalSpeedAt(Planetarium.GetUniversalTime());
+					// Need circumference of an ellipse; closed form does not exist
+					double sum = orbit.semiMajorAxis + orbit.semiMinorAxis;
+					double diff = orbit.semiMajorAxis - orbit.semiMinorAxis;
+					double h = diff * diff / (sum * sum);
+					double correction = 1.0;
+					for (int n = 1; n < 10; n++) {
+						double coeff = Util.doubleFactorial(2 * n - 1) / (Math.Pow(2, n) * Util.factorial(n)) 
+							/ (2 * n - 1);
+						correction += coeff * coeff * Math.Pow(h, n);
+					}
+					return Math.PI * sum * correction / orbit.period;
 				case "vmin":
 					return orbit.getOrbitalSpeedAtDistance(orbit.ApR);
 				case "vmax":
