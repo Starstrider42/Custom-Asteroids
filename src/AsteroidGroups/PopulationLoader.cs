@@ -9,12 +9,12 @@ namespace Starstrider42.CustomAsteroids {
 	/// <remarks>TODO: Clean up this class.</remarks>
 	class PopulationLoader {
 		/// <summary>The set of loaded AsteroidSet objects.</summary>
-		private List<AsteroidSet> asteroidPops;
+		private readonly List<AsteroidSet> asteroidPops;
 
 		/// <summary>
 		/// Creates an empty solar system. Does not throw exceptions.
 		/// </summary>
-		internal PopulationLoader() {
+		private PopulationLoader() {
 			asteroidPops = new List<AsteroidSet>();
 		}
 
@@ -65,15 +65,16 @@ namespace Starstrider42.CustomAsteroids {
 								allPops.asteroidPops.Add(pop);
 							}
 						} catch (Exception e) {
+							var nodeName = curNode.GetValue("name");
 							Debug.LogError("[CustomAsteroids]: failed to load population '"
-								+ curNode.GetValue("name") + "'");
+								+ nodeName + "'");
 							Debug.LogException(e);
 							if (e.InnerException != null) {
-								Util.errorToPlayer("Could not load asteroid group. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
-									e.Message, e.GetBaseException().Message);
+								Util.errorToPlayer("Could not load asteroid group \"{0}\". Cause: \"{1}\"\nRoot Cause: \"{2}\".", 
+									nodeName, e.Message, e.GetBaseException().Message);
 							} else {
-								Util.errorToPlayer("Could not load asteroid group. Cause: \"{0}\".", 
-									e.Message);
+								Util.errorToPlayer("Could not load asteroid group \"{0}\". Cause: \"{1}\".", 
+									nodeName, e.Message);
 							}
 						}	// Attempt to parse remaining populations
 					}

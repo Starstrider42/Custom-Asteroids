@@ -45,7 +45,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>
 		/// Sets all options to their default values. Does not throw exceptions.
 		/// </summary>
-		internal Options() {
+		private Options() {
 			this.versionNumber = latestVersion();
 			this.renameAsteroids = true;
 			this.minUntrackedLifetime = 1.0f;

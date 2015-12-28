@@ -25,11 +25,11 @@ namespace Starstrider42.CustomAsteroids {
 				allowedPops = PopulationLoader.load();
 
 				Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day.");
-			} catch (Exception) {
+			} catch {
 				// Ensure the contents of AsteroidManager are predictable even in the event of an exception
 				// Though an exception thrown by a static constructor is basically unrecoverable...
-				curOptions = new Options();
-				allowedPops = new PopulationLoader();
+				curOptions = null;
+				allowedPops = null;
 				throw;
 			}
 		}

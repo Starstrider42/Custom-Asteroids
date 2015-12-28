@@ -1,4 +1,4 @@
-﻿namespace Starstrider42.CustomAsteroids {
+namespace Starstrider42.CustomAsteroids {
 	/// <summary>
 	/// Represents any collection of asteroids from which asteroids may be generated. Each implementation of 
 	/// <c>AsteroidSet</c> corresponds to one of the statements in an <c>AsteroidSets</c> configuration block.
