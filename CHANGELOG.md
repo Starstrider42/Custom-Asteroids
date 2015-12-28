@@ -24,6 +24,7 @@ Unreleased
 * Invalid populations will no longer stop other populations from loading.
 * Near-Kerbin asteroids will no longer appear on unbound orbits, and are much less likely to appear in the main belt.
 * A large number of asteroids will no longer appear when the tracking station is upgraded while using the fixed-rate spawner.
+* Mean anomaly and mean longitude of celestial bodies are now calculated properly.
 
 Version 1.2.0
 ------------

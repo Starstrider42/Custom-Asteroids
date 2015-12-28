@@ -67,7 +67,7 @@ namespace Starstrider42.CustomAsteroids {
 				rawMax = max.ToString();
 				rawAvg = avg.ToString();
 				rawStdDev = stdDev.ToString();
-				throw new TypeInitializationException("Starstrider42.CustomAsteroids.Population.ValueRange", e);
+				throw new TypeInitializationException("Starstrider42.CustomAsteroids.ValueRange", e);
 			}
 		}
 

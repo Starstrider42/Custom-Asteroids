@@ -131,7 +131,7 @@ Each `ASTEROIDGROUP` block can have up to six parameters, corresponding to the s
         MeanAnomaly (value proportional to time since periapsis) or MeanLongitude (value 
         proportional to time since zero phase angle). Defaults to MeanAnomaly.
     - `epoch`: the time at which the mean anomaly or mean longitude is measured. May be GameStart 
-        or Now. Defaults to GameStart.
+        or Now (the time at which the asteroid appears). Defaults to GameStart.
 
 Each `INTERCEPT` block can have up to three parameters:
 * `approach`: the closest approach distance, in meters. This is one of two parameters that must always be 

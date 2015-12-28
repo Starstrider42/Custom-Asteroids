@@ -154,8 +154,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>
 		/// Callback used by ConfigNode.LoadObjectFromConfig().
 		/// </summary>
-		// Why can't compiler recognize implicit implementation?
-		void IPersistenceLoad.PersistenceLoad() {
+		public void PersistenceLoad() {
 			parseAll();
 		}
 
@@ -183,7 +182,7 @@ namespace Starstrider42.CustomAsteroids {
 				rawMax = max.ToString();
 				rawAvg = avg.ToString();
 				rawStdDev = stdDev.ToString();
-				throw new TypeInitializationException("Starstrider42.CustomAsteroids.Population.ValueRange", e);
+				throw new TypeInitializationException("Starstrider42.CustomAsteroids.ValueRange", e);
 			}
 		}
 
@@ -292,9 +291,9 @@ namespace Starstrider42.CustomAsteroids {
 				case "lan": 
 					return orbit.LAN;
 				case "mna0":
-					return orbit.meanAnomalyAtEpoch * 180.0 / Math.PI;
+					return meanAnomalyAtUT(orbit, 0.0) * 180.0 / Math.PI;
 				case "mnl0":
-					return anomalyToLong(orbit.meanAnomalyAtEpoch * 180.0 / Math.PI, 
+					return anomalyToLong(meanAnomalyAtUT(orbit, 0.0) * 180.0 / Math.PI, 
 						orbit.inclination, orbit.argumentOfPeriapsis, orbit.LAN);
 				case "porb":
 					return orbit.period;
@@ -321,6 +320,17 @@ namespace Starstrider42.CustomAsteroids {
 			}
 		}
 
+		/// <summary>
+		/// Returns the mean anomaly of the orbit at the given time.
+		/// </summary>
+		/// 
+		/// <param name="orbit">The orbit whose anomaly is desired.</param>
+		/// <param name="ut">The time at which to measure the mean anomaly.</param>
+		/// <returns>The mean anomaly at the specified epoch.</returns>
+		private static double meanAnomalyAtUT(Orbit orbit, double ut) {
+			double fracOrbit = (ut - orbit.epoch) / orbit.period;
+			return UtilMath.Clamp(orbit.meanAnomalyAtEpoch + 2.0 * Math.PI * fracOrbit, 0.0, 2.0 * Math.PI);
+		}
 
 		/// <summary>
 		/// Converts an orbital anomaly to an orbital longitude. Does not throw exceptions.
@@ -340,13 +350,14 @@ namespace Starstrider42.CustomAsteroids {
 			// Cos[l-Ω] ==        Cos[θ+ω]/Sqrt[Cos[θ+ω]^2 + Cos[i]^2 Sin[θ+ω]^2]
 			// Sin[l-Ω] == Cos[i] Sin[θ+ω]/Sqrt[Cos[θ+ω]^2 + Cos[i]^2 Sin[θ+ω]^2]
 			double iRad = i * Math.PI / 180.0;
+			double aPeRad = aPe * Math.PI / 180.0;
 			double lAnRad = lAn * Math.PI / 180.0;
 			double anRad = anom * Math.PI / 180.0;
 
-			double sincos = Math.Cos(iRad) * Math.Sin(anRad + aPe);
-			double cosOnly = Math.Cos(anRad + aPe);
-			double cos = Math.Cos(anRad + aPe) / Math.Sqrt(cosOnly * cosOnly + sincos * sincos);
-			double sin = Math.Cos(iRad) * Math.Sin(anRad + aPe) / Math.Sqrt(cosOnly * cosOnly + sincos * sincos);
+			double sincos = Math.Cos(iRad) * Math.Sin(anRad + aPeRad);
+			double cosOnly = Math.Cos(anRad + aPeRad);
+			double cos = Math.Cos(anRad + aPeRad) / Math.Sqrt(cosOnly * cosOnly + sincos * sincos);
+			double sin = Math.Cos(iRad) * Math.Sin(anRad + aPeRad) / Math.Sqrt(cosOnly * cosOnly + sincos * sincos);
 			return 180.0 / Math.PI * (Math.Atan2(sin, cos) + lAnRad);
 		}
 
