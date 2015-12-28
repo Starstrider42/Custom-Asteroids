@@ -116,7 +116,8 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <li><code>spawnRate</code>: must be a nonnegative number. If <code>Spawner = FixedRate</code> is set in the <a class="el" href="options.html">settings file</a>, this value gives the number of asteroids detected per Earth day. If <code>Spawner = Stock</code>, only the ratio to all the other <code>spawnRate</code> values matters.</li>
 <li><code>orbitSize</code>: a block describing how far from <code>centralBody</code> the asteroid's orbit is found. Parameters:<ul>
 <li><code>type</code>: Describes which orbital element is constrained by <code>min</code> and <code>max</code>. Allowed values are SemimajorAxis, Periapsis, or Apoapsis.</li>
-<li><code>min</code>: The smallest value an asteroid from this group may have, in meters.</li>
+<li><code>min</code>: The smallest value an asteroid from this group may have, in meters. Always measured from 
+        the center of <code>centralBody</code>, regardless of the value of <code>type</code>.</li>
 <li><code>max</code>: The largest value an asteroid from this group may have.</li>
 </ul>
 </li>
@@ -161,7 +162,7 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
     than Duna's periapsis", or just beyond its sphere of influence.</li>
 </ul>
 <p>The six orbital elements are:</p><ul>
-<li><code>orbitSize</code>: one of three parameters describing the size of the orbit, in meters. This is the only orbital element that must <em>always</em> be given. Distribution defaults to LogUniform if unspecified. The <code>orbitSize</code> node also has two additional options:<ul>
+<li><code>orbitSize</code>: one of three parameters describing the size of the orbit, in meters. This is the only orbital element that must <em>always</em> be given. All distances are from the body's center. Distribution defaults to LogUniform if unspecified. The <code>orbitSize</code> node also has two additional options:<ul>
 <li><code>type</code>: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.</li>
 <li>The <code>min</code>, <code>max</code>, or <code>avg</code> fields of <code>orbitSize</code> may take a string of the form 'Resonance(&lt;planet&gt;, &lt;m&gt;:&lt;n&gt;)', where &lt;planet&gt; is the name of a celestial body, and &lt;m&gt; and &lt;n&gt; are positive integers. The string will be interpreted as the semimajor axis needed to get an m:n mean-motion resonance with &lt;planet&gt;. For example, the string <code>Resonance(Jool, 2:3)</code> gives the semimajor axis to complete 2 orbits for every 3 orbits of Jool &ndash; in other words, the semimajor axis of Eeloo.</li>
 </ul>
