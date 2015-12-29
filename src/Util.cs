@@ -1,109 +1,59 @@
-﻿using System;
-using System.Reflection;
-using UnityEngine;
+using System;
 
-namespace Starstrider42 {
-
-	/** Simple implementation of an ordered pair.
-	 * 
-	 * Works around the lack of tuple support in .NET 3.5, and can 
-	 * 	do things that KeyValuePair can't
-	 * 
-	 * @tparam T The type of the first pair element
-	 * @tparam U The type of the second pair element
-	 */
-	internal class Pair<T, U> {
-		/** Should have a default constructor */
-		public Pair() {
-		}
-
-		/** Creates a new ordered pair
-		 * 
-		 * @param[in] first,second The values to store
-		 * 
-		 * @post The new object represents the pair (first, second).
-		 * 
-		 * @exceptsafe Does not throw exceptions.
-		 */
-		public Pair(T first, U second) {
-			this.First = first;
-			this.Second = second;
-		}
-
-		/** The first element of the pair */
-		[Persistent] public T First { get; set; }
-		/** The second element of the pair */
-		[Persistent] public U Second { get; set; }
-	}
-
-	namespace CustomAsteroids {
-		/** General-purpose functions that don't belong elsewhere
-		 */
-		internal static class Util {
-
-			/** Prints an error message visible to the player
-			 * @param[in] format The error message, or a composite format string for the message.
-			 * @param[in] param Any parameters to place in the composite format string (optional).
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 * 
-			 * @note Based on code from RemoteTech
-			 */
-			public static void ErrorToPlayer(string format, params object[] param) {
-				if (AsteroidManager.getOptions().getErrorReporting()) {
-					ScreenMessages.PostScreenMessage(new ScreenMessage(
-						String.Format("CustomAsteroids: " + format, param), 5.0f, ScreenMessageStyle.UPPER_RIGHT));
-				}
+namespace Starstrider42.CustomAsteroids {
+	/// <summary>
+	/// General-purpose functions that don't belong elsewhere.
+	/// </summary>
+	public static class Util {
+		/// <summary>
+		/// Prints an error message visible to the player. Does not throw exceptions.
+		/// </summary>
+		/// <param name="format">The error message, or a composite format string for the message.</param>
+		/// <param name="param">Any parameters to place in the composite format string (optional).</param>
+		/// 
+		/// <remarks>Based on code from RemoteTech.</remarks>
+		public static void errorToPlayer(string format, params object[] param) {
+			if (AsteroidManager.getOptions().getErrorReporting()) {
+				ScreenMessages.PostScreenMessage(String.Format("[CustomAsteroids]: " + format, param), 
+					5.0f, ScreenMessageStyle.UPPER_RIGHT);
 			}
 		}
 
-		/** Boilerplate code for adding a scenario module to newly started games
-		 */
-		internal class AddScenario<SM> : MonoBehaviour
-			where SM: ScenarioModule {
-			/** Called on the frame when a script is enabled just before any of the Update methods is called the first time.
-			 * 
-			 * @see[Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
-			 * 
-			 * @todo What exceptions are thrown by StartCoroutine?
-			 */
-			public void Start()
-			{
-				StartCoroutine("confirmScenarioAdded");
+		/// <summary>
+		/// Computes the factorial of <c>n</c>.
+		/// </summary>
+		/// <returns><c>n!</c></returns>
+		/// 
+		/// <param name="n">The number whose factorial is desired.</param>
+		/// 
+		/// <exception cref="System.ArgumentException">Thrown if <c>n</c> is negative. The program state shall be 
+		/// unchanged in the event of an exception.</exception>
+		internal static double factorial(int n) {
+			if (n < 0) {
+				throw new ArgumentException("Negative numbers do not have factorials (gave " + n + ")", "n");
+			} else if (n == 0) {
+				return 1;
+			} else {
+				return n * factorial(n - 1);
 			}
+		}
 
-			/** This function is called when the object will be destroyed.
-			 * 
-			 * @see [Unity Documentation] (http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
-			 * 
-			 * @todo What exceptions are thrown by StopCoroutine?
-			 */
-			public void OnDestroy() {
-				StopCoroutine("confirmScenarioAdded");
-			}
-
-			/** Ensures the scenario is added
-			 * 
-			 * @return Controls the delay before execution resumes
-			 * 
-			 * @see [Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)
-			 * 
-			 * @post The currently loaded game has an instance of the SM scenario module
-			 */
-			private System.Collections.IEnumerator confirmScenarioAdded() {
-				while (HighLogic.CurrentGame.scenarios[0].moduleRef == null) {
-					yield return 0;
-				}
-
-				ProtoScenarioModule curSpawner = HighLogic.CurrentGame.scenarios.
-					Find(scenario => scenario.moduleRef is CustomAsteroidSpawner);
-
-				if (curSpawner == null) {
-					Debug.Log("CustomAsteroids: Adding " + typeof(SM).Name + " to game '" 
-						+ HighLogic.CurrentGame.Title + "'");
-					HighLogic.CurrentGame.AddProtoScenarioModule(typeof(SM), 
-						GameScenes.SPACECENTER, GameScenes.TRACKSTATION, GameScenes.FLIGHT);
-				}
+		/// <summary>
+		/// Computes the double factorial of <c>n</c>.
+		/// </summary>
+		/// <returns><c>n!!</c></returns>
+		/// 
+		/// <param name="n">The number whose double factorial is desired.</param>
+		/// 
+		/// <exception cref="System.ArgumentException">Thrown if <c>n</c> is negative. The program state shall be 
+		/// unchanged in the event of an exception.</exception>
+		internal static double doubleFactorial(int n) {
+			if (n < 0) {
+				throw new ArgumentException("Negative numbers do not have double factorials (gave " + n + ")", "n");
+			} else if (n <= 1) {	// Cover both base cases at once
+				return 1;
+			} else {
+				return n * doubleFactorial(n - 2);
 			}
 		}
 	}

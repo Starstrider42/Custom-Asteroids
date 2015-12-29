@@ -1,205 +1,108 @@
-/** Determines which asteroid gets which orbit
- * @file AsteroidManager.cs
- * @author %Starstrider42
- * @date Created April 10, 2014
- */
-
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
 // Is there a good way to sync version number between here, doxygen.cfg, the markdown source, and Git tags?
-[assembly:AssemblyVersion("1.1.0")]
+[assembly:AssemblyVersion("1.2.0")]
 
-namespace Starstrider42 {
+namespace Starstrider42.CustomAsteroids {
+	/// <summary>
+	/// Central class for controlling Custom Asteroids configuration.
+	/// </summary>
+	internal static class AsteroidManager {
+		/// <summary>Singleton object responsible for handling Custom Asteroids configurations.</summary>
+		private static readonly PopulationLoader allowedPops;
 
-	namespace CustomAsteroids {
-		/** Central class for controlling asteroid orbits
-		 */
-		internal static class AsteroidManager {
-			/** Loads all Custom Asteroids settings
-			 * 
-			 * @exceptsafe The object is in a consistent state in the event of an exception
-			 */
-			static AsteroidManager() {
-				try {
-					curOptions  = Options.Load();
-					allowedPops = PopulationLoader.Load();
+		/// <summary>Singleton object responsible for handling alternative reference frames.</summary>
+		private static readonly ReferenceLoader knownFrames;
 
-					Debug.Log("CustomAsteroids: " + allowedPops.getTotalRate() + " new discoveries per Earth day");
-				} catch (Exception) {
-					// Ensure the contents of AsteroidManager are predictable even in the event of an exception
-					// Though an exception thrown by a static constructor is basically unrecoverable...
-					curOptions  = new Options();
-					allowedPops = new PopulationLoader();
-					throw;
-				}
+		/// <summary>Singleton object responsible for handling Custom Asteroids options.</summary>
+		private static readonly Options curOptions;
+
+		/// <summary>
+		/// Loads all Custom Asteroids settings. The class is in a consistent state in the event of an exception.
+		/// </summary>
+		static AsteroidManager() {
+			try {
+				curOptions = Options.load();
+				allowedPops = PopulationLoader.load();
+				knownFrames = ReferenceLoader.load();
+
+				Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day.");
+			} catch {
+				// Ensure the contents of AsteroidManager are predictable even in the event of an exception
+				// Though an exception thrown by a static constructor is basically unrecoverable...
+				curOptions = null;
+				allowedPops = null;
+				knownFrames = null;
+				throw;
 			}
+		}
 
-			/** Customizes an asteroid, based on the settings loaded to Custom Asteroids
-			 * 
-			 * @param[in,out] asteroid The asteroid to be modified
-			 * 
-			 * @pre @p asteroid is a valid asteroid object in the game
-			 * @pre @p asteroid has never been loaded in physics range
-			 * 
-			 * @post @p asteroid has properties consistent with membership in a randomly 
-			 * 		chosen population
-			 * 
-			 * @exception System.InvalidOperationException Thrown if there are no populations in 
-			 * 		which to place the asteroid
-			 * @exception AsteroidManager.BadPopulationException Thrown if a 
-			 * 		population exists, but cannot generate valid data
-			 * 
-			 * @exceptsafe The program is in a consistent state in the event of an exception
-			 */
-			internal static void editAsteroid(Vessel asteroid) {
-				Population newPop = allowedPops.drawPopulation();
+		/// <summary>
+		/// Returns the current options used by Custom Asteroids. Does not throw exceptions.
+		/// </summary>
+		/// <returns>An Options object with the settings to use. Shall not be null.</returns>
+		internal static Options getOptions() {
+			return curOptions;
+		}
 
-				// newPop == null means "leave asteroid in default population"
-				if (newPop != null) {
-					try {
-						asteroid.orbitDriver.orbit = newPop.drawOrbit();
-					} catch (InvalidOperationException e) {
-						throw new BadPopulationException (newPop, 
-							"CustomAsteroids: Selected invalid population " + newPop, e);
-					}
-				}
+		/// <summary>
+		/// Provides rate at which asteroids should be created. Does not throw exceptions.
+		/// </summary>
+		/// <returns>The total spawn rate, in asteroids per day, of all loaded asteroid sets.</returns>
+		internal static double spawnRate() {
+			return allowedPops.getTotalRate();
+		}
 
-				AsteroidDataRepository repo = AsteroidDataRepository.findModule();
-				if (repo != null) {
-					try {
-						ConfigNode asteroidType = (newPop != null ? newPop.drawAsteroidData() : allowedPops.defaultAsteroidData());
-						repo.register(asteroid, asteroidType);
-					} catch (InvalidOperationException e) {
-						throw new BadPopulationException (newPop, 
-							"CustomAsteroids: Selected invalid population " + newPop, e);
-					}
-				}
+		/// <summary>
+		/// Randomly selects an asteroid set. The selection is weighted by the spawn rate of each set; a set with 
+		/// a rate of 2.0 is twice as likely to be chosen as one with a rate of 1.0.
+		/// </summary>
+		/// <returns>A reference to the selected asteroid set. Shall not be null.</returns>
+		/// 
+		/// <exception cref="System.InvalidOperationException">Thrown if there are no sets from which to choose, 
+		/// or if all spawn rates are zero, or if any rate is negative.</exception> 
+		internal static AsteroidSet drawAsteroidSet() {
+			return allowedPops.drawAsteroidSet();
+		}
 
-				if (curOptions.getRenameOption() && asteroid.GetName() != null) {
-					string asteroidId = asteroid.GetName();
-					string    newName = (newPop != null ? newPop.getAsteroidName() : allowedPops.defaultName());
-					if (asteroidId.IndexOf("Ast. ") >= 0) {
-						// Keep only the ID number
-						asteroidId = asteroidId.Substring(asteroidId.IndexOf("Ast. ") + "Ast. ".Length);
-						asteroid.vesselName = newName + " " + asteroidId;
-					} 	// if asteroid name doesn't match expected format, leave it as-is
-				}
+		/// <summary>
+		/// Returns the default reference frame for defining orbits.
+		/// </summary>
+		/// <returns>The default frame, or null if no default has been set.</returns>
+		internal static ReferencePlane getDefaultPlane() {
+			return knownFrames.getReferenceSet();
+		}
+
+		/// <summary>
+		/// Returns the specified reference frame.
+		/// </summary>
+		/// 
+		/// <param name="planeId">The (unique) name of the desired frame.</param>
+		/// <returns>The frame with the matching <c>name</c> property, or null if no such frame exists.</returns>
+		internal static ReferencePlane getReferencePlane(string planeId) {
+			return knownFrames.getReferenceSet(planeId);
+		}
+
+		/// <summary>
+		/// Searches KSP for a celestial body. Assumes all loaded celestial bodies have unique names.
+		/// </summary>
+		/// 
+		/// <param name="name">The exact, case-sensitive name of the celestial body to recover.</param>
+		/// <returns>The celestial body named <c>name</c>.</returns>
+		/// 
+		/// <exception cref="ArgumentException">Thrown if no celestial body named <c>name</c> exists. The program state 
+		/// will be unchanged in the event of an exception.</exception> 
+		internal static CelestialBody getPlanetByName(string name) {
+			// Would like to only calculate this once, but I don't know for sure that this object will 
+			//		be initialized after FlightGlobals
+			CelestialBody theBody = FlightGlobals.Bodies.Find(body => body.name == name);
+			if (theBody == null) {
+				throw new ArgumentException("[CustomAsteroids]: could not find celestial body named " + name, 
+					"name");
 			}
-
-			/** Returns the current options used by Custom Asteroids
-			 * 
-			 * @return An Options objects with the settings to use
-			 * 
-			 * @exceptsafe Does not throw exceptions
-			 */
-			internal static Options getOptions() {
-				return curOptions;
-			}
-
-			/** Provides rate at which asteroids should be created
-			 * 
-			 * @return The total spawn rate of all loaded Populations
-			 * 
-			 * @exceptsafe Does not throw exceptions.
-			 */
-			internal static double spawnRate() {
-				return allowedPops.getTotalRate();
-			}
-
-			/** Singleton object responsible for handling Custom Asteroids configurations */
-			private static PopulationLoader allowedPops;
-
-			/** Singleton object responsible for handling Custom Asteroids options */
-			private static Options curOptions;
-
-			/** Exception indicating that a Population is in an invalid state
-			 */
-			internal class BadPopulationException : InvalidOperationException {
-				/** Constructs an exception with no specific information
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 */
-				public BadPopulationException() : base() {
-					badPop = null;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] which The population that triggered the exception
-				 *
-				 * @post getPop() = @p which
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 */
-				public BadPopulationException(Population which) : base() {
-					badPop = which;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] which The population that triggered the exception
-				 * @param[in] message A description of the detected problem
-				 *
-				 * @post getPop() = @p which
-				 * @post @p base.Message = @p message
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 * 
-				 * @see [InvalidOperationException(string)](http://msdn.microsoft.com/en-us/library/7yaybx04%28v=vs.90%29.aspx)
-				 */
-				public BadPopulationException(Population which, string message) : base(message) {
-					badPop = which;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] which The population that triggered the exception
-				 * @param[in] message A description of the detected problem
-				 * @param[in] inner The exception thrown when the problem was detected
-				 *
-				 * @post getPop() = @p which
-				 * @post @p base.Message = @p message
-				 * @post @p base.InnerException = @p inner
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 * 
-				 * @see [InvalidOperationException(string, Exception)](http://msdn.microsoft.com/en-us/library/x4zw1bf5%28v=vs.90%29.aspx)
-				 */
-				public BadPopulationException(Population which, string message, Exception inner) 
-					: base(message, inner) {
-					badPop = which;
-				}
-
-				/** Constructs an exception with a reference to the invalid Population
-				 *
-				 * @param[in] info The object that holds the serialized object data.
-				 * @param[in] context The contextual information about the source or destination. 
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 * 
-				 * @see [InvalidOperationException(SerializationInfo, StreamingContext)](http://msdn.microsoft.com/en-us/library/x5c916ac%28v=vs.90%29.aspx)
-				 */
-				protected BadPopulationException(System.Runtime.Serialization.SerializationInfo info, 
-						System.Runtime.Serialization.StreamingContext context)
-					: base(info, context) {}
-
-				/** Provides the invalid Population that triggered the exception
-				 *
-				 * @return A reference to the faulty object, or `null` if no 
-				 *	object was stored.
-				 * 
-				 * @exceptsafe Does not throw exceptions
-				 */
-				public Population getPop() {
-					return badPop;
-				}
-
-				/** The invalid Population that triggered the exception */
-				private Population badPop;
-			}
+			return theBody;
 		}
 	}
 }
