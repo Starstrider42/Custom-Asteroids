@@ -13,6 +13,9 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>Singleton object responsible for handling Custom Asteroids configurations.</summary>
 		private static readonly PopulationLoader allowedPops;
 
+		/// <summary>Singleton object responsible for handling alternative reference frames.</summary>
+		private static readonly ReferenceLoader knownFrames;
+
 		/// <summary>Singleton object responsible for handling Custom Asteroids options.</summary>
 		private static readonly Options curOptions;
 
@@ -23,6 +26,7 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				curOptions = Options.load();
 				allowedPops = PopulationLoader.load();
+				knownFrames = ReferenceLoader.load();
 
 				Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day.");
 			} catch {
@@ -30,6 +34,7 @@ namespace Starstrider42.CustomAsteroids {
 				// Though an exception thrown by a static constructor is basically unrecoverable...
 				curOptions = null;
 				allowedPops = null;
+				knownFrames = null;
 				throw;
 			}
 		}
@@ -60,6 +65,24 @@ namespace Starstrider42.CustomAsteroids {
 		/// or if all spawn rates are zero, or if any rate is negative.</exception> 
 		internal static AsteroidSet drawAsteroidSet() {
 			return allowedPops.drawAsteroidSet();
+		}
+
+		/// <summary>
+		/// Returns the default reference frame for defining orbits.
+		/// </summary>
+		/// <returns>The default frame, or null if no default has been set.</returns>
+		internal static ReferencePlane getDefaultPlane() {
+			return knownFrames.getReferenceSet();
+		}
+
+		/// <summary>
+		/// Returns the specified reference frame.
+		/// </summary>
+		/// 
+		/// <param name="planeId">The (unique) name of the desired frame.</param>
+		/// <returns>The frame with the matching <c>name</c> property, or null if no such frame exists.</returns>
+		internal static ReferencePlane getReferencePlane(string planeId) {
+			return knownFrames.getReferenceSet(planeId);
 		}
 
 		/// <summary>

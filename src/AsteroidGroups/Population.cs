@@ -28,6 +28,8 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent] private ValueRange ascNode;
 		/// <summary>The range of positions along the orbit for asteroids in this population.</summary>
 		[Persistent] private PhaseRange orbitPhase;
+		/// <summary>The plane relative to which the orbit is specified. Null means to use the default plane.</summary>
+		[Persistent] private string refPlane;
 
 		/// <summary>
 		/// Creates a dummy population. The object is initialized to a state in which it will not be expected to 
@@ -49,12 +51,14 @@ namespace Starstrider42.CustomAsteroids {
 			this.ascNode = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
 			this.orbitPhase = new PhaseRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0, 
 				type: PhaseRange.PhaseType.MeanAnomaly, epoch: PhaseRange.EpochType.GameStart);
+
+			this.refPlane = null;
 		}
 
 		public Orbit drawOrbit() {
-			// Would like to only calculate this once, but I don't know for sure that this object will 
-			//		be initialized after FlightGlobals
 			try {
+				// Would like to only calculate this once, but I don't know for sure that this object will 
+				//		be initialized after FlightGlobals
 				CelestialBody orbitee = AsteroidManager.getPlanetByName(centralBody);
 
 				Debug.Log("[CustomAsteroids]: drawing orbit from " + name);
@@ -144,6 +148,7 @@ namespace Starstrider42.CustomAsteroids {
 
 				// Does Orbit(...) throw exceptions?
 				Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, epoch, orbitee);
+				frameTransform(newOrbit);
 				newOrbit.UpdateFromUT(Planetarium.GetUniversalTime());
 
 				return newOrbit;
@@ -199,6 +204,36 @@ namespace Starstrider42.CustomAsteroids {
 			double cos = Math.Cos(iRad) * Math.Cos(lRad - lAnRad) / Math.Sqrt(1 - sincos * sincos);
 			double sin = Math.Sin(lRad - lAnRad) / Math.Sqrt(1 - sincos * sincos);
 			return 180.0 / Math.PI * (Math.Atan2(sin, cos) - aPeRad);
+		}
+
+		/// <summary>
+		/// Transforms the orbit from the population's reference frame to the KSP frame.
+		/// </summary>
+		/// 
+		/// <param name="orbit">The orbit relative to the population's reference frame.</param>
+		/// 
+		/// <exception cref="System.InvalidOperationException">Thrown if the desired transform could not be 
+		/// carried out.</exception>
+		private void frameTransform(Orbit orbit) {
+			ReferencePlane plane = refPlane != null 
+				? AsteroidManager.getReferencePlane(refPlane) 
+				: AsteroidManager.getDefaultPlane();
+			if (plane != null) {
+				double ut = Planetarium.GetUniversalTime();
+				Vector3d x = orbit.getRelativePositionAtUT(ut);
+				Vector3d v = orbit.getOrbitalVelocityAtUT(ut);
+
+				#if DEBUG
+				Debug.Log("Transforming orbit from frame " + plane);
+				#endif
+
+				Vector3d xNew = plane.toDefaultFrame(x);
+				Vector3d vNew = plane.toDefaultFrame(v);
+
+				orbit.UpdateFromStateVectors(xNew, vNew, orbit.referenceBody, ut);
+			} else if (refPlane != null) {
+				throw new InvalidOperationException("No such reference frame: " + refPlane);
+			}
 		}
 	}
 }

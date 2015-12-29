@@ -1,14 +1,16 @@
 Custom(izing) Asteroids                         {#newbelts}
 ============
 
-Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. There are two example files in the Custom Asteroids download, both in `GameData/CustomAsteroids/config/`. However, any .cfg file anywhere in `GameData` that follows the same format will be parsed by Custom Asteroids. If you are distributing asteroid definition files with your mod, please put them in your mod directory rather than the CustomAsteroids directory so that players know where the files came from. If you need to suppress or modify the default asteroid definitions, they are fully ModuleManager-compatible.
+Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. There are three example files in the Custom Asteroids download, both in `GameData/CustomAsteroids/config/`. However, any .cfg file anywhere in `GameData` that follows the same format will be parsed by Custom Asteroids. If you are distributing asteroid definition files with your mod, please put them in your mod directory rather than the CustomAsteroids directory so that players know where the files came from. If you need to suppress or modify the default asteroid definitions, they are fully ModuleManager-compatible.
 
-Within each file, each `ASTEROIDGROUP` block represents a single group of stable orbits. Each `INTERCEPT` block represents asteroids on a collision (or near-collision) course with a celestial body. There is no limit to the number of `ASTEROIDGROUP` or `INTERCEPT` blocks you can place in a file. `INTERCEPT` blocks are only available starting from Custom Asteroids 1.3.
+Most files will consist of a single `AsteroidSets` section. Within the section, each `ASTEROIDGROUP` block represents a single group of stable orbits. Each `INTERCEPT` block represents asteroids on a collision (or near-collision) course with a celestial body. `INTERCEPT` blocks are only available starting from Custom Asteroids 1.3.
+
+Starting from Custom Asteroids 1.3, config files may also include a `CustomAsteroidPlanes` section. This feature allows asteroid groups to be oriented correctly in inclined solar systems, such as those provided by the RealSolarSystem or Harder Solar System mods. Most users shouldn't need it.
 
 Older config files may have `DEFAULT` blocks that represent asteroids on stock orbits. With the introduction of `INTERCEPT` blocks in version 1.3, `DEFAULT` blocks are deprecated and should not be used in new config files. Support for `DEFAULT` blocks will be removed in Custom Asteroids 2.0.
 
-Basic Usage
-------------
+Basic Usage                                     {#basic}
+============
 
 The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 * `name`: a unique, machine-readable name. Must not contain spaces.
@@ -48,7 +50,10 @@ The most frequently used fields in each `INTERCEPT` block are the following:
         in seconds.
     - `max`: The maximum lead time at which an asteroid may be detected.
 
-Advanced Usage
+Advanced Usage                                     {#advanced}
+============
+
+Common Syntax                                      {#adv_common}
 ------------
 
 The average number of known asteroids in each group -- if none are tracked -- will equal `spawnRate` times the average of `Options.MinUntrackedTime` and `Options.MaxUntrackedTime`. Set the value for `spawnRate` accordingly.
@@ -98,6 +103,11 @@ Allowed values of `min`, `max`, `avg`, and `stddev` are:
     ignored. For example, the string `Offset(Duna.per, -50000000)` means "50,000,000 meters less 
     than Duna's periapsis", or just beyond its sphere of influence.
 
+ASTEROIDGROUP                                      {#adv_groups}
+------------
+
+In Custom Asteroids 1.3 or later, an `ASTEROIDGROUP` block may have a field called `refPlane`. This field contains the name of a reference frame defined in a `CustomAsteroidPlanes` section (which need not be in the same file). All orbits will be created relative to that reference frame. If the `refPlane` field is ommitted, orbits will use the default reference frame.
+
 Each `ASTEROIDGROUP` block can have up to six parameters, corresponding to the six orbital elements:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 
     only orbital element that must *always* be given. All distances are from the body's center. 
@@ -133,6 +143,9 @@ Each `ASTEROIDGROUP` block can have up to six parameters, corresponding to the s
     - `epoch`: the time at which the mean anomaly or mean longitude is measured. May be GameStart 
         or Now (the time at which the asteroid appears). Defaults to GameStart.
 
+INTERCEPT                                          {#adv_intercept}
+------------
+
 Each `INTERCEPT` block can have up to three parameters:
 * `approach`: the closest approach distance, in meters. This is one of two parameters that must always be 
     given. Distribution defaults to Uniform if unspecified. `min` defaults to 0 if unspecified. The 
@@ -148,3 +161,27 @@ Each `INTERCEPT` block can have up to three parameters:
     This indirectly controls the asteroid's eccentricity and inclination (higher approach speeds 
     correspond to eccentric, inclined orbits). If omitted, a range of speeds that allows easy capture 
     is used. Distribution defaults to LogNormal if unspecified.
+
+CustomAsteroidPlanes                               {#adv_planes}
+------------
+
+In Custom Asteroids 1.3 or later, a `CustomAsteroidPlanes` section contains one or more `REFPLANE` or `REFVECTORS` blocks. These blocks define coordinate planes for planetary systems that aren't in KSP's horizontal plane. Mods that create a tilted solar system should define at least one block to represent the plane of the system; if KSP ever allows support for axial tilts, mods that make use of the feature may wish to define planes specific to each planet as well.
+
+Each `REFPLANE` block has four parameters, all required:
+* `name`: a unique, machine-readable name. Must not contain spaces.
+* `longAscNode`: the longitude of the ascending node of the plane, in KSP's default coordinate system. 
+    Changing this value rotates the plane around the game's vertical axis.
+* `inclination`: the inclination of the plane relative to the game's horizontal plane.
+* `argReference`: the angle between the reference direction (which defines zero longitude for indivdual 
+    asteroid orbits) and the plane's ascending node.
+
+`longAscNode`, `inclination`, and `argReference` use the same syntax as the `min`, `max`, `avg`, and `stddev` fields of asteroid definition blocks, so you can, for example, align a reference plane with the orbital plane of a particular celestial body.
+
+Each `REFVECTORS` block has three parameters, all required:
+* `name`: as above
+* `normVector`: a list of three comma-separated floating-point numbers indicating the normal vector of 
+    the desired plane. Any vector other than the zero vector is allowed.
+* `refVector`: a vector pointing in the desired reference direction. Must not be the zero vector, and 
+    must not be parallel to `normVector`.
+
+The `CustomAsteroidPlanes` section may also have a single freestanding field, `defaultRef`. This field contains the name of a `REFPLANE` or `REFVECTORS` block. If defined, all `ASTEROIDGROUP` blocks will be oriented relative to `defaultRef`, unless they override the default using a `refPlane` field. Note that if multiple `CustomAsteroidPlanes` sections define a `defaultRef`, only one will be used.

@@ -39,6 +39,7 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent] protected Distribution dist;
 
 		/// <summary>Abstract string representation of <c>min</c>.</summary>
+		/// TODO: find a better way to override configNode parsing
 		[Persistent(name = "min")] protected string rawMin;
 		/// <summary>The minimum allowed value (not always used).</summary>
 		protected double min;
@@ -206,7 +207,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// <exception cref="ArgumentException">Thrown if <c>rawValue</c> could not be interpreted as a 
 		/// floating-point value. The program state shall be unchanged in the event of an exception.</exception> 
-		protected static double parseOrbitalElement(string rawValue) {
+		public static double parseOrbitalElement(string rawValue) {
 			double retVal;
 
 			// Try a Ratio declaration
