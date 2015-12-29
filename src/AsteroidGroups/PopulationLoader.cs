@@ -7,7 +7,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// Singleton class storing raw asteroid data.
 	/// </summary>
 	/// <remarks>TODO: Clean up this class.</remarks>
-	class PopulationLoader {
+	internal class PopulationLoader {
 		/// <summary>The set of loaded AsteroidSet objects.</summary>
 		private readonly List<AsteroidSet> asteroidPops;
 
@@ -156,7 +156,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// 
 	/// @deprecated Deprecated in favor of <see cref="Flyby"/>; to be removed in version 2.0.0.
 	[Obsolete("DefaultAsteroids will be removed in 2.0.0; use Flyby instead.")]
-	sealed class DefaultAsteroids : AsteroidSet {
+	internal sealed class DefaultAsteroids : AsteroidSet {
 		/// <summary>The name of the group.</summary>
 		[Persistent] private string name;
 		/// <summary>The name of asteroids with unmodified orbits.</summary>

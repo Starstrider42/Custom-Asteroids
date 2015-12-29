@@ -9,7 +9,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// <summary>
 	/// Central class for controlling Custom Asteroids configuration.
 	/// </summary>
-	static class AsteroidManager {
+	internal static class AsteroidManager {
 		/// <summary>Singleton object responsible for handling Custom Asteroids configurations.</summary>
 		private static readonly PopulationLoader allowedPops;
 

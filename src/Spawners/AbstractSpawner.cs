@@ -6,7 +6,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// <summary>
 	/// A partial implementation of spawning behaviour that defines everything except the spawn criteria.
 	/// </summary>
-	abstract class AbstractSpawner {
+	internal abstract class AbstractSpawner {
 		/// <summary>The length of an Earth day, in seconds.</summary>
 		protected const double SECONDS_PER_EARTH_DAY = 24.0 * 3600.0;
 

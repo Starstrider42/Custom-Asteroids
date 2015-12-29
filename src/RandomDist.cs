@@ -8,7 +8,7 @@ namespace Starstrider42 {
 	/// 
 	/// <typeparam name="T">The type of the first pair element.</typeparam>
 	/// <typeparam name="U">The type of the second pair element.</typeparam>
-	class Pair<T, U> {
+	internal class Pair<T, U> {
 		/// <summary>The first element of the pair.</summary>
 		public T first { get; set; }
 
@@ -34,7 +34,7 @@ namespace Starstrider42 {
 		/// <summary>
 		/// Contains static methods for random number distributions.
 		/// </summary>
-		static class RandomDist {
+		internal static class RandomDist {
 			/// <summary>Caches the next normal random variate to return from <c>drawNormal()</c>.</summary>
 			private static double nextNormal;
 			/// <summary><c>nextNormal</c> is valid if and only if <c>isNextNormal</c> is true.</summary>

@@ -5,7 +5,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// TODO: I don't think that PhaseRange is a subtype of ValueRange in the Liskov sense... check!
-	class PhaseRange : ValueRange {
+	internal class PhaseRange : ValueRange {
 		/// <summary>The type of parameter describing the orbit.</summary>
 		[Persistent] private PhaseType type;
 		/// <summary>The time at which the parameter should be calculated.</summary>

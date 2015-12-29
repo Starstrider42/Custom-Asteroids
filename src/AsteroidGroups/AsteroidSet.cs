@@ -3,7 +3,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// Represents any collection of asteroids from which asteroids may be generated. Each implementation of 
 	/// <c>AsteroidSet</c> corresponds to one of the statements in an <c>AsteroidSets</c> configuration block.
 	/// </summary>
-	interface AsteroidSet {
+	internal interface AsteroidSet {
 		/// <summary>
 		/// Returns the rate at which asteroids of this type are discovered. Does not throw exceptions.
 		/// </summary>

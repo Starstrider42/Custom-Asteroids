@@ -13,7 +13,7 @@ namespace Starstrider42.CustomAsteroids {
 	 * 
 	 * @todo Find a way to make values private!
 	 */
-	class ValueRange : IPersistenceLoad {
+	internal class ValueRange : IPersistenceLoad {
 		/// <summary>Parse format for planet names.</summary>
 		protected const string PLANET_FORMAT = "(?<planet>.+)";
 		/// <summary>Parse format for planet properties.</summary>

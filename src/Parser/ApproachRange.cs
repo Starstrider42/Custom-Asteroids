@@ -5,7 +5,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// TODO: I don't think that ApproachRange is a subtype of ValueRange in the Liskov sense... check!
-	class ApproachRange : ValueRange {
+	internal class ApproachRange : ValueRange {
 		/// <summary>The type of parameter describing the orbit.</summary>
 		[Persistent] private Type type;
 

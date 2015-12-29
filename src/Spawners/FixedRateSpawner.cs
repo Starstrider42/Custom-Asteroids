@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
-	sealed class FixedRateSpawner : AbstractSpawner {
+	internal sealed class FixedRateSpawner : AbstractSpawner {
 		/// <summary>The time at which the next asteroid will be placed.</summary>
 		private double nextAsteroid;
 

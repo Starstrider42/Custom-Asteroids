@@ -2,7 +2,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 namespace Starstrider42.CustomAsteroids {
-	sealed class StockalikeSpawner : AbstractSpawner {
+	internal sealed class StockalikeSpawner : AbstractSpawner {
 		// <remarks>Public fields from ScenarioDiscoverableObjects.</remarks>
 		/// <summary>The number of in-game seconds between asteroid checks.</summary>
 		private const float SPAWN_INTERVAL = 15.0f;

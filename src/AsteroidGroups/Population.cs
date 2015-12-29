@@ -7,7 +7,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
-	sealed class Population : AsteroidSet {
+	internal sealed class Population : AsteroidSet {
 		/// <summary>A unique name for the population.</summary>
 		[Persistent] private string name;
 		/// <summary>The name of asteroids belonging to this population.</summary>

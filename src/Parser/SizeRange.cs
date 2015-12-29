@@ -8,7 +8,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// TODO: I don't think that SizeRange is a subtype of ValueRange in the Liskov sense... check!
-	class SizeRange : ValueRange {
+	internal class SizeRange : ValueRange {
 		/// <summary>Defines the syntax for a Resonance declaration.</summary>
 		/// <remarks>Unfortunately, planet name can have pretty much any character.</remarks>
 		private static readonly Regex mmrDecl = new Regex(

@@ -6,7 +6,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// <summary>
 	/// Represents the types of spawning behaviour supported by Custom Asteroids.
 	/// </summary>
-	enum SpawnerType {
+	internal enum SpawnerType {
 		Stock,
 		FixedRate
 	}
@@ -14,7 +14,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// <summary>
 	/// Stores a set of configuration options for Custom Asteroids. ConfigNodes are used to manage option persistence.
 	/// </summary>
-	class Options {
+	internal class Options {
 		/// <summary>Whether or not make to asteroid names match their population.</summary>
 		[Persistent(name = "RenameAsteroids")]
 		private bool renameAsteroids;
