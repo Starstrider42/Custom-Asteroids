@@ -22,20 +22,20 @@ namespace Starstrider42.CustomAsteroids {
 		// 	Persistent for persistence in all other cases... bleh!
 		/// <summary>The name of the composition class to use.</summary>
 		[KSPField(isPersistant = true, guiActive = true, guiName = "Type")]
-		[Persistent] public string composition = "Stony";
+		[Persistent] internal string composition = "Stony";
 
 		/// <summary>Default density from ModuleAsteroid, in tons/m^3</summary>
 		[KSPField(isPersistant = true)]
-		[Persistent] public float density = 0.03f;
+		[Persistent] internal float density = 0.03f;
 
 		/// <summary>
 		/// Default fraction of science recovered by transmitting back to Kerbin, from ModuleAsteroid.
 		/// </summary>
 		[KSPField(isPersistant = true)]
-		[Persistent] public float sampleExperimentXmitScalar = 0.3f;
+		[Persistent] internal float sampleExperimentXmitScalar = 0.3f;
 		/// <summary>Default sampling experiment from ModuleAsteroid.</summary>
 		[KSPField(isPersistant = true)]
-		[Persistent] public string sampleExperimentId = "asteroidSample";
+		[Persistent] internal string sampleExperimentId = "asteroidSample";
 
 		/// <summary>
 		/// Returns the composition of any asteroid, whether or not it is loaded.

@@ -1,8 +1,5 @@
 using System;
-using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>
@@ -10,11 +7,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// <remarks>To avoid breaking the persistence code, Flyby may not have subclasses.</remarks>
-	internal sealed class Flyby : AsteroidSet, IPersistenceLoad {
-		/// <summary>Defines the syntax for a composition class declaration.</summary>
-		private static readonly Regex classOccurrence = new Regex("(?<rate>[-+.e\\d]+)\\s+(?<id>\\w+)", 
-			RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-
+	internal sealed class Flyby : AsteroidSet {
 		/// <summary>A unique name for the group.</summary>
 		[Persistent] private string name;
 		/// <summary>The name of asteroids belonging to this group.</summary>
@@ -34,10 +27,8 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent] private ValueRange vSoi;
 
 		/// <summary>Relative ocurrence rates of asteroid classes.</summary>
-		private readonly System.Collections.Generic.List<Pair<string, double>> classRatios;
-		/// <summary>Config-friendly copy of classRatios.</summary>
-		[Persistent(name="asteroidTypes", collectionIndex="key")]
-		private string[] readableRatios;
+		[Persistent(name = "asteroidTypes", collectionIndex = "key")]
+		private readonly Proportions<string> classRatios;
 
 		/// <summary>
 		/// Creates a dummy flyby group. The object is initialized to a state in which it will not be expected to 
@@ -55,8 +46,7 @@ namespace Starstrider42.CustomAsteroids {
 			this.warnTime = new ValueRange(ValueRange.Distribution.Uniform);
 			this.vSoi = new ValueRange(ValueRange.Distribution.LogNormal, avg: 300, stdDev: 100);
 
-			this.classRatios    = new System.Collections.Generic.List<Pair<string, double>>();
-			this.readableRatios = null;
+			this.classRatios = null;
 		}
 
 		public double getSpawnRate() {
@@ -120,7 +110,7 @@ namespace Starstrider42.CustomAsteroids {
 			}
 			#if DEBUG
 			Debug.Log(String.Format("Asteroid will pass {0} m from {1} in {2} Kerbin days. V_infinity = {3} m/s.", 
-				peri, targetBody, deltaT / (6.0 * 3600.0), deltaV));
+					peri, targetBody, deltaT / (6.0 * 3600.0), deltaV));
 			#endif
 
 			Orbit newOrbit = createHyperbolicOrbit(body, peri, deltaV, Planetarium.GetUniversalTime() + deltaT);
@@ -196,10 +186,10 @@ namespace Starstrider42.CustomAsteroids {
 			Debug.Log("Patching SoI transition from " + oldParent + " to " + newParent + "at UT " + utSoi);
 			#endif
 			// Need position/velocity relative to newParent, not oldParent or absolute
-			Vector3d xNewParent = oldOrbit.getRelativePositionAtUT(utSoi) 
-				+ oldParent.orbit.getRelativePositionAtUT(utSoi);
-			Vector3d vNewParent = oldOrbit.getOrbitalVelocityAtUT(utSoi) 
-				+ oldParent.orbit.getOrbitalVelocityAtUT(utSoi);
+			Vector3d xNewParent = oldOrbit.getRelativePositionAtUT(utSoi)
+			                      + oldParent.orbit.getRelativePositionAtUT(utSoi);
+			Vector3d vNewParent = oldOrbit.getOrbitalVelocityAtUT(utSoi)
+			                      + oldParent.orbit.getOrbitalVelocityAtUT(utSoi);
 
 			Orbit newOrbit = new Orbit();
 			newOrbit.UpdateFromStateVectors(xNewParent, vNewParent, newParent, utSoi);
@@ -220,12 +210,12 @@ namespace Starstrider42.CustomAsteroids {
 			} else {
 				// If an elliptical orbit leaves the SoI, then getRelativePositionAtUT gives misleading results 
 				// after the SoI transition.
-				return (orbit.ApR > orbit.referenceBody.sphereOfInfluence) 
-					&& ((Math.Abs(now - orbit.epoch) > 0.5 * orbit.period) 
-						|| (orbit.getRelativePositionAtUT(now).magnitude > orbit.referenceBody.sphereOfInfluence));
+				return (orbit.ApR > orbit.referenceBody.sphereOfInfluence)
+				&& ((Math.Abs(now - orbit.epoch) > 0.5 * orbit.period)
+				|| (orbit.getRelativePositionAtUT(now).magnitude > orbit.referenceBody.sphereOfInfluence));
 			}
 		}
-		
+
 		/// <summary>
 		/// Returns the time at which the given orbit enters its parent body's sphere of influence (if in the future) 
 		/// or exits it (if in the past). If the orbit is always outside the sphere of influence, returns the nominal 
@@ -270,8 +260,7 @@ namespace Starstrider42.CustomAsteroids {
 				if (hyperbolic.getRelativePositionAtUT(ut).magnitude < soi) {
 					// Too close; look higher
 					innerUT = ut;
-				}
-				else {
+				} else {
 					// Too far; look lower
 					outerUT = ut;
 				}
@@ -280,51 +269,17 @@ namespace Starstrider42.CustomAsteroids {
 			return 0.5 * (innerUT + outerUT);
 		}
 
-		/// <summary>
-		/// Callback used by ConfigNode.LoadObjectFromConfig().
-		/// </summary>
-		public void PersistenceLoad() {
-			if (readableRatios != null) {
-				for (int i = 0; i < readableRatios.Length; i++) {
-					if (classOccurrence.Match(readableRatios[i]).Groups[0].Success) {
-						GroupCollection parsed = classOccurrence.Match(readableRatios[i]).Groups;
-						double rate;
-						if (!Double.TryParse(parsed["rate"].ToString(), out rate)) {
-							throw new ArgumentException("Cannot parse '" + parsed["rate"] + "' as a floating point number");
-						}
-
-						classRatios.Add(new Pair<string, double>(parsed["id"].ToString(), rate));
-					} else {
-						//throw new ArgumentException("Cannot parse '" + readableRatios[i] + "' as a number and name");
-					}
-				}
-			}
-		}
-
 		public ConfigNode drawAsteroidData() {
-			var data = new CustomAsteroidData();
-
 			try {
-				if (classRatios.Count > 0) {
-					string classId = RandomDist.weightedSample(classRatios);
-					var nodeList = GameDatabase.Instance.GetConfigNodes("ASTEROID_CLASS").Where(node => node.GetValue("name") == classId);
-					if (!nodeList.Any()) {
-						throw new InvalidOperationException("CustomAsteroids: no such asteroid class '" + classId + "'");
-					}
-
-					foreach (ConfigNode asteroidClass in nodeList) {
-						data.composition = asteroidClass.GetValue("title");
-						data.density = Single.Parse(asteroidClass.GetValue("density"));
-						data.sampleExperimentId = asteroidClass.GetValue("sampleExperimentId");
-						data.sampleExperimentXmitScalar = Single.Parse(asteroidClass.GetValue("sampleExperimentXmitScalar"));
-					}
-				}
+				AsteroidType typeInfo = AsteroidManager.drawAsteroidType(classRatios);
+				return typeInfo.packedAsteroidData();
+			} catch (InvalidOperationException e) {
+				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
+				Debug.LogException(e);
 
 				var returnNode = new ConfigNode();
-				ConfigNode.CreateConfigFromObject(data, returnNode);
+				ConfigNode.CreateConfigFromObject(new CustomAsteroidData(), returnNode);
 				return returnNode;
-			} catch (ArgumentOutOfRangeException e) {
-				throw new InvalidOperationException("CustomAsteroids: could not select asteroid class.", e);
 			}
 		}
 	}

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -158,11 +156,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// 
 	/// @deprecated Deprecated in favor of <see cref="Flyby"/>; to be removed in version 2.0.0.
 	[Obsolete("DefaultAsteroids will be removed in 2.0.0; use Flyby instead.")]
-	internal sealed class DefaultAsteroids : AsteroidSet, IPersistenceLoad {
-		/// <summary>Defines the syntax for a composition class declaration.</summary>
-		private static readonly Regex classOccurrence = new Regex("(?<rate>[-+.e\\d]+)\\s+(?<id>\\w+)", 
-			RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-
+	internal sealed class DefaultAsteroids : AsteroidSet {
 		/// <summary>The name of the group.</summary>
 		[Persistent] private string name;
 		/// <summary>The name of asteroids with unmodified orbits.</summary>
@@ -171,10 +165,8 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent] private double spawnRate;
 
 		/// <summary>Relative ocurrence rates of asteroid classes.</summary>
-		private readonly List<Pair<string, double>> classRatios;
-		/// <summary>Config-friendly copy of classRatios.</summary>
-		[Persistent(name="asteroidTypes", collectionIndex="key")]
-		private readonly string[] readableRatios;
+		[Persistent(name = "asteroidTypes", collectionIndex = "key")]
+		private readonly Proportions<string> classRatios;
 
 		/// <summary>
 		/// Sets default settings for asteroids with unmodified orbits. The object is initialized to a state in which 
@@ -185,34 +177,20 @@ namespace Starstrider42.CustomAsteroids {
 			this.title = "Ast.";
 			this.spawnRate = 0.0;
 
-			this.classRatios    = new List<Pair<string, double>>();
-			this.readableRatios = null;
+			this.classRatios = null;
 		}
 
 		public ConfigNode drawAsteroidData() {
-			var data = new CustomAsteroidData();
-
 			try {
-				if (classRatios.Count > 0) {
-					string classId = RandomDist.weightedSample(classRatios);
-					var nodeList = GameDatabase.Instance.GetConfigNodes("ASTEROID_CLASS").Where(node => node.GetValue("name") == classId);
-					if (!nodeList.Any()) {
-						throw new InvalidOperationException("CustomAsteroids: no such asteroid class '" + classId + "'");
-					}
-
-					foreach (ConfigNode asteroidClass in nodeList) {
-						data.composition = asteroidClass.GetValue("title");
-						data.density = Single.Parse(asteroidClass.GetValue("density"));
-						data.sampleExperimentId = asteroidClass.GetValue("sampleExperimentId");
-						data.sampleExperimentXmitScalar = Single.Parse(asteroidClass.GetValue("sampleExperimentXmitScalar"));
-					}
-				}
+				AsteroidType typeInfo = AsteroidManager.drawAsteroidType(classRatios);
+				return typeInfo.packedAsteroidData();
+			} catch (InvalidOperationException e) {
+				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
+				Debug.LogException(e);
 
 				var returnNode = new ConfigNode();
-				ConfigNode.CreateConfigFromObject(data, returnNode);
+				ConfigNode.CreateConfigFromObject(new CustomAsteroidData(), returnNode);
 				return returnNode;
-			} catch (ArgumentOutOfRangeException e) {
-				throw new InvalidOperationException("CustomAsteroids: could not select asteroid class.", e);
 			}
 		}
 
@@ -283,27 +261,5 @@ namespace Starstrider42.CustomAsteroids {
 			KSPAchievements.CelestialBodySubtree bodyTree = ProgressTracking.Instance.GetBodyTree(body.name);
 			return bodyTree != null && bodyTree.IsReached;
 		}
-
-		/// <summary>
-		/// Callback used by ConfigNode.LoadObjectFromConfig().
-		/// </summary>
-		public void PersistenceLoad() {
-			if (readableRatios != null) {
-				for (int i = 0; i < readableRatios.Length; i++) {
-					if (classOccurrence.Match(readableRatios[i]).Groups[0].Success) {
-						GroupCollection parsed = classOccurrence.Match(readableRatios[i]).Groups;
-						double rate;
-						if (!Double.TryParse(parsed["rate"].ToString(), out rate)) {
-							throw new ArgumentException("Cannot parse '" + parsed["rate"] + "' as a floating point number");
-						}
-
-						classRatios.Add(new Pair<string, double>(parsed["id"].ToString(), rate));
-					} else {
-						//throw new ArgumentException("Cannot parse '" + readableRatios[i] + "' as a number and name");
-					}
-				}
-			}
-		}
-
 	}
 }

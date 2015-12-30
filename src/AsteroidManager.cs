@@ -16,6 +16,9 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>Singleton object responsible for handling alternative reference frames.</summary>
 		private static readonly ReferenceLoader knownFrames;
 
+		/// <summary>Singleton object responsible for handling asteroid compositions.</summary>
+		private static readonly TypeLoader knownTypes;
+
 		/// <summary>Singleton object responsible for handling Custom Asteroids options.</summary>
 		private static readonly Options curOptions;
 
@@ -27,6 +30,7 @@ namespace Starstrider42.CustomAsteroids {
 				curOptions = Options.load();
 				allowedPops = PopulationLoader.load();
 				knownFrames = ReferenceLoader.load();
+				knownTypes = TypeLoader.load();
 
 				Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day.");
 			} catch {
@@ -35,6 +39,7 @@ namespace Starstrider42.CustomAsteroids {
 				curOptions = null;
 				allowedPops = null;
 				knownFrames = null;
+				knownTypes = null;
 				throw;
 			}
 		}
@@ -86,14 +91,28 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
+		/// Randomly selects an asteroid class. The selection is weighted by the proportions passed 
+		/// to the method.
+		/// </summary>
+		/// 
+		/// <param name="typeRatios">The proportions in which to select the types.</param>
+		/// <returns>A reference to the selected asteroid class. Shall not be null.</returns>
+		/// 
+		/// <exception cref="System.InvalidOperationException">Thrown if there are no types from which to choose, 
+		/// or if all proportions are zero, or if any proportion is negative.</exception> 
+		internal static AsteroidType drawAsteroidType<Dummy>(Proportions<Dummy> typeRatios) {
+			return knownTypes.drawAsteroidType(typeRatios);
+		}
+
+		/// <summary>
 		/// Searches KSP for a celestial body. Assumes all loaded celestial bodies have unique names.
 		/// </summary>
 		/// 
 		/// <param name="name">The exact, case-sensitive name of the celestial body to recover.</param>
 		/// <returns>The celestial body named <c>name</c>.</returns>
 		/// 
-		/// <exception cref="ArgumentException">Thrown if no celestial body named <c>name</c> exists. The program state 
-		/// will be unchanged in the event of an exception.</exception> 
+		/// <exception cref="ArgumentException">Thrown if no celestial body named <c>name</c> exists. The program 
+		/// state will be unchanged in the event of an exception.</exception> 
 		internal static CelestialBody getPlanetByName(string name) {
 			// Would like to only calculate this once, but I don't know for sure that this object will 
 			//		be initialized after FlightGlobals

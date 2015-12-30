@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -10,11 +7,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
-	internal sealed class Population : AsteroidSet, IPersistenceLoad {
-		/// <summary>Defines the syntax for a composition class declaration.</summary>
-		private static readonly Regex classOccurrence = new Regex("(?<rate>[-+.e\\d]+)\\s+(?<id>\\w+)", 
-			RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-
+	internal sealed class Population : AsteroidSet {
 		/// <summary>A unique name for the population.</summary>
 		[Persistent] private string name;
 		/// <summary>The name of asteroids belonging to this population.</summary>
@@ -23,6 +16,7 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent] private string centralBody;
 		/// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
 		[Persistent] private double spawnRate;
+
 		/// <summary>The size (range) of orbits in this population.</summary>
 		[Persistent] private  SizeRange orbitSize;
 		/// <summary>The eccentricity (range) of orbits in this population.</summary>
@@ -35,13 +29,13 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent] private ValueRange ascNode;
 		/// <summary>The range of positions along the orbit for asteroids in this population.</summary>
 		[Persistent] private PhaseRange orbitPhase;
+
 		/// <summary>The plane relative to which the orbit is specified. Null means to use the default plane.</summary>
 		[Persistent] private readonly string refPlane;
+
 		/// <summary>Relative ocurrence rates of asteroid classes.</summary>
-		private List<Pair<string, double>> classRatios;
-		/// <summary>Config-friendly copy of classRatios.</summary>
-		[Persistent(name="asteroidTypes", collectionIndex="key")]
-		private string[] readableRatios;
+		[Persistent(name = "asteroidTypes", collectionIndex = "key")]
+		private readonly Proportions<string> classRatios;
 
 		/// <summary>
 		/// Creates a dummy population. The object is initialized to a state in which it will not be expected to 
@@ -66,8 +60,7 @@ namespace Starstrider42.CustomAsteroids {
 
 			this.refPlane = null;
 
-			this.classRatios = new List<Pair<string, double>>();
-			this.readableRatios = null;
+			this.classRatios = null;
 		}
 
 		public Orbit drawOrbit() {
@@ -173,29 +166,16 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		public ConfigNode drawAsteroidData() {
-			var data = new CustomAsteroidData();
-
 			try {
-			if (classRatios.Count > 0) {
-				string classId = RandomDist.weightedSample(classRatios);
-				var nodeList = GameDatabase.Instance.GetConfigNodes("ASTEROID_CLASS").Where(node => node.GetValue("name") == classId);
-				if (!nodeList.Any()) {
-					throw new InvalidOperationException("CustomAsteroids: no such asteroid class '" + classId + "'");
-				}
+				AsteroidType typeInfo = AsteroidManager.drawAsteroidType(classRatios);
+				return typeInfo.packedAsteroidData();
+			} catch (InvalidOperationException e) {
+				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
+				Debug.LogException(e);
 
-				foreach (ConfigNode asteroidClass in nodeList) {
-					data.composition = asteroidClass.GetValue("title");
-					data.density = Single.Parse(asteroidClass.GetValue("density"));
-					data.sampleExperimentId = asteroidClass.GetValue("sampleExperimentId");
-					data.sampleExperimentXmitScalar = Single.Parse(asteroidClass.GetValue("sampleExperimentXmitScalar"));
-				}
-			}
-
-			var returnNode = new ConfigNode();
-			ConfigNode.CreateConfigFromObject(data, returnNode);
-			return returnNode;
-			} catch (ArgumentOutOfRangeException e) {
-				throw new InvalidOperationException("CustomAsteroids: could not select asteroid class.", e);
+				var returnNode = new ConfigNode();
+				ConfigNode.CreateConfigFromObject(new CustomAsteroidData(), returnNode);
+				return returnNode;
 			}
 		}
 
@@ -219,27 +199,6 @@ namespace Starstrider42.CustomAsteroids {
 		/// <seealso cref="Object.ToString()"/> 
 		public override string ToString() {
 			return getName();
-		}
-
-		/// <summary>
-		/// Callback used by ConfigNode.LoadObjectFromConfig().
-		/// </summary>
-		public void PersistenceLoad() {
-			if (readableRatios != null) {
-				for (int i = 0; i < readableRatios.Length; i++) {
-					if (classOccurrence.Match(readableRatios[i]).Groups[0].Success) {
-						GroupCollection parsed = classOccurrence.Match(readableRatios[i]).Groups;
-						double rate;
-						if (!Double.TryParse(parsed["rate"].ToString(), out rate)) {
-							throw new ArgumentException("Cannot parse '" + parsed["rate"] + "' as a floating point number");
-						}
-
-						classRatios.Add(new Pair<string, double>(parsed["id"].ToString(), rate));
-					} else {
-						//throw new ArgumentException("Cannot parse '" + readableRatios[i] + "' as a number and name");
-					}
-				}
-			}
 		}
 
 		/// <summary>
