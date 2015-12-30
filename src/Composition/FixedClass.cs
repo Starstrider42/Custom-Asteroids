@@ -49,9 +49,7 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		public ConfigNode packedAsteroidData() {
-			var returnNode = new ConfigNode();
-			ConfigNode.CreateConfigFromObject(drawAsteroidData(), returnNode);
-			return returnNode;
+			return drawAsteroidData().toProtoConfigNode();
 		}
 	}
 }

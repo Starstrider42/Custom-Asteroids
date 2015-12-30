@@ -37,12 +37,20 @@ namespace Starstrider42.CustomAsteroids {
 		[KSPField(isPersistant = true)]
 		[Persistent] internal string sampleExperimentId = "asteroidSample";
 
-		/// <summary>Returns a ConfigNode representing the default module.</summary>
+		/// <summary>Returns a ConfigNode representing the unique fields of this object. It does not store events 
+		/// and other forms of PartModule state, and so is not recommended for loaded modules.</summary>
+		/// <remarks>This method is a general-use alternative to <see cref="PartModule.Save()"/>, which only works 
+		/// if the module has been fully initialized by KSP's part handling code.</remarks>
 		/// 
-		/// <returns>A ConfigNode that can be used to initialize the module.</returns>
-		internal static ConfigNode defaultConfigNode() {
-			var returnNode = new ConfigNode();
-			ConfigNode.CreateConfigFromObject(new CustomAsteroidData(), returnNode);
+		/// <returns>A config node that may be used to initialize CustomAsteroidData modules as part of 
+		/// a persistance file.</returns>
+		internal ConfigNode toProtoConfigNode() {
+			var returnNode = new ConfigNode("MODULE");
+			returnNode.AddValue("name", typeof(CustomAsteroidData).Name);
+			ConfigNode.CreateConfigFromObject(this, returnNode);
+			#if DEBUG
+			Debug.Log("CustomAsteroidData = " + returnNode);
+			#endif
 			return returnNode;
 		}
 

@@ -277,7 +277,7 @@ namespace Starstrider42.CustomAsteroids {
 				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
 				Debug.LogException(e);
 
-				return CustomAsteroidData.defaultConfigNode();
+				return new CustomAsteroidData().toProtoConfigNode();
 			}
 		}
 	}

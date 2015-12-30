@@ -255,14 +255,7 @@ namespace Starstrider42.CustomAsteroids {
 			// The same "seed" that shows up in ProceduralAsteroid?
 			uint seed = (uint) UnityEngine.Random.Range(0, Int32.MaxValue);
 			ConfigNode potato = ProtoVessel.CreatePartNode("PotatoRoid", seed);
-			ConfigNode customData = new ProtoPartModuleSnapshot(group.drawAsteroidData()).moduleValues;
-			// For some reason the module name isn't added automatically...?
-			if (!customData.HasValue("name")) {
-				customData.AddValue("name", typeof(CustomAsteroidData).Name);
-			}
-			#if DEBUG
-			Debug.Log("PartModule = " + customData);
-			#endif
+			ConfigNode customData = group.drawAsteroidData();
 			potato.AddNode(customData);
 			return new[] { potato };
 		}
