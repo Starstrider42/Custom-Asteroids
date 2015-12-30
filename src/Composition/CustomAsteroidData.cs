@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>
@@ -24,18 +25,26 @@ namespace Starstrider42.CustomAsteroids {
 		[KSPField(isPersistant = true, guiActive = true, guiName = "Type")]
 		[Persistent] internal string composition = "Stony";
 
-		/// <summary>Default density from ModuleAsteroid, in tons/m^3</summary>
+		/// <summary>Default density, in tons/m^3 (ModuleAsteroid override).</summary>
 		[KSPField(isPersistant = true)]
 		[Persistent] internal float density = 0.03f;
-
 		/// <summary>
-		/// Default fraction of science recovered by transmitting back to Kerbin, from ModuleAsteroid.
+		/// Default fraction of science recovered by transmitting back to Kerbin (ModuleAsteroid override).
 		/// </summary>
 		[KSPField(isPersistant = true)]
 		[Persistent] internal float sampleExperimentXmitScalar = 0.3f;
-		/// <summary>Default sampling experiment from ModuleAsteroid.</summary>
+		/// <summary>Default sampling experiment (ModuleAsteroid override).</summary>
 		[KSPField(isPersistant = true)]
 		[Persistent] internal string sampleExperimentId = "asteroidSample";
+
+		/// <summary>Returns a ConfigNode representing the default module.</summary>
+		/// 
+		/// <returns>A ConfigNode that can be used to initialize the module.</returns>
+		internal static ConfigNode defaultConfigNode() {
+			var returnNode = new ConfigNode();
+			ConfigNode.CreateConfigFromObject(new CustomAsteroidData(), returnNode);
+			return returnNode;
+		}
 
 		/// <summary>
 		/// Returns the composition of any asteroid, whether or not it is loaded.
@@ -49,7 +58,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// <exception cref="System.NullReferenceException">If <c>asteroid</c> is null. The game state shall 
 		/// be unchanged in the event of an exception.</exception>
 		public static string getAsteroidTypeName(Vessel asteroid) {
-			return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("composition");
+			return getData(asteroid).composition;
 		}
 
 		/// <summary>
@@ -63,8 +72,8 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// <exception cref="System.NullReferenceException">If <c>asteroid</c> is null. The game state shall 
 		/// be unchanged in the event of an exception.</exception>
-		public static string getAsteroidDensity(Vessel asteroid) {
-			return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("density");
+		public static float getAsteroidDensity(Vessel asteroid) {
+			return getData(asteroid).density;
 		}
 
 		/// <summary>
@@ -79,22 +88,52 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// <exception cref="System.NullReferenceException">If <c>asteroid</c> is null. The game state shall 
 		/// be unchanged in the event of an exception.</exception>
-		public static string getAsteroidXmitScalar(Vessel asteroid) {
-			return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("sampleExperimentXmitScalar");
+		public static float getAsteroidXmitScalar(Vessel asteroid) {
+			return getData(asteroid).sampleExperimentXmitScalar;
 		}
 
 		/// <summary>
 		/// Returns the name of the sample experiment of any asteroid, whether or not it is loaded.
 		/// </summary>
 		///
-		/// <param name="asteroid">Asteroid.</param>
+		/// <param name="asteroid">The asteroid whose sampling experiment is desired.</param>
 		/// <returns>A string indicating which experiment is run by sampling this asteroid. 
 		/// 	In most cases, the string will equal the <c>sampleExperimentId</c> field of a loaded 
 		/// 	<c>ASTEROID_CLASS</c> node, and will equal the <c>id</c> field of a loaded <c>EXPERIMENT_DEFINITION</c> 
 		/// 	node, but the caller is responsible for handling values that do not match any node of 
 		/// 	either type.</returns>
 		public static string getAsteroidExperiment(Vessel asteroid) {
-			return AsteroidDataRepository.getAsteroidData(asteroid).GetValue("sampleExperimentId");
+			return getData(asteroid).sampleExperimentId;
+		}
+
+		/// <summary>
+		/// Finds the CustomAsteroidData module of any asteroid, whether or not it is loaded. Shall not throw exceptions.
+		/// </summary>
+		///
+		/// <param name="asteroid">The asteroid whose data is desired.</param>
+		/// <returns>A CustomAsteroidData module for the vessel. If no such module exists, will return a default 
+		/// module.</returns>
+		private static CustomAsteroidData getData(Vessel asteroid) {
+			// Active module in loaded vessel takes precedence
+			List<CustomAsteroidData> active = asteroid.FindPartModulesImplementing<CustomAsteroidData>();
+			if (active != null && active.Count > 0) {
+				return active[0];
+			}
+
+			// Unloaded asteroid?
+			foreach (ProtoPartSnapshot part in asteroid.protoVessel.protoPartSnapshots) {
+				foreach (ProtoPartModuleSnapshot module in part.modules) {
+					if (module.moduleName.Equals(typeof(CustomAsteroidData).Name)) {
+						ConfigNode data = module.moduleValues;
+						var returnValue = new CustomAsteroidData();
+						ConfigNode.LoadObjectFromConfig(returnValue, data);
+						return returnValue;
+					}
+				}
+			}
+
+			// When all else fails, assume default asteroid type
+			return new CustomAsteroidData();
 		}
 
 		/// <summary>
@@ -121,8 +160,13 @@ namespace Starstrider42.CustomAsteroids {
 		/// <returns>Controls the delay before execution resumes. See 
 		/// 	[Unity documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.StartCoroutine.html)</returns>
 		private System.Collections.IEnumerator setAsteroid(ModuleAsteroid asteroid) {
-			// Wait one tick to ensure ModuleAsteroid has started first
-			yield return 0;
+			// Ensure ModuleAsteroid has started first, or our values will be overwritten
+			while (!asteroid.isActiveAndEnabled) {
+				#if DEBUG
+				Debug.Log("Waiting 1 tick...");
+				#endif
+				yield return 0;
+			}
 
 			// Science properties
 			asteroid.sampleExperimentId = sampleExperimentId;
@@ -131,7 +175,13 @@ namespace Starstrider42.CustomAsteroids {
 			// Update mass and density consistently
 			float oldDensity = asteroid.density;
 			asteroid.density = density;
+			#if DEBUG
+			Debug.Log("Initial vessel mass: " + asteroid.part.mass);
+			#endif
 			asteroid.part.mass *= (density / oldDensity);
+			#if DEBUG
+			Debug.Log("Final vessel mass: " + asteroid.part.mass);
+			#endif
 		}
 	}
 }
