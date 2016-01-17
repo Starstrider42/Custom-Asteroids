@@ -9,27 +9,30 @@ namespace Starstrider42.CustomAsteroids {
 	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
 	internal sealed class Population : AsteroidSet {
 		/// <summary>A unique name for the population.</summary>
-		[Persistent] private string name;
+		[Persistent] private readonly string name;
 		/// <summary>The name of asteroids belonging to this population.</summary>
-		[Persistent] private string title;
+		[Persistent] private readonly string title;
 		/// <summary>The name of the celestial object orbited by the asteroids.</summary>
-		[Persistent] private string centralBody;
+		[Persistent] private readonly string centralBody;
 		/// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
-		[Persistent] private double spawnRate;
+		[Persistent] private readonly double spawnRate;
 		/// <summary>The size (range) of orbits in this population.</summary>
-		[Persistent] private  SizeRange orbitSize;
+		[Persistent] private readonly SizeRange orbitSize;
 		/// <summary>The eccentricity (range) of orbits in this population.</summary>
-		[Persistent] private ValueRange eccentricity;
+		[Persistent] private readonly ValueRange eccentricity;
 		/// <summary>The inclination (range) of orbits in this population.</summary>
-		[Persistent] private ValueRange inclination;
+		[Persistent] private readonly ValueRange inclination;
 		/// <summary>The argument/longitude of periapsis (range) of orbits in this population.</summary>
-		[Persistent] private  PeriRange periapsis;
+		[Persistent] private readonly PeriRange periapsis;
 		/// <summary>The longitude of ascending node (range) of orbits in this population.</summary>
-		[Persistent] private ValueRange ascNode;
+		[Persistent] private readonly ValueRange ascNode;
 		/// <summary>The range of positions along the orbit for asteroids in this population.</summary>
-		[Persistent] private PhaseRange orbitPhase;
+		[Persistent] private readonly PhaseRange orbitPhase;
 		/// <summary>The plane relative to which the orbit is specified. Null means to use the default plane.</summary>
-		[Persistent] private string refPlane;
+		[Persistent] private readonly string refPlane;
+
+		/// <summary>The exploration state in which these asteroids will appear. Always appear if null.</summary>
+		[Persistent] private readonly Condition detectable;
 
 		/// <summary>
 		/// Creates a dummy population. The object is initialized to a state in which it will not be expected to 
@@ -53,9 +56,18 @@ namespace Starstrider42.CustomAsteroids {
 				type: PhaseRange.PhaseType.MeanAnomaly, epoch: PhaseRange.EpochType.GameStart);
 
 			this.refPlane = null;
+			this.detectable = null;
 		}
 
 		public Orbit drawOrbit() {
+			#if DEBUG
+			if (detectable == null) {
+				Debug.Log("No condition attached.");
+			} else {
+				Debug.Log("Condition: " + detectable);
+			}
+			#endif
+
 			try {
 				// Would like to only calculate this once, but I don't know for sure that this object will 
 				//		be initialized after FlightGlobals
@@ -158,7 +170,11 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		public double getSpawnRate() {
-			return spawnRate;
+			if (detectable == null || detectable.check()) {
+				return spawnRate;
+			} else {
+				return 0.0;
+			}
 		}
 
 		public string getName() {

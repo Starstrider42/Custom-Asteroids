@@ -10,22 +10,25 @@ namespace Starstrider42.CustomAsteroids {
 	/// <remarks>To avoid breaking the persistence code, Flyby may not have subclasses.</remarks>
 	internal sealed class Flyby : AsteroidSet {
 		/// <summary>A unique name for the group.</summary>
-		[Persistent] private string name;
+		[Persistent] private readonly string name;
 		/// <summary>The name of asteroids belonging to this group.</summary>
-		[Persistent] private string title;
+		[Persistent] private readonly string title;
 		/// <summary>The name of the celestial object the asteroids will approach.</summary>
-		[Persistent] private string targetBody;
+		[Persistent] private readonly string targetBody;
 		/// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
-		[Persistent] private double spawnRate;
+		[Persistent] private readonly double spawnRate;
 
 		/// <summary>
 		/// The distance by which the asteroid would miss <c>targetBody</c> without gravitational focusing.
 		/// </summary>
-		[Persistent] private ApproachRange approach;
+		[Persistent] private readonly ApproachRange approach;
 		/// <summary>The time to closest approach (again, ignoring <c>targetBody</c>'s gravity).</summary>
-		[Persistent] private ValueRange warnTime;
+		[Persistent] private readonly ValueRange warnTime;
 		/// <summary>The speed relative to <c>targetBody</c>, ignoring its gravity.</summary>
-		[Persistent] private ValueRange vSoi;
+		[Persistent] private readonly ValueRange vSoi;
+
+		/// <summary>The exploration state in which these asteroids will appear. Always appear if null.</summary>
+		[Persistent] private readonly Condition detectable;
 
 		/// <summary>
 		/// Creates a dummy flyby group. The object is initialized to a state in which it will not be expected to 
@@ -42,10 +45,16 @@ namespace Starstrider42.CustomAsteroids {
 				ApproachRange.Type.Periapsis, min: 0);
 			this.warnTime = new ValueRange(ValueRange.Distribution.Uniform);
 			this.vSoi = new ValueRange(ValueRange.Distribution.LogNormal, avg: 300, stdDev: 100);
+
+			this.detectable = null;
 		}
 
 		public double getSpawnRate() {
-			return spawnRate;
+			if (detectable == null || detectable.check()) {
+				return spawnRate;
+			} else {
+				return 0.0;
+			}
 		}
 
 		public string getName() {
@@ -67,6 +76,14 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		public Orbit drawOrbit() {
+			#if DEBUG
+			if (detectable == null) {
+				Debug.Log("No condition attached.");
+			} else {
+				Debug.Log("Condition: " + detectable);
+			}
+			#endif
+
 			CelestialBody body = AsteroidManager.getPlanetByName(targetBody);
 
 			Debug.Log("[CustomAsteroids]: drawing orbit from " + name);
@@ -105,7 +122,7 @@ namespace Starstrider42.CustomAsteroids {
 			}
 			#if DEBUG
 			Debug.Log(String.Format("Asteroid will pass {0} m from {1} in {2} Kerbin days. V_infinity = {3} m/s.", 
-				peri, targetBody, deltaT / (6.0 * 3600.0), deltaV));
+					peri, targetBody, deltaT / (6.0 * 3600.0), deltaV));
 			#endif
 
 			Orbit newOrbit = createHyperbolicOrbit(body, peri, deltaV, Planetarium.GetUniversalTime() + deltaT);
@@ -181,10 +198,10 @@ namespace Starstrider42.CustomAsteroids {
 			Debug.Log("Patching SoI transition from " + oldParent + " to " + newParent + "at UT " + utSoi);
 			#endif
 			// Need position/velocity relative to newParent, not oldParent or absolute
-			Vector3d xNewParent = oldOrbit.getRelativePositionAtUT(utSoi) 
-				+ oldParent.orbit.getRelativePositionAtUT(utSoi);
-			Vector3d vNewParent = oldOrbit.getOrbitalVelocityAtUT(utSoi) 
-				+ oldParent.orbit.getOrbitalVelocityAtUT(utSoi);
+			Vector3d xNewParent = oldOrbit.getRelativePositionAtUT(utSoi)
+			                      + oldParent.orbit.getRelativePositionAtUT(utSoi);
+			Vector3d vNewParent = oldOrbit.getOrbitalVelocityAtUT(utSoi)
+			                      + oldParent.orbit.getOrbitalVelocityAtUT(utSoi);
 
 			Orbit newOrbit = new Orbit();
 			newOrbit.UpdateFromStateVectors(xNewParent, vNewParent, newParent, utSoi);
@@ -205,12 +222,12 @@ namespace Starstrider42.CustomAsteroids {
 			} else {
 				// If an elliptical orbit leaves the SoI, then getRelativePositionAtUT gives misleading results 
 				// after the SoI transition.
-				return (orbit.ApR > orbit.referenceBody.sphereOfInfluence) 
-					&& ((Math.Abs(now - orbit.epoch) > 0.5 * orbit.period) 
-						|| (orbit.getRelativePositionAtUT(now).magnitude > orbit.referenceBody.sphereOfInfluence));
+				return (orbit.ApR > orbit.referenceBody.sphereOfInfluence)
+				&& ((Math.Abs(now - orbit.epoch) > 0.5 * orbit.period)
+				|| (orbit.getRelativePositionAtUT(now).magnitude > orbit.referenceBody.sphereOfInfluence));
 			}
 		}
-		
+
 		/// <summary>
 		/// Returns the time at which the given orbit enters its parent body's sphere of influence (if in the future) 
 		/// or exits it (if in the past). If the orbit is always outside the sphere of influence, returns the nominal 
@@ -255,8 +272,7 @@ namespace Starstrider42.CustomAsteroids {
 				if (hyperbolic.getRelativePositionAtUT(ut).magnitude < soi) {
 					// Too close; look higher
 					innerUT = ut;
-				}
-				else {
+				} else {
 					// Too far; look lower
 					outerUT = ut;
 				}
