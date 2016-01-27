@@ -9,22 +9,25 @@ namespace Starstrider42.CustomAsteroids {
 	/// <remarks>To avoid breaking the persistence code, Flyby may not have subclasses.</remarks>
 	internal sealed class Flyby : AsteroidSet {
 		/// <summary>A unique name for the group.</summary>
-		[Persistent] private string name;
+		[Persistent] private readonly string name;
 		/// <summary>The name of asteroids belonging to this group.</summary>
-		[Persistent] private string title;
+		[Persistent] private readonly string title;
 		/// <summary>The name of the celestial object the asteroids will approach.</summary>
-		[Persistent] private string targetBody;
+		[Persistent] private readonly string targetBody;
 		/// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
-		[Persistent] private double spawnRate;
+		[Persistent] private readonly double spawnRate;
 
 		/// <summary>
 		/// The distance by which the asteroid would miss <c>targetBody</c> without gravitational focusing.
 		/// </summary>
-		[Persistent] private ApproachRange approach;
+		[Persistent] private readonly ApproachRange approach;
 		/// <summary>The time to closest approach (again, ignoring <c>targetBody</c>'s gravity).</summary>
-		[Persistent] private ValueRange warnTime;
+		[Persistent] private readonly ValueRange warnTime;
 		/// <summary>The speed relative to <c>targetBody</c>, ignoring its gravity.</summary>
-		[Persistent] private ValueRange vSoi;
+		[Persistent] private readonly ValueRange vSoi;
+
+		/// <summary>The exploration state in which these asteroids will appear. Always appear if null.</summary>
+		[Persistent] private readonly Condition detectable;
 
 		/// <summary>Relative ocurrence rates of asteroid classes.</summary>
 		[Persistent(name = "asteroidTypes", collectionIndex = "key")]
@@ -46,11 +49,17 @@ namespace Starstrider42.CustomAsteroids {
 			this.warnTime = new ValueRange(ValueRange.Distribution.Uniform);
 			this.vSoi = new ValueRange(ValueRange.Distribution.LogNormal, avg: 300, stdDev: 100);
 
+			this.detectable = null;
+
 			this.classRatios = null;
 		}
 
 		public double getSpawnRate() {
-			return spawnRate;
+			if (detectable == null || detectable.check()) {
+				return spawnRate;
+			} else {
+				return 0.0;
+			}
 		}
 
 		public string getName() {
@@ -72,6 +81,14 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		public Orbit drawOrbit() {
+			#if DEBUG
+			if (detectable == null) {
+				Debug.Log("No condition attached.");
+			} else {
+				Debug.Log("Condition: " + detectable);
+			}
+			#endif
+
 			CelestialBody body = AsteroidManager.getPlanetByName(targetBody);
 
 			Debug.Log("[CustomAsteroids]: drawing orbit from " + name);

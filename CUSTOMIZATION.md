@@ -108,7 +108,7 @@ ASTEROIDGROUP                                      {#adv_groups}
 
 In Custom Asteroids 1.3 or later, an `ASTEROIDGROUP` block may have a field called `refPlane`. This field contains the name of a reference frame defined in a `CustomAsteroidPlanes` section (which need not be in the same file). All orbits will be created relative to that reference frame. If the `refPlane` field is ommitted, orbits will use the default reference frame.
 
-Each `ASTEROIDGROUP` block can have up to six parameters, corresponding to the six orbital elements:
+Each `ASTEROIDGROUP` block can have up to seven parameters, six of which correspond to orbital elements:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 
     only orbital element that must *always* be given. All distances are from the body's center. 
     Distribution defaults to LogUniform if unspecified. The `orbitSize` node also has two additional 
@@ -143,10 +143,23 @@ Each `ASTEROIDGROUP` block can have up to six parameters, corresponding to the s
     - `epoch`: the time at which the mean anomaly or mean longitude is measured. May be GameStart 
         or Now (the time at which the asteroid appears). Defaults to GameStart.
 
+Starting from Custom Asteroids 1.3, an optional `detectable` block allows asteroids to appear only under certain conditions. If no block is provided, asteroids will always appear. The block consists of an optional field and a list of conditions:
+* `combine`: this field may be set to either And (all conditions must be met for asteroids to appear) or Or (any condition must be met). If omitted, defaults to And.
+* `conditions`: this block contains a list of conditions, one per line, prefixed by 'condition ='. Conditions must have the form '&lt;planet&gt;.&lt;test&gt;'. &lt;planet&gt; is the name of a celestial body, and &lt;test&gt; is one of 
+    - reached: the condition is met if a vessel has ever entered the sphere of influence of &lt;planet&gt;.
+    - hadorbit: the condition is met if a vessel has ever entered a stable orbit around &lt;planet&gt;.
+    - hadlanded:  the condition is met if a vessel has ever landed on &lt;planet&gt;.
+    - science: the condition is met if a vessel has ever returned science from &lt;planet&gt;.
+    - nowpresent: the condition is met if a vessel is currently in the sphere of influence of &lt;planet&gt;.
+    - noworbit: the condition is met if a vessel currently has a stable orbit around &lt;planet&gt;.
+    - nowlanded:the condition is met if a vessel is currently on the surface of &lt;planet&gt. Note that `Kerbin.nowlanded` includes unlauched vessels on the pad.
+
+Any test may have "Manned" or "Unmanned" appended to restrict the test to vessels that can or cannot support crew, respectively. For example, `Jool.noworbitUnmanned` means that asteroids will only appear while a probe is in orbit around Jool.
+
 INTERCEPT                                          {#adv_intercept}
 ------------
 
-Each `INTERCEPT` block can have up to three parameters:
+Each `INTERCEPT` block can have up to four parameters:
 * `approach`: the closest approach distance, in meters. This is one of two parameters that must always be 
     given. Distribution defaults to Uniform if unspecified. `min` defaults to 0 if unspecified. The 
     `approach` node has one additional option:
@@ -161,6 +174,7 @@ Each `INTERCEPT` block can have up to three parameters:
     This indirectly controls the asteroid's eccentricity and inclination (higher approach speeds 
     correspond to eccentric, inclined orbits). If omitted, a range of speeds that allows easy capture 
     is used. Distribution defaults to LogNormal if unspecified.
+* `detectable`: a set of conditions that need to be met before asteroids appear. This block works exactly as for `ASTEROIDGROUP`.
 
 CustomAsteroidPlanes                               {#adv_planes}
 ------------
