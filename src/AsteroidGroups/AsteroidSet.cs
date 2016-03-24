@@ -37,10 +37,10 @@ namespace Starstrider42.CustomAsteroids {
 		/// Generates a random asteroid class appropriate for this type.
 		/// </summary>
 		/// 
-		/// <returns>Asteroid type data for a randomly selected member of the asteroid type.</returns>
+		/// <returns>Name of a part suitable for use as an asteroid.</returns>
 		/// 
 		/// <exception cref="System.InvalidOperationException">Thrown if the implementing object cannot produce 
 		/// valid types. The program will be in a consistent state in the event of an exception.</exception>
-		ConfigNode drawAsteroidData();
+		string drawAsteroidType();
 	}
 }

@@ -177,18 +177,17 @@ namespace Starstrider42.CustomAsteroids {
 			this.title = "Ast.";
 			this.spawnRate = 0.0;
 
-			this.classRatios = null;
+			this.classRatios = new Proportions<string>(new [] {"1.0 PotatoRoid"});
 		}
 
-		public ConfigNode drawAsteroidData() {
+		public string drawAsteroidType() {
 			try {
-				AsteroidType typeInfo = AsteroidManager.drawAsteroidType(classRatios);
-				return typeInfo.packedAsteroidData();
+				return AsteroidManager.drawAsteroidType(classRatios);
 			} catch (InvalidOperationException e) {
 				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
 				Debug.LogException(e);
 
-				return new CustomAsteroidData().toProtoConfigNode();
+				return "PotatoRoid";
 			}
 		}
 

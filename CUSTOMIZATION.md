@@ -108,7 +108,7 @@ ASTEROIDGROUP                                      {#adv_groups}
 
 In Custom Asteroids 1.3 or later, an `ASTEROIDGROUP` block may have a field called `refPlane`. This field contains the name of a reference frame defined in a `CustomAsteroidPlanes` section (which need not be in the same file). All orbits will be created relative to that reference frame. If the `refPlane` field is ommitted, orbits will use the default reference frame.
 
-Each `ASTEROIDGROUP` block can have up to seven parameters, six of which correspond to orbital elements:
+Each `ASTEROIDGROUP` block can have up to eight parameters, six of which correspond to orbital elements:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 
     only orbital element that must *always* be given. All distances are from the body's center. 
     Distribution defaults to LogUniform if unspecified. The `orbitSize` node also has two additional 
@@ -156,10 +156,12 @@ Starting from Custom Asteroids 1.3, an optional `detectable` block allows astero
 
 Any test may have "Manned" or "Unmanned" appended to restrict the test to vessels that can or cannot support crew, respectively. For example, `Jool.noworbitUnmanned` means that asteroids will only appear while a probe is in orbit around Jool.
 
+Starting from Custom Asteroids 1.3, an optional `asteroidTypes` block allows asteroids to have parts other than "PotatoRoid", the stock asteroid part. If no block is provided, all asteroids will be PotatoRoids. The block consists of a list of entries in the format 'key = &lt;weight&gt;.&lt;part&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid types. &lt;part&gt must be the name of the part used to represent the asteroid. Custom Asteroids ships with four such parts, "CaAsteroidMetal", "CaAsteroidCarbon", "CaAsteroidIcy", and "CaCometActive". The "Ca" prefix in these names is reserved for future enhancements to Custom Asteroids, and third-party modders are asked not to use it.
+
 INTERCEPT                                          {#adv_intercept}
 ------------
 
-Each `INTERCEPT` block can have up to four parameters:
+Each `INTERCEPT` block can have up to five parameters:
 * `approach`: the closest approach distance, in meters. This is one of two parameters that must always be 
     given. Distribution defaults to Uniform if unspecified. `min` defaults to 0 if unspecified. The 
     `approach` node has one additional option:
@@ -175,6 +177,7 @@ Each `INTERCEPT` block can have up to four parameters:
     correspond to eccentric, inclined orbits). If omitted, a range of speeds that allows easy capture 
     is used. Distribution defaults to LogNormal if unspecified.
 * `detectable`: a set of conditions that need to be met before asteroids appear. This block works exactly as for `ASTEROIDGROUP`.
+* `asteroidTypes`: a list of asteroid parts used to represent asteroids. This block works exactly as for `ASTEROIDGROUP`.
 
 CustomAsteroidPlanes                               {#adv_planes}
 ------------

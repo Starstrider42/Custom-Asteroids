@@ -16,9 +16,6 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>Singleton object responsible for handling alternative reference frames.</summary>
 		private static readonly ReferenceLoader knownFrames;
 
-		/// <summary>Singleton object responsible for handling asteroid compositions.</summary>
-		private static readonly TypeLoader knownTypes;
-
 		/// <summary>Singleton object responsible for handling Custom Asteroids options.</summary>
 		private static readonly Options curOptions;
 
@@ -30,7 +27,6 @@ namespace Starstrider42.CustomAsteroids {
 				curOptions = Options.load();
 				allowedPops = PopulationLoader.load();
 				knownFrames = ReferenceLoader.load();
-				knownTypes = TypeLoader.load();
 
 				Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day.");
 			} catch {
@@ -39,7 +35,6 @@ namespace Starstrider42.CustomAsteroids {
 				curOptions = null;
 				allowedPops = null;
 				knownFrames = null;
-				knownTypes = null;
 				throw;
 			}
 		}
@@ -96,12 +91,16 @@ namespace Starstrider42.CustomAsteroids {
 		/// </summary>
 		/// 
 		/// <param name="typeRatios">The proportions in which to select the types.</param>
-		/// <returns>A reference to the selected asteroid class. Shall not be null.</returns>
+		/// <returns>The selected asteroid class. Shall not be null.</returns>
 		/// 
 		/// <exception cref="System.InvalidOperationException">Thrown if there are no types from which to choose, 
 		/// or if all proportions are zero, or if any proportion is negative.</exception> 
-		internal static AsteroidType drawAsteroidType<Dummy>(Proportions<Dummy> typeRatios) {
-			return knownTypes.drawAsteroidType(typeRatios);
+		internal static string drawAsteroidType<Dummy>(Proportions<Dummy> typeRatios) {
+			try {
+				return RandomDist.weightedSample(typeRatios.asPairList());
+			} catch (ArgumentException e) {
+				throw new InvalidOperationException("Could not draw asteroid type", e);
+			}
 		}
 
 		/// <summary>

@@ -14,7 +14,8 @@ namespace Starstrider42.CustomAsteroids {
 		/// Returns the sizeCurve used by the stock spawner as of KSP 1.0.5. This corresponds to the following 
 		/// size distribution: 12% class A, 13% class B, 49% class C, 13% class D, and 12% class E.
 		/// </summary>
-		private static readonly FloatCurve stockSizeCurve = new FloatCurve(new [] {
+		private static readonly FloatCurve stockSizeCurve = new FloatCurve(new []
+			{
 				new Keyframe(0.0f, 0.0f, 1.5f, 1.5f), 
 				new Keyframe(0.3f, 0.45f, 0.875f, 0.875f), 
 				new Keyframe(0.7f, 0.55f, 0.875f, 0.875f), 
@@ -161,7 +162,6 @@ namespace Starstrider42.CustomAsteroids {
 			Orbit orbit = makeOrbit(group);
 			string name = makeName(group);
 			ConfigNode trackingInfo = makeDiscoveryInfo(group);
-			ConfigNode asteroidType = group.drawAsteroidData();
 			ConfigNode[] partList = makeAsteroidParts(group);
 
 			// Stock spawner reports its module name, so do the same for custom spawns
@@ -254,10 +254,14 @@ namespace Starstrider42.CustomAsteroids {
 		private static ConfigNode[] makeAsteroidParts(AsteroidSet group) {
 			// The same "seed" that shows up in ProceduralAsteroid?
 			uint seed = (uint) UnityEngine.Random.Range(0, Int32.MaxValue);
-			ConfigNode potato = ProtoVessel.CreatePartNode("PotatoRoid", seed);
-			ConfigNode customData = group.drawAsteroidData();
-			potato.AddNode(customData);
-			return new[] { potato };
+			string part = group.drawAsteroidType();
+			try {
+				ConfigNode potato = ProtoVessel.CreatePartNode(part, seed);
+				return new[] { potato };
+			} catch (Exception e) {
+				// Really? That's what CreatePartNode throws?
+				throw new InvalidOperationException("No such Part: " + part, e);
+			}
 		}
 	}
 }

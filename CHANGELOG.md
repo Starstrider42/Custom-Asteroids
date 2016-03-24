@@ -9,10 +9,11 @@ Unreleased
 
 ### New Features
 
-* Asteroid population blocks now support the log-normal, (rescaled) beta, and gamma distributions.
+* Limited support for custom asteroid types.
 * Can now customize asteroids on intercept trajectories.
-* Asteroid .value syntax now supports several characteristic periods and speeds.
 * Asteroids can now appear only under certain conditions.
+* Asteroid population blocks now support the log-normal, (rescaled) beta, and gamma distributions.
+* Asteroid .value syntax now supports several characteristic periods and speeds.
 * Asteroid orbits can now be given relative to an inclined plane. Useful for mods like RSS and Harder Solar System.
 
 ### Changes
