@@ -106,7 +106,7 @@ Allowed values of `min`, `max`, `avg`, and `stddev` are:
 ASTEROIDGROUP                                      {#adv_groups}
 ------------
 
-In Custom Asteroids 1.3 or later, an `ASTEROIDGROUP` block may have a field called `refPlane`. This field contains the name of a reference frame defined in a `CustomAsteroidPlanes` section (which need not be in the same file). All orbits will be created relative to that reference frame. If the `refPlane` field is ommitted, orbits will use the default reference frame.
+In Custom Asteroids 1.3 or later, an `ASTEROIDGROUP` block may have a field called `refPlane`. This field contains the name of a reference frame defined in a `CustomAsteroidPlanes` section (which need not be in the same file). All orbits will be created relative to that reference frame. If the `refPlane` field is omitted, orbits will use the default reference frame.
 
 Each `ASTEROIDGROUP` block can have up to eight parameters, six of which correspond to orbital elements:
 * `orbitSize`: one of three parameters describing the size of the orbit, in meters. This is the 
@@ -156,7 +156,7 @@ Starting from Custom Asteroids 1.3, an optional `detectable` block allows astero
 
 Any test may have "Manned" or "Unmanned" appended to restrict the test to vessels that can or cannot support crew, respectively. For example, `Jool.noworbitUnmanned` means that asteroids will only appear while a probe is in orbit around Jool.
 
-Starting from Custom Asteroids 1.3, an optional `asteroidTypes` block allows asteroids to have parts other than "PotatoRoid", the stock asteroid part. If no block is provided, all asteroids will be PotatoRoids. The block consists of a list of entries in the format 'key = &lt;weight&gt;.&lt;part&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid types. &lt;part&gt must be the name of the part used to represent the asteroid. Custom Asteroids ships with four such parts, "CaAsteroidMetal", "CaAsteroidCarbon", "CaAsteroidIcy", and "CaCometActive". The "Ca" prefix in these names is reserved for future enhancements to Custom Asteroids, and third-party modders are asked not to use it.
+Starting from Custom Asteroids 1.3, an optional `asteroidTypes` block allows asteroids to have parts other than "PotatoRoid", the stock asteroid part. If no block is provided, all asteroids will be PotatoRoids. The block consists of a list of entries in the format 'key = &lt;weight&gt; &lt;part&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid types. &lt;part&gt; must be the name of the part used to represent the asteroid. Custom Asteroids ships with four such parts, "CaAsteroidMetal", "CaAsteroidCarbon", "CaAsteroidIcy", and "CaCometActive". The "Ca" prefix in these names is reserved for future enhancements to Custom Asteroids, and third-party modders are asked not to use it.
 
 INTERCEPT                                          {#adv_intercept}
 ------------
@@ -189,7 +189,7 @@ Each `REFPLANE` block has four parameters, all required:
 * `longAscNode`: the longitude of the ascending node of the plane, in KSP's default coordinate system. 
     Changing this value rotates the plane around the game's vertical axis.
 * `inclination`: the inclination of the plane relative to the game's horizontal plane.
-* `argReference`: the angle between the reference direction (which defines zero longitude for indivdual 
+* `argReference`: the angle between the reference direction (which defines zero longitude for individual 
     asteroid orbits) and the plane's ascending node.
 
 `longAscNode`, `inclination`, and `argReference` use the same syntax as the `min`, `max`, `avg`, and `stddev` fields of asteroid definition blocks, so you can, for example, align a reference plane with the orbital plane of a particular celestial body.
