@@ -4,13 +4,18 @@ using System;
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>
-	/// <para>Represents asteroid-specific information not included in the stock game.</para>
+	/// Represents asteroid-specific information not included in the stock game.
 	/// </summary>
 	public sealed class CustomAsteroidData : PartModule {
 		/// <summary>The name of the composition class to use.</summary>
-		/// <remarks>Must be public to initialize it from part config.</remarks>
+		/// <remarks>The class is displayed to the user, but is not intended for use by code. 
+		/// Must be public to initialize it from part config.</remarks>
 		[KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Type")]
-		public string composition = "Stony";
+		public string composition;
+
+		public CustomAsteroidData() {
+			this.composition = "Stony";
+		}
 
 		#if DEBUG
 		[KSPEvent(
