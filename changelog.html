@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.2.0</span>
+   &#160;<span id="projectnumber">1.3.0-beta</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -104,7 +104,30 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <div class="title">Version History </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Custom Asteroids conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. In addition to the actual <a href="http://starstrider42.github.io/Custom-Asteroids/">public API</a>, the <a class="el" href="newbelts.html">format of asteroid population files</a> and the information stored in KSP save files will be considered part of the API for the purpose of versioning.</p>
+<div class="textblock"><p>Custom Asteroids conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. In addition to the actual <a href="http://starstrider42.github.io/Custom-Asteroids/">public API</a>, the <a href="http://starstrider42.github.io/Custom-Asteroids/newbelts.html">format of asteroid population files</a> and the information stored in KSP save files will be considered part of the API for the purpose of versioning.</p>
+<h2>Version 1.3.0 (release pending) </h2>
+<h3>New Features</h3>
+<ul>
+<li>Limited support for custom asteroid types.</li>
+<li>Can now customize asteroids on intercept trajectories.</li>
+<li>Asteroids can now appear only under certain conditions.</li>
+<li>Asteroid population blocks now support the log-normal, (rescaled) beta, and gamma distributions.</li>
+<li>Asteroid .value syntax now supports several characteristic periods and speeds.</li>
+<li>Asteroid orbits can now be given relative to an inclined plane. Useful for mods like RSS and Harder Solar System.</li>
+</ul>
+<h3>Changes</h3>
+<ul>
+<li><code>DEFAULT</code> config blocks are now deprecated. They will be removed in version 2.0.0.</li>
+<li>Stockalike asteroids have been split off into their own config file.</li>
+<li>Some tweaks to asteroid spawn rates.</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li>Invalid populations will no longer stop other populations from loading.</li>
+<li>Near-Kerbin asteroids will no longer appear on unbound orbits, and are much less likely to appear in the main belt.</li>
+<li>A large number of asteroids will no longer appear when the tracking station is upgraded while using the fixed-rate spawner.</li>
+<li>Mean anomaly and mean longitude of celestial bodies are now calculated properly.</li>
+</ul>
 <h2>Version 1.2.0 </h2>
 <h3>New Features</h3>
 <ul>
@@ -115,26 +138,29 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <ul>
 <li>Configs updated to reflect KSP 1.0 and popular solar system mods.</li>
 <li>Logs now follow the standard convention (prefixed by "[CustomAsteroids]").</li>
+<li>More consistent feedback for bad population definitions.</li>
 <li>The setting "UseCustomSpawner" has been replaced by a more flexible setting, "Spawner". Old settings files are supported and will be migrated automatically.</li>
 <li>The "Stock" value of "Spawner" will no longer use the KSP spawner, but an internal emulation. This change will make future improvements to the mod much easier to implement.</li>
 <li>The previous public API has been marked as deprecated (though it is unlikely that anyone was using it, as it was never finished). It will be removed in version 2.0.0.</li>
 </ul>
 <h3>Bug Fixes</h3>
 <ul>
-<li>Asteroids will now be properly removed at very high (larger than 100,000×) time warps. Players may see substantial lag as the despawner works, however.</li>
+<li>Asteroids will now be properly removed at very high (larger than 100,000Ã) time warps. Players may see substantial lag as the despawner works, however.</li>
 <li>Asteroid groups using <code>orbitPhase {epoch = GameStart}</code> will now work correctly in RealSolarSystem.</li>
+<li>Asteroids will now be randomized between different save games.</li>
+<li>More graceful handling of invalid options files.</li>
 </ul>
 <h2>Version 1.1.0 </h2>
 <h3>New Features</h3>
 <ul>
 <li>Support for KSP 0.25.</li>
-<li>Failed asteroid spawns will now print a brief error message to the screen. This feature is intended for troubleshooting custom asteroid configs or mod compatibility issues, and may be disabled in the <a class="el" href="options.html">settings file</a>.</li>
+<li>Failed asteroid spawns will now print a brief error message to the screen. This feature is intended for troubleshooting custom asteroid configs or mod compatibility issues, and may be disabled in the <a href="http://starstrider42.github.io/Custom-Asteroids/options.html">settings file</a>.</li>
 </ul>
 <h2>Version 1.0.0 </h2>
 <h3>New Features</h3>
 <ul>
 <li>Some asteroids will now stay on the stock KSP trajectory, which intercepts Kerbin's sphere of influence. The number of such asteroids may be changed by modifying or removing the <code>DEFAULT</code> clause in <code>Basic Asteroids.cfg</code>.</li>
-<li>Asteroids can now be labeled by the group they belong to. This option is on by default, but may be disabled in the <a class="el" href="options.html">settings file</a>.</li>
+<li>Asteroids can now be labeled by the group they belong to. This option is on by default, but may be disabled in the <a href="http://starstrider42.github.io/Custom-Asteroids/options.html">settings file</a>.</li>
 <li>Asteroid orbital elements can now be expressed in terms of the properties of planets or moons. This reduces the amount of math the config-writer has to do, and makes config files more compatible with other solar system mods.</li>
 <li>Support for version checkers using Tyrope and cybutek's <code>.version</code> file format.</li>
 <li>Support for using Module Manager to customize downloaded configs.</li>
@@ -142,7 +168,7 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <h3>Changes</h3>
 <ul>
 <li>Asteroid groups now have a unique <code>name</code> field and a human-readable <code>title</code> field, consistent with the format of most other KSP configs. <b>THIS BREAKS COMPATIBILITY</b> with the version 0.2 format.</li>
-<li>The position of an orbit's periapsis can now be set by constaining either the argument of periapsis or longitude of periapsis.</li>
+<li>The position of an orbit's periapsis can now be set by constraining either the argument of periapsis or longitude of periapsis.</li>
 <li>Added support for Gaussian, isotropic, and exponential distributions.</li>
 </ul>
 <h2>Version 0.2.1 </h2>
@@ -173,7 +199,7 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Dec 13 2015 14:38:55 for Custom Asteroids by
+    <li class="footer">Generated on Sun Apr 3 2016 16:56:25 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>

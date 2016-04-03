@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.2.0</span>
+   &#160;<span id="projectnumber">1.3.0-beta</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -104,20 +104,20 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <div class="title">Custom(izing) Asteroids </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. There are two example files in the Custom Asteroids download, both in <code>GameData/CustomAsteroids/config/</code>. However, any .cfg file anywhere in <code>GameData</code> that follows the same format will be parsed by Custom Asteroids. If you are distributiong asteroid definition files with your mod, please put them in your mod directory rather than the CustomAsteroids directory so that players know where the files came from. If you need to suppress or modify the default asteroid definitions, they are fully ModuleManager-compatible.</p>
-<p>Within each file, each <code>ASTEROIDGROUP</code> block represents a single group of orbits. There is no limit to the number of <code>ASTEROIDGROUP</code> blocks you can place in a file.</p>
-<p>There may also be up to one <code>DEFAULT</code> block across all files, which controls how many asteroids are found on a Kerbin intercept trajectory or in the Dres ring. If the player has multiple files with a <code>DEFAULT</code> block, only one will be used.</p>
-<h2>Basic Usage </h2>
-<p>The most frequently used fields in each <code>ASTEROIDGROUP</code> block are the following:</p>
-<ul>
+<div class="textblock"><p>Asteroid definition files declare where asteroids (or comets, or other small bodies) appear in the game. There are three example files in the Custom Asteroids download, both in <code>GameData/CustomAsteroids/config/</code>. However, any .cfg file anywhere in <code>GameData</code> that follows the same format will be parsed by Custom Asteroids. If you are distributing asteroid definition files with your mod, please put them in your mod directory rather than the CustomAsteroids directory so that players know where the files came from. If you need to suppress or modify the default asteroid definitions, they are fully ModuleManager-compatible.</p>
+<p>Most files will consist of a single <code>AsteroidSets</code> section. Within the section, each <code>ASTEROIDGROUP</code> block represents a single group of stable orbits. Each <code>INTERCEPT</code> block represents asteroids on a collision (or near-collision) course with a celestial body. <code>INTERCEPT</code> blocks are only available starting from Custom Asteroids 1.3.</p>
+<p>Starting from Custom Asteroids 1.3, config files may also include a <code>CustomAsteroidPlanes</code> section. This feature allows asteroid groups to be oriented correctly in inclined solar systems, such as those provided by the RealSolarSystem or Harder Solar System mods. Most users shouldn't need it.</p>
+<p>Older config files may have <code>DEFAULT</code> blocks that represent asteroids on stock orbits. With the introduction of <code>INTERCEPT</code> blocks in version 1.3, <code>DEFAULT</code> blocks are deprecated and should not be used in new config files. Support for <code>DEFAULT</code> blocks will be removed in Custom Asteroids 2.0.</p>
+<h1><a class="anchor" id="basic"></a>
+Basic Usage                                     </h1>
+<p>The most frequently used fields in each <code>ASTEROIDGROUP</code> block are the following:</p><ul>
 <li><code>name</code>: a unique, machine-readable name. Must not contain spaces.</li>
-<li><code>title</code>: a descriptive name. If <code>RenameAsteroids = True</code> is set in the <a class="el" href="options.html">settings file</a>, this name will replace the generic "Ast." in the asteroids' name.</li>
+<li><code>title</code>: a descriptive name. If <code>RenameAsteroids = True</code> is set in the <a href="http://starstrider42.github.io/Custom-Asteroids/options.html">settings file</a>, this name will replace the generic "Ast." in the asteroids' name.</li>
 <li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the name of an in-game celestial body.</li>
-<li><code>spawnRate</code>: must be a nonnegative number. If <code>Spawner = FixedRate</code> is set in the <a class="el" href="options.html">settings file</a>, this value gives the number of asteroids detected per Earth day. If <code>Spawner = Stock</code>, only the ratio to all the other <code>spawnRate</code> values matters.</li>
+<li><code>spawnRate</code>: must be a nonnegative number. If <code>Spawner = FixedRate</code> is set in the <a href="http://starstrider42.github.io/Custom-Asteroids/options.html">settings file</a>, this value gives the number of asteroids detected per Earth day. If <code>Spawner = Stock</code>, only the ratio to all the other <code>spawnRate</code> values matters.</li>
 <li><code>orbitSize</code>: a block describing how far from <code>centralBody</code> the asteroid's orbit is found. Parameters:<ul>
-<li><code>type</code>: Describes which orbital element is constrained by <code>min</code> and <code>max</code>. Allowed values are SemimajorAxis, Periapsis, or Apoapsis.</li>
-<li><code>min</code>: The smallest value an asteroid from this group may have, in meters. Always measured from 
-        the center of <code>centralBody</code>, regardless of the value of <code>type</code>.</li>
+<li><code>type</code>: Describes which orbital element is constrained by <code>min</code> and <code>max</code>. Allowed values are SemimajorAxis, Periapsis, or Apoapsis. Default is SemimajorAxis.</li>
+<li><code>min</code>: The smallest value an asteroid from this group may have, in meters. Always measured from the center of <code>centralBody</code>, regardless of the value of <code>type</code>.</li>
 <li><code>max</code>: The largest value an asteroid from this group may have.</li>
 </ul>
 </li>
@@ -130,15 +130,30 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 </ul>
 </li>
 </ul>
-<p>The <code>DEFAULT</code> block, if present, has only the <code>name</code> and <code>spawnRate</code> fields. These work analogously to the <code>name</code> and <code>spawnRate</code> fields for <code>ASTEROIDGROUP</code>. If no <code>DEFAULT</code> block is present, all asteroids will appear in one of the asteroid groups.</p>
-<h2>Advanced Usage </h2>
+<p>The most frequently used fields in each <code>INTERCEPT</code> block are the following:</p><ul>
+<li><code>name</code>, <code>title</code>, <code>spawnRate</code>: have the same meanings as above</li>
+<li><code>targetBody</code>: the name of the object the asteroids will approach. Must exactly match the name of an in-game celestial body.</li>
+<li><code>approach</code>: a block describing how far from <code>targetBody</code> the asteroid would pass if not for the planet's gravity. Parameters:<ul>
+<li><code>max</code>: the maximum approach distance any asteroid from this group will have, in meters. The special value <code>Ratio(&lt;targetBody&gt;.soi, 1.0)</code> allows all trajectories that intercept the target's sphere of influence, no matter where (fill in <code>&lt;targetBody&gt;</code> with the correct name).</li>
+</ul>
+</li>
+<li><code>warnTime</code>: a block describing how long before closest approach the asteroid may be detected. Negative values are allowed and represent detections <em>after</em> closest approach. Parameters:<ul>
+<li><code>min</code>: The minimum lead time (i.e., the latest moment) at which an asteroid may be detected, in seconds.</li>
+<li><code>max</code>: The maximum lead time at which an asteroid may be detected.</li>
+</ul>
+</li>
+</ul>
+<h1><a class="anchor" id="advanced"></a>
+Advanced Usage                                     </h1>
+<h2><a class="anchor" id="adv_common"></a>
+Common Syntax                                      </h2>
 <p>The average number of known asteroids in each group &ndash; if none are tracked &ndash; will equal <code>spawnRate</code> times the average of <code>Options.MinUntrackedTime</code> and <code>Options.MaxUntrackedTime</code>. Set the value for <code>spawnRate</code> accordingly.</p>
-<p>Each <code>ASTEROIDGROUP</code> block has six subfields corresponding to orbital parameters. Each orbital parameter has a block describing the distribution of that parameter:</p><ul>
-<li><code>dist</code>: the distribution from which the parameter will be drawn. Allowed values are Uniform, LogUniform, Gaussian (Normal also accepted), Rayleigh, or Exponential.</li>
-<li><code>min</code>: the minimum value of the parameter. Currently used by Uniform and LogUniform.</li>
-<li><code>max</code>: the maximum value of the parameter. Currently used by Uniform and LogUniform.</li>
-<li><code>avg</code>: the average value of the parameter. Currently used by Gaussian, Rayleigh, and Exponential.</li>
-<li><code>stddev</code>: the standard deviation of the parameter. Currently used by Gaussian.</li>
+<p>Each <code>ASTEROIDGROUP</code> or <code>INTERCEPT</code> block has several subfields describing how asteroid parameters are generated. Each parameter is a block with the following values:</p><ul>
+<li><code>dist</code>: the distribution from which the parameter will be drawn. Allowed values are Uniform, LogUniform, Gaussian (Normal also accepted), LogNormal, Rayleigh, Gamma, Beta, or Exponential. Note that the Beta distribution is rescaled from its usual interval <code>(0, 1)</code> to <code>(min, max)</code>. LogNormal, Gamma, and Beta are only available in Custom Asteroids 1.3 or later.</li>
+<li><code>min</code>: the minimum value of the parameter. Currently used by Uniform, LogUniform, and Beta.</li>
+<li><code>max</code>: the maximum value of the parameter. Currently used by Uniform, LogUniform, and Beta.</li>
+<li><code>avg</code>: the average value of the parameter. Currently used by Gaussian, LogNormal, Rayleigh, Gamma, Beta, and Exponential.</li>
+<li><code>stddev</code>: the standard deviation of the parameter. Currently used by Gaussian, LogNormal, Gamma, and Beta.</li>
 </ul>
 <p>Allowed values of <code>min</code>, <code>max</code>, <code>avg</code>, and <code>stddev</code> are:</p><ul>
 <li>A floating-point number, giving the exact value (in appropriate units) for the parameter</li>
@@ -155,13 +170,23 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <li>lan: the longitude of ascending node of &lt;planet&gt;, in degrees</li>
 <li>mna0: the mean anomaly (at game start) of &lt;planet&gt;, in degrees</li>
 <li>mnl0: the mean longitude (at game start) of &lt;planet&gt;, in degrees</li>
+<li>prot: the sidereal rotation period of &lt;planet&gt;, in seconds</li>
+<li>psol: the solar day of &lt;planet&gt;, in seconds</li>
+<li>porb: the orbital period of &lt;planet&gt;, in seconds</li>
+<li>vesc: the escape speed of &lt;planet&gt;, in m/s</li>
+<li>vorb: the mean orbital speed, relative to the body being orbited, of &lt;planet&gt;, in m/s</li>
+<li>vmin: the apoapsis orbital speed of &lt;planet&gt;, in m/s</li>
+<li>vmax: the periapsis orbital speed of &lt;planet&gt;, in m/s</li>
 </ul>
-<p class="startli">For example, the string <code>Ratio(Jool.sma, 0.5)</code> means "half of Jool's semimajor axis, in meters".</p>
+<p class="startli">For example, the string <code>Ratio(Jool.sma, 0.5)</code> means "half of Jool's semimajor axis, in meters". Time and velocity stats are only available in Custom Asteroids 1.3 or later.</p>
 </li>
-<li>A string of the form 'Offset(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to the celestial body's orbital element (units determined by &lt;stat&gt;). Again, whitesapce is ignored. For example, the string <code>Offset(Duna.per, -50000000)</code> means "50,000,000 meters less 
+<li>A string of the form 'Offset(&lt;planet&gt;.&lt;stat&gt;, &lt;value&gt;)', where &lt;planet&gt; and &lt;stat&gt; have the same meanings as above, and &lt;value&gt; is the amount to add to the celestial body's orbital element (units determined by &lt;stat&gt;). Again, whitespace is ignored. For example, the string <code>Offset(Duna.per, -50000000)</code> means "50,000,000 meters less 
     than Duna's periapsis", or just beyond its sphere of influence.</li>
 </ul>
-<p>The six orbital elements are:</p><ul>
+<h2><a class="anchor" id="adv_groups"></a>
+ASTEROIDGROUP                                      </h2>
+<p>In Custom Asteroids 1.3 or later, an <code>ASTEROIDGROUP</code> block may have a field called <code>refPlane</code>. This field contains the name of a reference frame defined in a <code>CustomAsteroidPlanes</code> section (which need not be in the same file). All orbits will be created relative to that reference frame. If the <code>refPlane</code> field is omitted, orbits will use the default reference frame.</p>
+<p>Each <code>ASTEROIDGROUP</code> block can have up to eight parameters, six of which correspond to orbital elements:</p><ul>
 <li><code>orbitSize</code>: one of three parameters describing the size of the orbit, in meters. This is the only orbital element that must <em>always</em> be given. All distances are from the body's center. Distribution defaults to LogUniform if unspecified. The <code>orbitSize</code> node also has two additional options:<ul>
 <li><code>type</code>: may be SemimajorAxis, Periapsis, or Apoapsis. Defaults to SemimajorAxis.</li>
 <li>The <code>min</code>, <code>max</code>, or <code>avg</code> fields of <code>orbitSize</code> may take a string of the form 'Resonance(&lt;planet&gt;, &lt;m&gt;:&lt;n&gt;)', where &lt;planet&gt; is the name of a celestial body, and &lt;m&gt; and &lt;n&gt; are positive integers. The string will be interpreted as the semimajor axis needed to get an m:n mean-motion resonance with &lt;planet&gt;. For example, the string <code>Resonance(Jool, 2:3)</code> gives the semimajor axis to complete 2 orbits for every 3 orbits of Jool &ndash; in other words, the semimajor axis of Eeloo.</li>
@@ -179,16 +204,59 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 <li><code>ascNode</code>: the longitude of the ascending node, in degrees. If omitted, allows any angle. Distribution defaults to Uniform if unspecified.</li>
 <li><code>orbitPhase</code>: one of two parameters describing the asteroid's position along its orbit, in degrees. If omitted, allows any angle. Distribution defaults to Uniform if unspecified. The <code>orbitPhase</code> node also has two additional options:<ul>
 <li><code>type</code>: the convention for measuring the asteroid's progress along its orbit. May be MeanAnomaly (value proportional to time since periapsis) or MeanLongitude (value proportional to time since zero phase angle). Defaults to MeanAnomaly.</li>
-<li><code>epoch</code>: the time at which the mean anomaly or mean longitude is measured. May be GameStart or Now. Defaults to GameStart. </li>
+<li><code>epoch</code>: the time at which the mean anomaly or mean longitude is measured. May be GameStart or Now (the time at which the asteroid appears). Defaults to GameStart.</li>
 </ul>
 </li>
 </ul>
+<p>Starting from Custom Asteroids 1.3, an optional <code>detectable</code> block allows asteroids to appear only under certain conditions. If no block is provided, asteroids will always appear. The block consists of an optional field and a list of conditions:</p><ul>
+<li><code>combine</code>: this field may be set to either And (all conditions must be met for asteroids to appear) or Or (any condition must be met). If omitted, defaults to And.</li>
+<li><code>conditions</code>: this block contains a list of conditions, one per line, prefixed by 'condition ='. Conditions must have the form '&lt;planet&gt;.&lt;test&gt;'. &lt;planet&gt; is the name of a celestial body, and &lt;test&gt; is one of<ul>
+<li>reached: the condition is met if a vessel has ever entered the sphere of influence of &lt;planet&gt;.</li>
+<li>hadorbit: the condition is met if a vessel has ever entered a stable orbit around &lt;planet&gt;.</li>
+<li>hadlanded: the condition is met if a vessel has ever landed on &lt;planet&gt;.</li>
+<li>science: the condition is met if a vessel has ever returned science from &lt;planet&gt;.</li>
+<li>nowpresent: the condition is met if a vessel is currently in the sphere of influence of &lt;planet&gt;.</li>
+<li>noworbit: the condition is met if a vessel currently has a stable orbit around &lt;planet&gt;.</li>
+<li>nowlanded:the condition is met if a vessel is currently on the surface of &lt;planet&amp;gt. Note that <code>Kerbin.nowlanded</code> includes unlauched vessels on the pad.</li>
+</ul>
+</li>
+</ul>
+<p>Any test may have "Manned" or "Unmanned" appended to restrict the test to vessels that can or cannot support crew, respectively. For example, <code>Jool.noworbitUnmanned</code> means that asteroids will only appear while a probe is in orbit around Jool.</p>
+<p>Starting from Custom Asteroids 1.3, an optional <code>asteroidTypes</code> block allows asteroids to have parts other than "PotatoRoid", the stock asteroid part. If no block is provided, all asteroids will be PotatoRoids. The block consists of a list of entries in the format 'key = &lt;weight&gt; &lt;part&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid types. &lt;part&gt; must be the name of the part used to represent the asteroid. Custom Asteroids ships with four such parts, "CaAsteroidMetal", "CaAsteroidCarbon", "CaAsteroidIcy", and "CaCometActive". The "Ca" prefix in these names is reserved for future enhancements to Custom Asteroids, and third-party modders are asked not to use it.</p>
+<h2><a class="anchor" id="adv_intercept"></a>
+INTERCEPT                                          </h2>
+<p>Each <code>INTERCEPT</code> block can have up to five parameters:</p><ul>
+<li><code>approach</code>: the closest approach distance, in meters. This is one of two parameters that must always be given. Distribution defaults to Uniform if unspecified. <code>min</code> defaults to 0 if unspecified. The <code>approach</code> node has one additional option:<ul>
+<li><code>type</code>: the definition of closest approach used. May be ImpactParameter (distance ignoring the planet's gravity) or Periapsis (distance after allowing for planet's gravity, but ignoring the SoI boundary). Defaults to Periapsis. Both types are measured from the center of the target body.</li>
+</ul>
+</li>
+<li><code>warnTime</code>: the time before closest approach, in seconds, at which the asteroid is discovered; does not account for the target planet's gravity. This is one of two parameters that must always be given. Distribution defaults to Uniform if unspecified. Negative values of <code>min</code> or <code>max</code> are allowed and represent discoveries after closest approach.</li>
+<li><code>vSoi</code>: the speed, in meters per second, at which the asteroid enters the planet's sphere of influence. This indirectly controls the asteroid's eccentricity and inclination (higher approach speeds correspond to eccentric, inclined orbits). If omitted, a range of speeds that allows easy capture is used. Distribution defaults to LogNormal if unspecified.</li>
+<li><code>detectable</code>: a set of conditions that need to be met before asteroids appear. This block works exactly as for <code>ASTEROIDGROUP</code>.</li>
+<li><code>asteroidTypes</code>: a list of asteroid parts used to represent asteroids. This block works exactly as for <code>ASTEROIDGROUP</code>.</li>
+</ul>
+<h2><a class="anchor" id="adv_planes"></a>
+CustomAsteroidPlanes                               </h2>
+<p>In Custom Asteroids 1.3 or later, a <code>CustomAsteroidPlanes</code> section contains one or more <code>REFPLANE</code> or <code>REFVECTORS</code> blocks. These blocks define coordinate planes for planetary systems that aren't in KSP's horizontal plane. Mods that create a tilted solar system should define at least one block to represent the plane of the system; if KSP ever allows support for axial tilts, mods that make use of the feature may wish to define planes specific to each planet as well.</p>
+<p>Each <code>REFPLANE</code> block has four parameters, all required:</p><ul>
+<li><code>name</code>: a unique, machine-readable name. Must not contain spaces.</li>
+<li><code>longAscNode</code>: the longitude of the ascending node of the plane, in KSP's default coordinate system. Changing this value rotates the plane around the game's vertical axis.</li>
+<li><code>inclination</code>: the inclination of the plane relative to the game's horizontal plane.</li>
+<li><code>argReference</code>: the angle between the reference direction (which defines zero longitude for individual asteroid orbits) and the plane's ascending node.</li>
+</ul>
+<p><code>longAscNode</code>, <code>inclination</code>, and <code>argReference</code> use the same syntax as the <code>min</code>, <code>max</code>, <code>avg</code>, and <code>stddev</code> fields of asteroid definition blocks, so you can, for example, align a reference plane with the orbital plane of a particular celestial body.</p>
+<p>Each <code>REFVECTORS</code> block has three parameters, all required:</p><ul>
+<li><code>name</code>: as above</li>
+<li><code>normVector</code>: a list of three comma-separated floating-point numbers indicating the normal vector of the desired plane. Any vector other than the zero vector is allowed.</li>
+<li><code>refVector</code>: a vector pointing in the desired reference direction. Must not be the zero vector, and must not be parallel to <code>normVector</code>.</li>
+</ul>
+<p>The <code>CustomAsteroidPlanes</code> section may also have a single freestanding field, <code>defaultRef</code>. This field contains the name of a <code>REFPLANE</code> or <code>REFVECTORS</code> block. If defined, all <code>ASTEROIDGROUP</code> blocks will be oriented relative to <code>defaultRef</code>, unless they override the default using a <code>refPlane</code> field. Note that if multiple <code>CustomAsteroidPlanes</code> sections define a <code>defaultRef</code>, only one will be used. </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Dec 13 2015 14:38:56 for Custom Asteroids by
+    <li class="footer">Generated on Sun Apr 3 2016 16:56:25 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>
