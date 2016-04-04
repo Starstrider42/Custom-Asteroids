@@ -12,7 +12,6 @@ var NAVTREE =
       ] ]
     ] ],
     [ "Custom Asteroids Options", "options.html", null ],
-    [ "Custom Asteroids Test Sequence", "md_src_tests__test__sequence.html", null ],
     [ "Deprecated List", "deprecated.html", null ],
     [ "Packages", null, [
       [ "Packages", "namespaces.html", "namespaces" ]
