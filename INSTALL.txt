@@ -1,0 +1,18 @@
+INSTALLING CUSTOM ASTEROIDS
+
+Copy the contents of this zip's GameData folder to your KSP install's GameData folder, overwriting files if necessary. Your final directory tree should look like
+Kerbal Space Program/
+	GameData/
+		...
+		CustomAsteroids/
+			config/
+			Parts/
+			Resources/
+			...
+		...
+		MM_LICENSE.txt
+		ModuleManager.2.*.*.dll
+
+If you're not planning to install an asteroid pack from elsewhere, copy the contents of this zip's "Standard Setup" folder to the GameData/CustomAsteroids folder in your KSP install. The new files should all go in the existing GameData/CustomAsteroids/config folder.
+
+You're all set!
