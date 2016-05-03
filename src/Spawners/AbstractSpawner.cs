@@ -110,7 +110,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// <returns><c>true</c> if the player has a fully upgraded tracking station, or is playing in a game mode 
 		/// where upgrades are not necessary; <c>false</c> otherwise.</returns>
 		protected static bool areAsteroidsTrackable() {
-			if (GameVariables.Instance == null) {
+			if ((object)GameVariables.Instance == null) {
 				// It probably means the game isn't properly loaded?
 				return false;
 			}
