@@ -76,9 +76,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// @see[Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
 		internal void Start() {
-			#if DEBUG
 			Debug.Log("[CustomAsteroids]: Booting asteroid driver...");
-			#endif
 			driverRoutine = driver();
 			StartCoroutine(driverRoutine);
 		}
@@ -90,9 +88,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// @see [Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
 		internal void OnDestroy() {
 			if (driverRoutine != null) {
-				#if DEBUG
 				Debug.Log("[CustomAsteroids]: Shutting down asteroid driver...");
-				#endif
 				StopCoroutine(driverRoutine);
 			}
 		}
@@ -100,9 +96,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>Controls scheduling of asteroid discovery and loss. Actual asteroid code is 
 		/// delegated to <c>spawner</c>.</summary>
 		private IEnumerator<WaitForSeconds> driver() {
-			#if DEBUG
 			Debug.Log("[CustomAsteroids]: Asteroid driver started.");
-			#endif
 			// Loop will be terminated by StopCoroutine
 			while (true) {
 				float waitSeconds = spawner.asteroidCheck();
