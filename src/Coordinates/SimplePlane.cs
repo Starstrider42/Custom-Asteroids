@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>Standard implementation of <see cref="ReferencePlane"/>.</summary>
@@ -14,13 +15,14 @@ namespace Starstrider42.CustomAsteroids {
 		/// <param name="id">A unique identifier for this object. Initialises the <see cref="name"/> property.</param>
 		/// <param name="thisToDefault">A rotation that transforms vectors from this reference frame 
 		/// to the KSP default reference frame.</param>
-		protected internal SimplePlane(string id, Quaternion thisToDefault) {
+		internal SimplePlane(string id, Quaternion thisToDefault) {
 			this.name = id;
 			this.xform = thisToDefault;
 		}
 
 		public Vector3d toDefaultFrame(Vector3d inFrame) {
-			return xform * inFrame;
+			Quaternion frameCorrection = Planetarium.ZupRotation;
+			return frameCorrection * xform * Quaternion.Inverse(frameCorrection) * inFrame;
 		}
 	}
 }

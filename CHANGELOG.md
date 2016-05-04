@@ -15,6 +15,7 @@ Unreleased
 
 ### Bug Fixes
 
+* `CustomAsteroidPlanes` blocks now work the same in all save games.
 * Asteroids will now spawn if Custom Barn Kit is installed.
 
 Version 1.3.0
