@@ -12,6 +12,7 @@ Unreleased
 
 ### Changes
 
+* Cleaner handling of PotatoRoid resources. Requires ModuleManager 2.6.23 or later.
 
 ### Bug Fixes
 
