@@ -13,6 +13,7 @@ Unreleased
 ### Changes
 
 * Cleaner handling of PotatoRoid resources. Requires ModuleManager 2.6.23 or later.
+* Adjusted resource amounts to make asteroid types more distinct. Completely reworked Substrate and Karborundum resources based on better understanding.
 
 ### Bug Fixes
 
