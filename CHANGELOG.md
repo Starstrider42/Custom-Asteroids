@@ -19,6 +19,7 @@ Unreleased
 
 * `CustomAsteroidPlanes` blocks now work the same in all save games.
 * Asteroids will now spawn if Custom Barn Kit is installed.
+* The `MetalOre` resource is now properly handled.
 
 Version 1.3.0
 ------------
