@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.3.0</span>
+   &#160;<span id="projectnumber">1.3</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -105,6 +105,18 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Custom Asteroids conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. In addition to the actual <a href="http://starstrider42.github.io/Custom-Asteroids/">public API</a>, the <a href="http://starstrider42.github.io/Custom-Asteroids/newbelts.html">format of asteroid population files</a> and the information stored in KSP save files will be considered part of the API for the purpose of versioning.</p>
+<h2>Version 1.3.1 </h2>
+<h3>Changes</h3>
+<ul>
+<li>Cleaner handling of PotatoRoid resources. Requires ModuleManager 2.6.23 or later.</li>
+<li>Adjusted resource amounts to make asteroid types more distinct. Completely reworked Substrate and Karborundum resources based on better understanding.</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li><code>CustomAsteroidPlanes</code> blocks now work the same in all save games.</li>
+<li>Asteroids will now spawn if Custom Barn Kit is installed.</li>
+<li>The <code>MetalOre</code> resource is now properly handled.</li>
+</ul>
 <h2>Version 1.3.0 </h2>
 <h3>New Features</h3>
 <ul>
@@ -200,7 +212,7 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Apr 23 2016 16:30:05 for Custom Asteroids by
+    <li class="footer">Generated on Sat May 7 2016 14:21:56 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>
