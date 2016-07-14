@@ -11,6 +11,10 @@ Unreleased
 
 * Asteroid spawn rates have been roughly halved, so that there should be 10-15 asteroids if running for a long time without tracking.
 
+### Bug Fixes
+
+* EL compatibility patch no longer processes non-asteroid parts
+
 Version 1.3.1
 ------------
 
