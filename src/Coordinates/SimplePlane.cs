@@ -21,7 +21,7 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		public Vector3d toDefaultFrame(Vector3d inFrame) {
-			Quaternion frameCorrection = Planetarium.ZupRotation;
+			Quaternion frameCorrection = Planetarium.Rotation;
 			return frameCorrection * xform * Quaternion.Inverse(frameCorrection) * inFrame;
 		}
 	}
