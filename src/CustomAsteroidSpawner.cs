@@ -53,6 +53,11 @@ namespace Starstrider42.CustomAsteroids {
 		public override sealed void OnAwake() {
 			base.OnAwake();
 
+			// Wait until after KSP is done looping through the scenarios
+			Invoke("disableStock", 0.0f);
+		}
+
+		private void disableStock() {
 			// Stock spawner only needs to be unloaded when first loading the game
 			// It will stay unloaded through future scene changes
 			if (HighLogic.CurrentGame.RemoveProtoScenarioModule(typeof(ScenarioDiscoverableObjects))) {
