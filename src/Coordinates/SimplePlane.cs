@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>Standard implementation of <see cref="ReferencePlane"/>.</summary>
@@ -21,8 +20,8 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		public Vector3d toDefaultFrame(Vector3d inFrame) {
-			Quaternion frameCorrection = Planetarium.Rotation;
-			return frameCorrection * xform * Quaternion.Inverse(frameCorrection) * inFrame;
+			Quaternion frameCorrection = Planetarium.Zup.Rotation;
+			return Quaternion.Inverse(frameCorrection) * xform * frameCorrection * inFrame;
 		}
 	}
 }
