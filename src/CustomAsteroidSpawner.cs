@@ -55,6 +55,7 @@ namespace Starstrider42.CustomAsteroids {
 
 			// Wait until after KSP is done looping through the scenarios
 			Invoke("disableStock", 0.0f);
+			StartCoroutine(freezeAsteroids());
 		}
 
 		private void disableStock() {
@@ -72,6 +73,38 @@ namespace Starstrider42.CustomAsteroids {
 				#if DEBUG
 				Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
 				#endif
+			}
+		}
+
+		/// <summary>
+		/// Prevents ScenarioDiscoverableObjects from creating asteroids during the one tick it is allowed to run.
+		/// </summary>
+		private System.Collections.IEnumerator freezeAsteroids()
+		{
+			// Do not assume FlightGlobals.Vessels has been populated yet
+			var oldAsteroids = new List<string>();
+			var config = HighLogic.CurrentGame.config;
+			if (config != null && config.GetNode("FLIGHTSTATE") != null
+				&& config.GetNode("FLIGHTSTATE").GetNodes() != null) {
+				foreach (var node in config.GetNode("FLIGHTSTATE").GetNodes()) {
+					if (node.name == "VESSEL" && node.GetValue ("type") == VesselType.SpaceObject.ToString()) {
+						oldAsteroids.Add(node.GetValue ("name"));
+					}
+				}
+			}
+
+			// Wait for ScenarioDiscoverableObjects to shut down
+			yield return new WaitForSeconds(0.0f);
+
+			var newAsteroids = new List<Vessel>();
+			foreach (Vessel v in FlightGlobals.Vessels) {
+				if (v.vesselType == VesselType.SpaceObject && !oldAsteroids.Contains(v.vesselName)) {
+					newAsteroids.Add(v);
+				}
+			}
+			foreach (Vessel v in newAsteroids) {
+				Debug.Log ("[CustomAsteroids]: deleting unauthorized asteroid " + v.vesselName);
+				HighLogic.CurrentGame.DestroyVessel(v);
 			}
 		}
 
