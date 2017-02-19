@@ -167,8 +167,8 @@ namespace Starstrider42.CustomAsteroids {
 			double lAn = RandomDist.drawAngle();
 			double aPe = RandomDist.drawAngle();
 
-			Debug.Log("[CustomAsteroids]: new hyperbolic orbit at " + a + " m, e = " + e + ", i = " + i
-				+ ", aPe = " + aPe + ", lAn = " + lAn);
+			Debug.Log("[CustomAsteroids]: new hyperbolic orbit around " + body.bodyName + " at " + a + " m, e = " + e
+			          + ", i = " + i + ", aPe = " + aPe + ", lAn = " + lAn);
 			
 			return new Orbit(i, e, a, lAn, aPe, 0.0, utPeri, body);
 		}
@@ -221,15 +221,16 @@ namespace Starstrider42.CustomAsteroids {
 		/// <param name="orbit">The orbit to test</param>
 		private static bool needsSoITransition(Orbit orbit) {
 			double now = Planetarium.GetUniversalTime();
+			double soi = orbit.referenceBody.sphereOfInfluence;
 
 			if (orbit.eccentricity >= 1.0) {
-				return orbit.getRelativePositionAtUT(now).magnitude > orbit.referenceBody.sphereOfInfluence;
+				return orbit.getRelativePositionAtUT(now).magnitude > soi;
 			} else {
 				// If an elliptical orbit leaves the SoI, then getRelativePositionAtUT gives misleading results 
 				// after the SoI transition.
-				return (orbit.ApR > orbit.referenceBody.sphereOfInfluence)
-				&& ((Math.Abs(now - orbit.epoch) > 0.5 * orbit.period)
-				|| (orbit.getRelativePositionAtUT(now).magnitude > orbit.referenceBody.sphereOfInfluence));
+				return (orbit.ApR > soi)
+					&& ((Math.Abs (now - orbit.epoch) > 0.5 * orbit.period)
+						|| (orbit.getRelativePositionAtUT(now).magnitude > soi));
 			}
 		}
 
@@ -257,7 +258,7 @@ namespace Starstrider42.CustomAsteroids {
 
 			double innerUT = hyperbolic.epoch - hyperbolic.ObTAtEpoch;
 			double outerUT = innerUT;
-			double pseudoPeriod = hyperbolic.period;
+			double pseudoPeriod = -2.0 * Math.PI / hyperbolic.GetMeanMotion(hyperbolic.semiMajorAxis);
 
 			if (innerUT > Planetarium.GetUniversalTime()) {
 				// Search for SoI entry
