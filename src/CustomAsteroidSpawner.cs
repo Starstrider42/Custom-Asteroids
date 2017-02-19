@@ -15,12 +15,6 @@ namespace Starstrider42.CustomAsteroids {
 	[System.Obsolete("Spawner should no longer be a ScenarioModule; "
 		+ "this class will be replaced with a dedicated management class in 2.0.0.")]
 	public class CustomAsteroidSpawner : ScenarioModule {
-		/// <summary>Handles game-wide asteroid initialization.</summary>
-		static CustomAsteroidSpawner() {
-			// Ensure each game has different asteroids
-			Random.seed = System.Guid.NewGuid().GetHashCode();
-		}
-
 		/// <summary>Handles asteroid spawning behaviour.</summary>
 		private readonly AbstractSpawner spawner;
 
