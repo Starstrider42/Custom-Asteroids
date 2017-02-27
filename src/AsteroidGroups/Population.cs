@@ -77,104 +77,109 @@ namespace Starstrider42.CustomAsteroids {
 			}
 			#endif
 
+			// Would like to only calculate this once, but I don't know for sure that this object will
+			// be initialized after FlightGlobals
+			CelestialBody orbitee = AsteroidManager.getPlanetByName(centralBody);
+
+			Debug.Log($"[CustomAsteroids]: drawing orbit from {name}");
+
+			// Properties with only one reasonable parametrization
+			double e = wrappedDraw(eccentricity, name, "eccentricity");
+			if (e < 0.0) {
+				throw new InvalidOperationException(
+					$"Asteroids in group '{name}' cannot have negative eccentricity (generated {e})");
+			}
+			// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
+			// So it's ok to just have positive inclinations
+			double i = wrappedDraw(inclination, name, "inclination");
+			double lAn = wrappedDraw(ascNode, name, "ascNode");
+
+			// Position of periapsis
+			double aPe;
+			double peri= wrappedDraw(periapsis, name, "periapsis");
+			switch (periapsis.getParam()) {
+			case PeriRange.Type.Argument:
+				aPe = peri;
+				break;
+			case PeriRange.Type.Longitude:
+				aPe = peri - lAn;
+				break;
+			default:
+				throw new InvalidOperationException(
+					$"Asteroids in group '{name}' cannot describe periapsis position using {periapsis.getParam()}");
+			}
+
+			// Semimajor axis
+			double a;
+			double size = wrappedDraw(orbitSize, name, "orbitSize");
+			switch (orbitSize.getParam()) {
+			case SizeRange.Type.SemimajorAxis:
+				a = size;
+				break;
+			case SizeRange.Type.Periapsis:
+				a = size / (1.0 - e);
+				break;
+			case SizeRange.Type.Apoapsis:
+				if (e > 1.0) {
+					throw new InvalidOperationException(
+						$"Asteroids in group '{name}' cannot constrain apoapsis on unbound orbits (eccentricity {e})");
+				}
+				a = size / (1.0 + e);
+				break;
+			default:
+				throw new InvalidOperationException(
+					$"Asteroids in group '{name}' cannot describe orbit size using {orbitSize.getParam()}");
+			}
+
+			// Mean anomaly at given epoch
+			double mEp, epoch;
+			double phase = wrappedDraw(orbitPhase, name, "orbitPhase");
+			switch (orbitPhase.getParam()) {
+			case PhaseRange.PhaseType.MeanAnomaly:
+				// Mean anomaly is the ONLY orbital angle that needs to be given in radians
+				mEp = Math.PI / 180.0 * phase;
+				break;
+			case PhaseRange.PhaseType.MeanLongitude:
+				mEp = Math.PI / 180.0 * longToAnomaly(phase, i, aPe, lAn);
+				break;
+			default:
+				throw new InvalidOperationException(
+					$"Asteroids in group '{name}' cannot describe orbit position using type {orbitSize.getParam()}");
+			}
+			switch (orbitPhase.getEpoch()) {
+			case PhaseRange.EpochType.GameStart:
+				epoch = 0.0;
+				break;
+			case PhaseRange.EpochType.Now:
+				epoch = Planetarium.GetUniversalTime();
+				break;
+			default:
+				throw new InvalidOperationException(
+					$"Asteroids in group '{name}' cannot describe orbit position using type {orbitSize.getParam()}");
+			}
+
+			// Fix accidentally hyperbolic orbits
+			if (a * (1.0 - e) < 0.0) {
+				a = -a;
+			}
+
+			Debug.Log($"[CustomAsteroids]: new orbit at {a} m, e = {e}, i = {i}, "
+			          + $"aPe = {aPe}, lAn = {lAn}, mEp = {mEp} at epoch {epoch}");
+
+			// Does Orbit(...) throw exceptions?
+			Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, epoch, orbitee);
+			frameTransform(newOrbit);
+			newOrbit.UpdateFromUT(Planetarium.GetUniversalTime());
+
+			return newOrbit;
+		}
+
+		private double wrappedDraw(ValueRange property, string group, string propertyName) {
 			try {
-				// Would like to only calculate this once, but I don't know for sure that this object will 
-				//		be initialized after FlightGlobals
-				CelestialBody orbitee = AsteroidManager.getPlanetByName(centralBody);
-
-				Debug.Log("[CustomAsteroids]: drawing orbit from " + name);
-
-				// Properties with only one reasonable parametrization
-				double e = eccentricity.draw();
-				if (e < 0.0) {
-					throw new InvalidOperationException("[CustomAsteroids]: cannot have negative eccentricity (generated "
-						+ e + ")");
-				}
-				// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
-				// So it's ok to just have positive inclinations
-				double i = inclination.draw();
-				double lAn = ascNode.draw();		// longitude of ascending node
-
-				// Position of periapsis
-				double aPe;
-				double peri = periapsis.draw();		// argument of periapsis
-				switch (periapsis.getParam()) {
-				case PeriRange.Type.Argument:
-					aPe = peri;
-					break;
-				case PeriRange.Type.Longitude:
-					aPe = peri - lAn;
-					break;
-				default:
-					throw new InvalidOperationException("[CustomAsteroids]: cannot describe periapsis position using type "
-						+ periapsis.getParam());
-				}
-
-				// Semimajor axis
-				double a;
-				double size = orbitSize.draw();
-				switch (orbitSize.getParam()) {
-				case SizeRange.Type.SemimajorAxis:
-					a = size;
-					break;
-				case SizeRange.Type.Periapsis:
-					a = size / (1.0 - e);
-					break;
-				case SizeRange.Type.Apoapsis:
-					if (e > 1.0) {
-						throw new InvalidOperationException("[CustomAsteroids]: cannot constrain apoapsis on "
-							+ "unbound orbits (eccentricity " + e + ")");
-					}
-					a = size / (1.0 + e);
-					break;
-				default:
-					throw new InvalidOperationException("[CustomAsteroids]: cannot describe orbit size using type "
-						+ orbitSize.getParam());
-				}
-
-				// Mean anomaly at given epoch
-				double mEp, epoch;
-				double phase = orbitPhase.draw();
-				switch (orbitPhase.getParam()) {
-				case PhaseRange.PhaseType.MeanAnomaly:
-					// Mean anomaly is the ONLY orbital angle that needs to be given in radians
-					mEp = Math.PI / 180.0 * phase;
-					break;
-				case PhaseRange.PhaseType.MeanLongitude:
-					mEp = Math.PI / 180.0 * longToAnomaly(phase, i, aPe, lAn);
-					break;
-				default:
-					throw new InvalidOperationException("[CustomAsteroids]: cannot describe orbit position using type "
-						+ orbitSize.getParam());
-				}
-				switch (orbitPhase.getEpoch()) {
-				case PhaseRange.EpochType.GameStart:
-					epoch = 0.0;
-					break;
-				case PhaseRange.EpochType.Now:
-					epoch = Planetarium.GetUniversalTime();
-					break;
-				default:
-					throw new InvalidOperationException("[CustomAsteroids]: cannot describe orbit position using type "
-						+ orbitSize.getParam());
-				}
-
-				// Fix accidentally hyperbolic orbits
-				if (a * (1.0 - e) < 0.0) {
-					a = -a;
-				}
-
-				Debug.Log("[CustomAsteroids]: new orbit at " + a + " m, e = " + e + ", i = " + i
-					+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp + " at epoch " + epoch);
-
-				// Does Orbit(...) throw exceptions?
-				Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, epoch, orbitee);
-				frameTransform(newOrbit);
-				newOrbit.UpdateFromUT(Planetarium.GetUniversalTime());
-
-				return newOrbit;
+				return property.draw();
 			} catch (ArgumentException e) {
-				throw new InvalidOperationException("[CustomAsteroids]: could not create orbit", e);
+				throw new InvalidOperationException (
+					$"Could not set orbital element '{propertyName}' for group '{group}'.", e);
 			}
 		}
 
@@ -182,9 +187,8 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return AsteroidManager.drawAsteroidType(classRatios);
 			} catch (InvalidOperationException e) {
-				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
+				Util.errorToPlayer(e, $"Could not select asteroid class for group '{name}'.");
 				Debug.LogException(e);
-
 				return "PotatoRoid";
 			}
 		}
@@ -260,7 +264,7 @@ namespace Starstrider42.CustomAsteroids {
 				Vector3d v = orbit.getOrbitalVelocityAtUT(ut);
 
 				#if DEBUG
-				Debug.Log("Transforming orbit from frame " + plane);
+				Debug.Log($"Transforming orbit from frame {plane}");
 				#endif
 
 				Vector3d xNew = plane.toDefaultFrame(x);
@@ -268,7 +272,7 @@ namespace Starstrider42.CustomAsteroids {
 
 				orbit.UpdateFromStateVectors(xNew, vNew, orbit.referenceBody, ut);
 			} else if (refPlane != null) {
-				throw new InvalidOperationException("No such reference frame: " + refPlane);
+				throw new InvalidOperationException($"No such reference frame: {refPlane}");
 			}
 		}
 	}

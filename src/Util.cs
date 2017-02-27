@@ -20,6 +20,21 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
+		/// Prints an exception visible to the player. Does not throw exceptions.
+		/// </summary>
+		/// <param name="e">The exception to report.</param>
+		/// <param name="summary">Top-level description of the problem, to be given before any exception messages.</param>
+		public static void errorToPlayer(Exception e, string summary) {
+			if (e.InnerException != null) {
+				errorToPlayer(summary + " Cause: \"{0}\"\nRoot Cause: \"{1}\".",
+					e.Message, e.GetBaseException().Message);
+			} else {
+				errorToPlayer(summary + " Cause: \"{0}\".",
+					e.Message);
+			}
+		}
+
+		/// <summary>
 		/// Computes the factorial of <c>n</c>.
 		/// </summary>
 		/// <returns><c>n!</c></returns>
@@ -30,7 +45,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// unchanged in the event of an exception.</exception>
 		internal static double factorial(int n) {
 			if (n < 0) {
-				throw new ArgumentException("Negative numbers do not have factorials (gave " + n + ")", "n");
+				throw new ArgumentException($"Negative numbers do not have factorials (gave {n})", "n");
 			} else if (n == 0) {
 				return 1;
 			} else {
@@ -49,7 +64,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// unchanged in the event of an exception.</exception>
 		internal static double doubleFactorial(int n) {
 			if (n < 0) {
-				throw new ArgumentException("Negative numbers do not have double factorials (gave " + n + ")", "n");
+				throw new ArgumentException($"Negative numbers do not have double factorials (gave {n})", "n");
 			} else if (n <= 1) {	// Cover both base cases at once
 				return 1;
 			} else {

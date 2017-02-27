@@ -7,7 +7,7 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent(name = "name")] private readonly string id;
 		/// <summary>The longitude of ascending node of the reference plane relative to KSP's default plane.</summary>
 		[Persistent(name = "longAscNode")] private readonly string rawLongAscNode;
-		/// <summary>The inclination of the reference plane relative to KSP's default plane.</summaname
+		/// <summary>The inclination of the reference plane relative to KSP's default plane.</summary>
 		[Persistent(name = "inclination")] private readonly string rawInclination;
 		/// <summary>The angle between the plane's ascending node and the reference direction.</summary>
 		[Persistent(name = "argReference")] private readonly string rawArgReference;
@@ -27,7 +27,7 @@ namespace Starstrider42.CustomAsteroids {
 			if (impl != null) {
 				return impl.toDefaultFrame(inFrame);
 			} else {
-				throw new InvalidOperationException("RefAsOrbit has not been initialized properly.");
+				throw new InvalidOperationException($"RefAsOrbit {name} has not been initialized properly.");
 			}
 		}
 

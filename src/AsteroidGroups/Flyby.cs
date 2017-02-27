@@ -93,41 +93,41 @@ namespace Starstrider42.CustomAsteroids {
 
 			Debug.Log("[CustomAsteroids]: drawing orbit from " + name);
 
-			double deltaV = vSoi.draw();
-			double deltaT = warnTime.draw();
+			double deltaV = wrappedDraw(vSoi, name, "vSoi");
+			double deltaT = wrappedDraw(warnTime, name, "warnTime");
 
 			if (deltaV <= 0.0) {
-				throw new InvalidOperationException("[CustomAsteroids]: must have positive SOI entry speed (generated "
-					+ deltaV + ")");
+				throw new InvalidOperationException(
+					$"Asteroids in group '{name}' must have positive SOI entry speed (generated {deltaV})");
 			}
 			// Negative deltaT is allowed
 
 			double peri;
 			switch (approach.getParam()) {
-			case ApproachRange.Type.ImpactParameter: 
-				double b = approach.draw();
+			case ApproachRange.Type.ImpactParameter:
+				double b = wrappedDraw(approach, name, "approach");
 				if (b < 0.0) {
-					throw new InvalidOperationException("[CustomAsteroids]: cannot have negative impact parameter (generated "
-						+ b + ")");
+					throw new InvalidOperationException(
+						$"Asteroids in group '{name}' cannot have negative impact parameters (generated {b})");
 				}
 				double a = -body.gravParameter / (deltaV * deltaV);
 				double x = b / a;
 				peri = a * (1.0 - Math.Sqrt(x * x + 1.0));
 				break;
-			case ApproachRange.Type.Periapsis: 
-				peri = approach.draw();
+			case ApproachRange.Type.Periapsis:
+				peri = wrappedDraw (approach, name, "approach");
 				if (peri < 0.0) {
-					throw new InvalidOperationException("[CustomAsteroids]: cannot have negative periapsis (generated "
-						+ peri + ")");
+					throw new InvalidOperationException(
+						$"Asteroids in group '{name}' cannot have negative periapses (generated {peri})");
 				}
 				break;
 			default:
-				throw new InvalidOperationException("[CustomAsteroids]: cannot describe approach distance using type "
-					+ approach.getParam());
+				throw new InvalidOperationException(
+					$"Asteroids in group '{name}' cannot describe approach distance using type {approach.getParam()}");
 			}
 			#if DEBUG
-			Debug.Log(String.Format("Asteroid will pass {0} m from {1} in {2} Kerbin days. V_infinity = {3} m/s.", 
-					peri, targetBody, deltaT / (6.0 * 3600.0), deltaV));
+			Debug.Log($"[CustomAsteroids]: Asteroid will pass {peri} m from {targetBody} in {deltaT / (6.0 * 3600.0)} Kerbin days. "
+			          + $"V_infinity = {deltaV} m/s.");
 			#endif
 
 			Orbit newOrbit = createHyperbolicOrbit(body, peri, deltaV, Planetarium.GetUniversalTime() + deltaT);
@@ -138,6 +138,16 @@ namespace Starstrider42.CustomAsteroids {
 			}
 			newOrbit.UpdateFromUT(Planetarium.GetUniversalTime());
 			return newOrbit;
+		}
+
+		private double wrappedDraw(ValueRange property, string group, string propertyName)
+		{
+			try {
+				return property.draw ();
+			} catch (ArgumentException e) {
+				throw new InvalidOperationException (
+					$"Could not set orbit property '{propertyName}' for group '{group}'.", e);
+			}
 		}
 
 		/// <summary>
@@ -153,10 +163,10 @@ namespace Starstrider42.CustomAsteroids {
 		/// of bounds.</exception>
 		private static Orbit createHyperbolicOrbit(CelestialBody body, double periapsis, double vInf, double utPeri) {
 			if (vInf <= 0.0) {
-				throw new ArgumentException("Hyperbolic orbits must have positive excess speed, gave " + vInf, "vInf");
+				throw new ArgumentException($"Hyperbolic orbits must have positive excess speed, gave {vInf} vInf");
 			}
 			if (periapsis < 0.0) {
-				throw new ArgumentException("Orbits cannot have a negative periapsis, gave " + periapsis, "periapsis");
+				throw new ArgumentException($"Orbits cannot have a negative periapsis, gave {periapsis} periapsis");
 			}
 
 			double a = -body.gravParameter / (vInf * vInf);
@@ -167,8 +177,8 @@ namespace Starstrider42.CustomAsteroids {
 			double lAn = RandomDist.drawAngle();
 			double aPe = RandomDist.drawAngle();
 
-			Debug.Log("[CustomAsteroids]: new hyperbolic orbit around " + body.bodyName + " at " + a + " m, e = " + e
-			          + ", i = " + i + ", aPe = " + aPe + ", lAn = " + lAn);
+			Debug.Log($"[CustomAsteroids]: new hyperbolic orbit around {body.bodyName} at {a} m, "
+			          + $"e = {e}, i = {i}, aPe = {aPe}, lAn = {lAn}");
 			
 			return new Orbit(i, e, a, lAn, aPe, 0.0, utPeri, body);
 		}
@@ -190,17 +200,19 @@ namespace Starstrider42.CustomAsteroids {
 		/// inside its parent body's sphere of influence at the current time.</exception>
 		private static Orbit patchToParent(Orbit oldOrbit) {
 			if (!needsSoITransition(oldOrbit)) {
-				throw new InvalidOperationException("Orbit is in the correct SoI; no patching needed.");
+				throw new InvalidOperationException(
+					$"Orbit is in the correct SoI ({oldOrbit.referenceBody}); no patching needed.");
 			}
 			if (oldOrbit.referenceBody.GetOrbitDriver() == null) {
-				throw new ArgumentException("Object does not orbit a body with a parent.", "oldOrbit");
+				throw new ArgumentException(
+					$"Object does not orbit a body with a parent, but {oldOrbit.referenceBody}.", "oldOrbit");
 			}
 			CelestialBody oldParent = oldOrbit.referenceBody;
 			CelestialBody newParent = oldParent.orbit.referenceBody;
 
 			double utSoi = getSoiCrossing(oldOrbit);
 			#if DEBUG
-			Debug.Log("Patching SoI transition from " + oldParent + " to " + newParent + "at UT " + utSoi);
+			Debug.Log($"Patching SoI transition from {oldParent} to {newParent} at UT {utSoi}");
 			#endif
 			// Need position/velocity relative to newParent, not oldParent or absolute
 			Vector3d xNewParent = oldOrbit.getRelativePositionAtUT(utSoi)
@@ -249,11 +261,11 @@ namespace Starstrider42.CustomAsteroids {
 
 			double soi = hyperbolic.referenceBody.sphereOfInfluence;
 			if (Double.IsInfinity(soi) || Double.IsNaN(soi)) {
-				throw new ArgumentException("Body " + hyperbolic.referenceBody + " does not have a sphere of influence. ", 
+				throw new ArgumentException($"Body {hyperbolic.referenceBody} does not have a sphere of influence.",
 					"hyperbolic");
 			}
 			if (hyperbolic.eccentricity < 1.0 && hyperbolic.ApR > soi) {
-				throw new ArgumentException("Orbit does not leave SoI.", "hyperbolic");
+				throw new ArgumentException($"Orbit {hyperbolic} does not leave SoI.", "hyperbolic");
 			}
 
 			double innerUT = hyperbolic.epoch - hyperbolic.ObTAtEpoch;
@@ -291,9 +303,8 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return AsteroidManager.drawAsteroidType(classRatios);
 			} catch (InvalidOperationException e) {
-				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
+				Util.errorToPlayer(e, $"Could not select asteroid class for {name}.");
 				Debug.LogException(e);
-
 				return "PotatoRoid";
 			}
 		}

@@ -103,20 +103,18 @@ namespace Starstrider42.CustomAsteroids {
 			if (parsed[0].Success) {
 				int m, n;
 				if (!Int32.TryParse(parsed["m"].ToString(), out m)) {
-					throw new ArgumentException("Cannot parse '" + parsed["m"] + "' as an integer");
+					throw new ArgumentException($"In {rawValue}, cannot parse '{parsed["m"]}' as an integer");
 				}
 				if (!Int32.TryParse(parsed["n"].ToString(), out n)) {
-					throw new ArgumentException("Cannot parse '" + parsed["n"] + "' as an integer");
+					throw new ArgumentException($"In {rawValue}, cannot parse '{parsed["n"]}' as an integer");
 				}
 				if (m <= 0 || n <= 0) {
-					throw new ArgumentException("Mean-motion resonance must have positive integers (gave "
-						+ m + ":" + n + ")");
+					throw new ArgumentException(
+						$"Mean-motion resonance must have positive integers (gave {m}:{n} in {rawValue})");
 				}
 
 				return getPlanetProperty(parsed["planet"].ToString(), "sma")
-				* Math.Pow((double) n / (double) m, 2.0 / 3.0);
-
-				// Try the remaining options
+					* Math.Pow((double) n / (double) m, 2.0 / 3.0);
 			}
 
 			return parseOrbitalElement(rawValue);

@@ -133,13 +133,7 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return spawnAsteroid(AsteroidManager.drawAsteroidSet());
 			} catch (Exception e) {
-				if (e.InnerException != null) {
-					Util.errorToPlayer("Could not create new asteroid. Cause: \"{0}\"\nRoot Cause: \"{1}\".", 
-						e.Message, e.GetBaseException().Message);
-				} else {
-					Util.errorToPlayer("Could not create new asteroid. Cause: \"{0}\".", 
-						e.Message);
-				}
+				Util.errorToPlayer(e, "Could not create new asteroid.");
 				Debug.LogException(e);
 				return null;
 			}
@@ -165,7 +159,7 @@ namespace Starstrider42.CustomAsteroids {
 			ConfigNode[] partList = makeAsteroidParts(group);
 
 			// Stock spawner reports its module name, so do the same for custom spawns
-			Debug.Log(string.Format("[{0}]: New object found: {1} in asteroid set {2}.", GetType().Name, name, group));
+			Debug.Log($"[{GetType().Name}]: New object found: {name} in asteroid set {group}.");
 
 			ConfigNode vessel = ProtoVessel.CreateVesselNode(name, VesselType.SpaceObject, orbit, 
 				                    0, partList, new ConfigNode("ACTIONGROUPS"), trackingInfo);
@@ -260,7 +254,7 @@ namespace Starstrider42.CustomAsteroids {
 				return new[] { potato };
 			} catch (Exception e) {
 				// Really? That's what CreatePartNode throws?
-				throw new InvalidOperationException("No such Part: " + part, e);
+				throw new InvalidOperationException($"No such Part: {part}", e);
 			}
 		}
 	}

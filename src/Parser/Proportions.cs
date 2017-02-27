@@ -57,12 +57,12 @@ namespace Starstrider42.CustomAsteroids {
 				GroupCollection parsed = inputTemplate.Match(input).Groups;
 				double rate;
 				if (!Double.TryParse(parsed["rate"].ToString(), out rate)) {
-					throw new ArgumentException("Cannot parse '" + parsed["rate"] + "' as a floating point number");
+					throw new ArgumentException($"In conditions, cannot parse '{parsed["rate"]}' as a floating point number");
 				}
 
 				return new Pair<string, double>(parsed["id"].ToString(), rate);
 			} else {
-				throw new ArgumentException("Cannot parse '" + input + "' as a number and name");
+				throw new ArgumentException($"In conditions, cannot parse '{input}' as a number and name");
 			}
 		}
 
