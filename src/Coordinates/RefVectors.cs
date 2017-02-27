@@ -24,7 +24,7 @@ namespace Starstrider42.CustomAsteroids {
 			if (impl != null) {
 				return impl.toDefaultFrame(inFrame);
 			} else {
-				throw new InvalidOperationException("RefVectors has not been initialized properly.");
+				throw new InvalidOperationException($"RefVectors {name} has not been initialized properly.");
 			}
 		}
 
@@ -49,13 +49,13 @@ namespace Starstrider42.CustomAsteroids {
 		public void PersistenceLoad() {
 			try {
 				if (normVector.magnitude < 1e-8) {
-					throw new InvalidOperationException("The normal to a plane cannot be zero.");
+					throw new InvalidOperationException($"The normal to a plane in {name} cannot be zero.");
 				}
 
 				// Only the component in the plane is useful
 				Vector3d trueReference = refVector - Vector3d.Project(refVector, normVector);
 				if (trueReference.magnitude < 1e-8) {
-					throw new InvalidOperationException("The reference vector cannot be parallel to the normal.");
+					throw new InvalidOperationException($"The reference vector in {name} cannot be parallel to the normal.");
 				}
 
 				Quaternion q = Quaternion.FromToRotation(Planetarium.up.xzy, normVector);

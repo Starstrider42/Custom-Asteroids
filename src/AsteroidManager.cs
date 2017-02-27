@@ -99,7 +99,7 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return RandomDist.weightedSample(typeRatios.asPairList());
 			} catch (ArgumentException e) {
-				throw new InvalidOperationException("Could not draw asteroid type", e);
+				throw new InvalidOperationException("Could not draw asteroid type.", e);
 			}
 		}
 
@@ -117,8 +117,7 @@ namespace Starstrider42.CustomAsteroids {
 			//		be initialized after FlightGlobals
 			CelestialBody theBody = FlightGlobals.Bodies.Find(body => body.name == name);
 			if (theBody == null) {
-				throw new ArgumentException("[CustomAsteroids]: could not find celestial body named " + name, 
-					"name");
+				throw new ArgumentException($"Could not find celestial body named {name}", "name");
 			}
 			return theBody;
 		}

@@ -66,16 +66,9 @@ namespace Starstrider42.CustomAsteroids {
 							}
 						} catch (Exception e) {
 							var nodeName = curNode.GetValue("name");
-							Debug.LogError("[CustomAsteroids]: failed to load population '"
-								+ nodeName + "'");
+							Debug.LogError($"[CustomAsteroids]: failed to load population '{nodeName}'");
 							Debug.LogException(e);
-							if (e.InnerException != null) {
-								Util.errorToPlayer("Could not load asteroid group \"{0}\". Cause: \"{1}\"\nRoot Cause: \"{2}\".", 
-									nodeName, e.Message, e.GetBaseException().Message);
-							} else {
-								Util.errorToPlayer("Could not load asteroid group \"{0}\". Cause: \"{1}\".", 
-									nodeName, e.Message);
-							}
+							Util.errorToPlayer(e, $"Could not load asteroid group \"{nodeName}\".");
 						}	// Attempt to parse remaining populations
 					}
 				}
@@ -117,7 +110,7 @@ namespace Starstrider42.CustomAsteroids {
 				}
 				return RandomDist.weightedSample(bins);
 			} catch (ArgumentException e) {
-				throw new InvalidOperationException("[CustomAsteroids]: could not draw population", e);
+				throw new InvalidOperationException("Could not select population", e);
 			}
 		}
 
@@ -184,9 +177,8 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return AsteroidManager.drawAsteroidType(classRatios);
 			} catch (InvalidOperationException e) {
-				Debug.LogWarning("[CustomAsteroids]: Could not select asteroid class; reverting to default.");
+				Util.errorToPlayer(e, $"Could not select asteroid class for {name}.");
 				Debug.LogException(e);
-
 				return "PotatoRoid";
 			}
 		}

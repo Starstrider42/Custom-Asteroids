@@ -61,28 +61,21 @@ namespace Starstrider42.CustomAsteroids {
 							}
 						} catch (Exception e) {
 							var nodeName = curNode.GetValue("name");
-							Debug.LogError("[CustomAsteroids]: failed to load reference plane '"
-								+ nodeName + "'");
+							Debug.LogError($"[CustomAsteroids]: failed to load reference plane '{nodeName}'.");
 							Debug.LogException(e);
-							if (e.InnerException != null) {
-								Util.errorToPlayer("Could not load asteroid group \"{0}\". Cause: \"{1}\"\nRoot Cause: \"{2}\".", 
-									nodeName, e.Message, e.GetBaseException().Message);
-							} else {
-								Util.errorToPlayer("Could not load asteroid group \"{0}\". Cause: \"{1}\".", 
-									nodeName, e.Message);
-							}
+							Util.errorToPlayer (e, $"Could not load reference plane \"{nodeName}\".");
 						}	// Attempt to parse remaining populations
 					}
 				}
 
 				#if DEBUG
 				foreach (ReferencePlane x in allRefs.refs) {
-					Debug.Log("[CustomAsteroids]: reference plane '" + x + "' loaded");
+					Debug.Log($"[CustomAsteroids]: reference plane '{x}' loaded");
 				}
 				#endif
 
 				if (allRefs.defaultRef != null && allRefs.getReferenceSet() == null) {
-					Debug.LogError("[CustomAsteroids]: no such reference plane '" + allRefs.defaultRef + "'");
+					Debug.LogError($"[CustomAsteroids]: no such reference plane '{allRefs.defaultRef}'");
 					Util.errorToPlayer("Could not find reference plane \"{0}\".", allRefs.defaultRef);
 					allRefs.defaultRef = null;
 				}

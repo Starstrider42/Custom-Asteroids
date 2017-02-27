@@ -26,7 +26,8 @@ namespace Starstrider42.CustomAsteroids {
 		internal CustomAsteroidSpawner() {
 			this.driverRoutine = null;
 
-			switch (AsteroidManager.getOptions().getSpawner()) {
+			var spawnerType = AsteroidManager.getOptions().getSpawner();
+			switch (spawnerType) {
 			case SpawnerType.FixedRate:
 				this.spawner = new FixedRateSpawner();
 				break;
@@ -34,8 +35,7 @@ namespace Starstrider42.CustomAsteroids {
 				this.spawner = new StockalikeSpawner();
 				break;
 			default:
-				throw new System.InvalidOperationException("Unknown spawner type: "
-					+ AsteroidManager.getOptions().getSpawner());
+				throw new System.InvalidOperationException($"Unknown spawner type: {spawnerType}");
 			}
 		}
 

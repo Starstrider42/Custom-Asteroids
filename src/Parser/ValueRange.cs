@@ -87,8 +87,9 @@ namespace Starstrider42.CustomAsteroids {
 		/// </summary>
 		/// <returns>The desired random variate. The distribution depends on this object's internal data.</returns>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if the parameters are inappropriate 
-		/// 	for the distribution, or if the distribution is invalid.</exception>
+		/// <exception cref="System.ArgumentException">Thrown if the parameters are inappropriate
+		/// 	for the distribution.</exception>
+		/// <exception cref="System.InvalidOperationException">Thrown if the distribution is invalid.</exception>
 		internal double draw() {
 			switch (dist) {
 			case Distribution.Uniform: 
@@ -100,12 +101,11 @@ namespace Starstrider42.CustomAsteroids {
 				return RandomDist.drawNormal(avg, stdDev);
 			case Distribution.LogNormal:
 				if (avg <= 0.0) {
-					throw new InvalidOperationException("Lognormal distribution must have positive mean (gave "
-						+ avg + ").");
+					throw new ArgumentException($"Lognormal distribution must have positive mean (gave {avg}).");
 				}
 				if (stdDev <= 0.0) {
-					throw new InvalidOperationException("Lognormal distribution must have positive standard deviation "
-						+ "(gave " + stdDev + ").");
+					throw new ArgumentException(
+						$"Lognormal distribution must have positive standard deviation (gave {stdDev}).");
 				}
 				double quad = Math.Sqrt(avg * avg + stdDev * stdDev);
 				double mu = Math.Log(avg * avg / quad);
@@ -117,12 +117,11 @@ namespace Starstrider42.CustomAsteroids {
 				return RandomDist.drawExponential(avg);
 			case Distribution.Gamma:
 				if (avg <= 0.0) {
-					throw new InvalidOperationException("Gamma distribution must have positive mean (gave "
-						+ avg + ").");
+					throw new ArgumentException($"Gamma distribution must have positive mean (gave {avg}).");
 				}
 				if (stdDev <= 0.0) {
-					throw new InvalidOperationException("Gamma distribution must have positive standard deviation "
-						+ "(gave " + stdDev + ").");
+					throw new ArgumentException(
+						$"Gamma distribution must have positive standard deviation (gave {stdDev}).");
 				}
 				double k = (avg / stdDev);
 				k = k * k;
@@ -130,13 +129,12 @@ namespace Starstrider42.CustomAsteroids {
 				return RandomDist.drawGamma(k, theta);
 			case Distribution.Beta:
 				if (avg <= min || avg >= max) {
-					throw new InvalidOperationException(
-						String.Format("Beta distribution must have mean between min and max (gave {0} < {1} < {2}).", 
-							min, avg, max));
+					throw new ArgumentException(
+						$"Beta distribution must have mean between min and max (gave {min} < {avg} < {max}).");
 				}
 				if (stdDev <= 0.0) {
-					throw new InvalidOperationException("Beta distribution must have positive standard deviation "
-						+ "(gave " + stdDev + ").");
+					throw new ArgumentException(
+						$"Beta distribution must have positive standard deviation (gave {stdDev}).");
 				}
 				double scaledMean = (avg - min) / (max - min);
 				double scaledStdDev = stdDev / (max - min);
@@ -148,7 +146,7 @@ namespace Starstrider42.CustomAsteroids {
 			case Distribution.Isotropic: 
 				return RandomDist.drawIsotropic();
 			default: 
-				throw new InvalidOperationException("Invalid distribution specified, code " + dist);
+				throw new InvalidOperationException($"Invalid distribution specified: {dist}.");
 			}
 		}
 
@@ -215,18 +213,20 @@ namespace Starstrider42.CustomAsteroids {
 				GroupCollection parsed = ratioDecl.Match(rawValue).Groups;
 				double ratio;
 				if (!Double.TryParse(parsed["ratio"].ToString(), out ratio)) {
-					throw new ArgumentException("Cannot parse '" + parsed["ratio"] + "' as a floating point number");
+					throw new ArgumentException(
+						$"In {rawValue}, cannot parse '{parsed["ratio"]}' as a floating point number");
 				}
 				retVal = getPlanetProperty(parsed["planet"].ToString(), parsed["prop"].ToString()) * ratio;
 			} else if (sumDecl.Match(rawValue).Groups[0].Success) {
 				GroupCollection parsed = sumDecl.Match(rawValue).Groups;
 				double delta;
 				if (!Double.TryParse(parsed["incr"].ToString(), out delta)) {
-					throw new ArgumentException("Cannot parse '" + parsed["incr"] + "' as a floating point number");
+					throw new ArgumentException(
+						$"In {rawValue}, cannot parse '{parsed["incr"]}' as a floating point number");
 				}
 				retVal = getPlanetProperty(parsed["planet"].ToString(), parsed["prop"].ToString()) + delta;
 			} else if (!Double.TryParse(rawValue, out retVal)) {
-				throw new ArgumentException("Cannot parse '" + rawValue + "' as a floating point number", "rawValue");
+				throw new ArgumentException($"Cannot parse '{rawValue}' as a floating point number", "rawValue");
 			}
 			return retVal;
 		}
@@ -261,15 +261,13 @@ namespace Starstrider42.CustomAsteroids {
 				if (body.solarRotationPeriod) {
 					return body.solarDayLength;
 				} else {
-					throw new ArgumentException("[CustomAsteroids]: celestial body '" + planet
-						+ "' does not have a solar day", "property");
+					throw new ArgumentException($"Celestial body '{planet}' does not have a solar day", "property");
 				}
 			case "vesc":
 				return Math.Sqrt(2 * body.gravParameter / body.Radius);
 			default:
 				if (body.GetOrbitDriver() == null) {
-					throw new ArgumentException("[CustomAsteroids]: celestial body '" + planet
-						+ "' does not have an orbit", "planet");
+					throw new ArgumentException($"Celestial body '{planet}' does not have an orbit", "planet");
 				}
 				Orbit orbit = body.GetOrbit();
 
@@ -315,8 +313,7 @@ namespace Starstrider42.CustomAsteroids {
 				case "vmax":
 					return orbit.getOrbitalSpeedAtDistance(orbit.PeR);
 				default:
-					throw new ArgumentException("[CustomAsteroids]: celestial bodies do not have a " + property
-						+ " value", "property");
+					throw new ArgumentException($"Unsupported celestial body property: {property}", "property");
 				}
 			}
 		}

@@ -104,7 +104,7 @@ namespace Starstrider42.CustomAsteroids {
 								? SpawnerType.Stock : SpawnerType.FixedRate;
 						}
 					} catch (ArgumentException e) {
-						Debug.LogError("Could not load options; reverting to default.");
+						Debug.LogError("[CustomAsteroids]: Could not load options; reverting to default.");
 						Debug.LogException(e);
 						ScreenMessages.PostScreenMessage(
 							"[CustomAsteroids]: Could not load CustomAsteroids options. Cause: " + e.Message, 
@@ -128,7 +128,6 @@ namespace Starstrider42.CustomAsteroids {
 								"; updating to version " + latestVersion());
 						}
 					} catch (Exception e) {
-						// First priority, just in case Debug.Log*() produce I/O exceptions themselves
 						Debug.LogError("[CustomAsteroids]: settings could not be saved");
 						Debug.LogException(e);
 					}
@@ -175,16 +174,16 @@ namespace Starstrider42.CustomAsteroids {
 		/// or <c>first &gt; second</c>.</exception> 
 		internal Pair<float, float> getUntrackedTimes() {
 			if (minUntrackedLifetime < 0.0f) {
-				throw new InvalidOperationException("Minimum untracked time may not be negative (gave "
-					+ minUntrackedLifetime + ")");
+				throw new InvalidOperationException(
+					$"Minimum untracked time may not be negative (gave {minUntrackedLifetime})");
 			}
 			if (maxUntrackedLifetime <= 0.0f) {
-				throw new InvalidOperationException("Maximum untracked time must be positive (gave "
-					+ maxUntrackedLifetime + ")");
+				throw new InvalidOperationException(
+					$"Maximum untracked time must be positive (gave {maxUntrackedLifetime})");
 			}
 			if (maxUntrackedLifetime < minUntrackedLifetime) {
-				throw new InvalidOperationException("Maximum untracked time must be at least minimum time (gave "
-					+ minUntrackedLifetime + " > " + maxUntrackedLifetime + ")");
+				throw new InvalidOperationException($"Maximum untracked time must be at least minimum time "
+				                                    + "(gave {minUntrackedLifetime} > {maxUntrackedLifetime})");
 			}
 			return new Pair<float, float>(minUntrackedLifetime, maxUntrackedLifetime);
 		}

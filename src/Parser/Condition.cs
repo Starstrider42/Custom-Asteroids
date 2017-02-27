@@ -78,7 +78,7 @@ namespace Starstrider42.CustomAsteroids {
 			case Condition.Operator.Or:
 				return clauses.Any(clause => clause.check());
 			default:
-				throw new InvalidOperationException("Unexpected operator value: " + combine);
+				throw new InvalidOperationException($"Unexpected combine value: {combine}");
 			}
 		}
 
@@ -128,10 +128,10 @@ namespace Starstrider42.CustomAsteroids {
 				case "nowlanded":
 					return new VesselPredicate(planet, VesselPredicate.Test.Landed, type);
 				default:
-					throw new ArgumentException("Unknown condition '" + pred + "'", "input");
+					throw new ArgumentException($"Unknown condition '{pred}'", "input");
 				}
 			} else {
-				throw new ArgumentException("Cannot parse '" + input + "' as a body condition.", "input");
+				throw new ArgumentException($"Cannot parse '{input}' as a body condition.", "input");
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return innerData.ToString();
 			} catch (InvalidOperationException e) {
-				throw new ArgumentException("Corrupted predicate found.", "innerData", e);
+				throw new ArgumentException($"Corrupted predicate {innerData} found.", "innerData", e);
 			}
 		}
 
@@ -290,7 +290,8 @@ namespace Starstrider42.CustomAsteroids {
 					// Make sure we have the node for the current scene
 					ProgressNode node = ProgressTracking.Instance.FindNode(path);
 					if (node == null) {
-						throw new InvalidOperationException("No such achievement node: " + String.Join(".", path));
+						throw new InvalidOperationException(
+							$"In condition {ToString()}: no such achievement node: {String.Join(".", path)}.");
 					}
 
 					bool result;
@@ -305,7 +306,8 @@ namespace Starstrider42.CustomAsteroids {
 						result = node.IsCompleteUnmanned;
 						break;
 					default:
-						throw new InvalidOperationException("No such achievement type: " + whoQualifies);
+						throw new InvalidOperationException(
+							$"In condition {ToString()}: no such condition modifier: {whoQualifies}.");
 					}
 
 					if (result) {
@@ -321,7 +323,7 @@ namespace Starstrider42.CustomAsteroids {
 			public override string ToString() {
 				foreach (string[] achievement in lookup) {
 					if (achievement.Length < 2) {
-						throw new InvalidOperationException("Invalid planet achievement: " + achievement);
+						throw new InvalidOperationException($"Invalid planet achievement: {achievement}");
 					}
 					string achieveType = achievement[0];
 					switch (achievement[1].ToLower()) {
@@ -340,7 +342,7 @@ namespace Starstrider42.CustomAsteroids {
 						achieveType += ".science";
 						break;
 					default: 
-						continue;
+						continue;			// Pick first achievement that's one of the above
 					}
 
 					switch (whoQualifies) {
@@ -350,11 +352,11 @@ namespace Starstrider42.CustomAsteroids {
 					case VesselType.Unmanned:
 						return achieveType + whoQualifies;
 					default:
-						throw new InvalidOperationException("No such achievement type: " + whoQualifies);
+						throw new InvalidOperationException($"No such condition modifier: {whoQualifies}.");
 					}
 				}
 
-				throw new InvalidOperationException("Unknown achievements: " + lookup);
+				throw new InvalidOperationException($"Only unknown conditions: {lookup}");
 			}
 		}
 
@@ -398,7 +400,7 @@ namespace Starstrider42.CustomAsteroids {
 							? whoQualifies == VesselType.Manned 
 							: whoQualifies == VesselType.Unmanned);
 					#if DEBUG
-					Debug.Log("Vessel " + v.GetName() + " qualifies as " + whoQualifies + ": " + correctType);
+					Debug.Log($"Vessel {v.GetName()} qualifies as {whoQualifies}: {correctType}");
 					#endif
 
 					if (correctType && v.mainBody == FlightGlobals.Bodies[body]) {
@@ -418,7 +420,8 @@ namespace Starstrider42.CustomAsteroids {
 							}
 							break;
 						default:
-							throw new InvalidOperationException("No such vessel state: " + state);
+							throw new InvalidOperationException(
+								$"In condition {ToString ()}: no such vessel state: {state}");
 						}
 					}
 				}
@@ -435,7 +438,7 @@ namespace Starstrider42.CustomAsteroids {
 			/// <returns><c>true</c>, if manned, <c>false</c> if unmanned.</returns>
 			private static bool isVesselManned(Vessel v) {
 				#if DEBUG
-				Debug.Log("Vessel " + v.GetName() + " has crew " + v.GetVesselCrew().Count + "/" + v.GetCrewCapacity());
+				Debug.Log($"Vessel {v.GetName()} has crew {v.GetVesselCrew().Count}/{v.GetCrewCapacity()}");
 				#endif
 
 				// v.GetCrewCapacity() and v.GetCrewCount() appear to only work if vessel is loaded
@@ -464,7 +467,7 @@ namespace Starstrider42.CustomAsteroids {
 					desc += "nowlanded";
 					break;
 				default:
-					throw new InvalidOperationException("No such vessel state: " + state);
+					throw new InvalidOperationException($"No such vessel state: {state}");
 				}
 
 				switch (whoQualifies) {
@@ -474,7 +477,7 @@ namespace Starstrider42.CustomAsteroids {
 				case VesselType.Unmanned:
 					return desc + whoQualifies;
 				default:
-					throw new InvalidOperationException("No such achievement type: " + whoQualifies);
+					throw new InvalidOperationException($"No such vessel state filter: {whoQualifies}");
 				}
 			}
 
