@@ -4,6 +4,17 @@ Version History                         {#changelog}
 Custom Asteroids conforms to version 2.0.0 of the [Semantic Versioning specification](http://semver.org/spec/v2.0.0.html). 
 All version numbers are to be interpreted as described therein. In addition to the actual [public API](http://starstrider42.github.io/Custom-Asteroids/), the [format of asteroid population files](http://starstrider42.github.io/Custom-Asteroids/newbelts.html) and the information stored in KSP save files will be considered part of the API for the purpose of versioning.
 
+Unreleased
+------------
+
+### Changes
+
+* All stock configs now explicitly say which probability distributions they are using. This change is purely for self-documentation; the defaults for each orbital element are still the same.
+
+### Bug Fixes
+
+* Exception messages are more specific about which config node is responsible for failures.
+
 Version 1.4.0
 ------------
 
