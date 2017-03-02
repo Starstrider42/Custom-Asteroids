@@ -3,7 +3,7 @@ using System.Reflection;
 using UnityEngine;
 
 // Is there a good way to sync version number between here, Xamarin solution, doxygen, the markdown files, and Git tags?
-[assembly:AssemblyVersion("1.4.0")]
+[assembly:AssemblyVersion("1.4.1")]
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>

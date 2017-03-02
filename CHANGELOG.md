@@ -11,6 +11,9 @@ Unreleased
 
 * All stock configs now explicitly say which probability distributions they are using. This change is purely for self-documentation; the defaults for each orbital element are still the same.
 
+Version 1.4.1
+------------
+
 ### Bug Fixes
 
 * Exception messages are more specific about which config node is responsible for failures.
