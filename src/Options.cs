@@ -64,13 +64,14 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				versionNumber = latestVersion();
 
-				ConfigNode allData = new ConfigNode();
+				var parentNode = new ConfigNode();
+				var allData = parentNode.AddNode("CustomAsteroidSettings");
 				ConfigNode.CreateConfigFromObject(this, allData);		// Only overload that works!
 
 				// Create directories if necessary
-				System.IO.FileInfo outFile = new System.IO.FileInfo(optionFile());
+				var outFile = new System.IO.FileInfo(optionFile());
 				System.IO.Directory.CreateDirectory(outFile.DirectoryName);
-				allData.Save(outFile.FullName);
+				parentNode.Save(outFile.FullName);
 				Debug.Log("[CustomAsteroids]: settings saved");
 			} finally {
 				versionNumber = trueVersion;
@@ -84,60 +85,101 @@ namespace Starstrider42.CustomAsteroids {
 		/// file, or the default settings if no such file exists or the file is corrupted.</returns>
 		internal static Options load() {
 			try {
-				// Start with the default options
-				Options allOptions = new Options();
-
-				// Load options
 				Debug.Log("[CustomAsteroids]: loading settings...");
 
-				ConfigNode optFile = ConfigNode.Load(optionFile());
-				if (optFile != null) {
-					try {
-						ConfigNode.LoadObjectFromConfig(allOptions, optFile);
-						// Backward-compatible with initial release
-						if (!optFile.HasValue("VersionNumber")) {
-							allOptions.versionNumber = "0.1.0";
-						}
-						// Backward-compatible with versions 1.1.0 and earlier
-						if (!optFile.HasValue("Spawner") && optFile.HasValue("UseCustomSpawner")) {
-							allOptions.spawner = optFile.GetValue("UseCustomSpawner").Equals("False") 
-								? SpawnerType.Stock : SpawnerType.FixedRate;
-						}
-					} catch (ArgumentException e) {
-						Debug.LogError("[CustomAsteroids]: Could not load options; reverting to default.");
-						Debug.LogException(e);
-						ScreenMessages.PostScreenMessage(
-							"[CustomAsteroids]: Could not load CustomAsteroids options. Cause: " + e.Message, 
-							10.0f, ScreenMessageStyle.UPPER_CENTER);
-						// Short-circuit things to prevent default from being saved
-						return new Options();
-					}
-				} else {
-					allOptions.versionNumber = "";
+				var allOptions = loadNewStyleOptions();
+				if (allOptions == null) {
+					allOptions = loadOldStyleOptions ();
 				}
 
 				if (allOptions.versionNumber != latestVersion()) {
 					// Config file is either missing or out of date, make a new one
 					// Any information loaded from previous config file will be preserved
-					try {
-						allOptions.save();
-						if (allOptions.versionNumber.Length == 0) {
-							Debug.Log("[CustomAsteroids]: no config file found at " + optionFile() + "; creating new one");
-						} else {
-							Debug.Log("[CustomAsteroids]: loaded config file from version " + allOptions.versionNumber +
-								"; updating to version " + latestVersion());
-						}
-					} catch (Exception e) {
-						Debug.LogError("[CustomAsteroids]: settings could not be saved");
-						Debug.LogException(e);
-					}
+					updateOptionFile(allOptions);
 				}
 
 				Debug.Log("[CustomAsteroids]: settings loaded");
 
 				return allOptions;
+			} catch (ArgumentException e) {
+				Debug.LogError ("[CustomAsteroids]: Could not load options; reverting to default.");
+				Debug.LogException (e);
+				ScreenMessages.PostScreenMessage (
+					"[CustomAsteroids]: Could not load CustomAsteroids options. Cause: " + e.Message,
+					10.0f, ScreenMessageStyle.UPPER_CENTER);
+				return new Options();
 			} catch {
 				return new Options();
+			}
+		}
+
+		/// <summary>
+		/// Reads a modern (MM-compatible) options file.
+		/// </summary>
+		/// <returns>The options stored in the game databse, or <c>null</c> if none were found.</returns>
+		/// <exception cref="ArgumentException">Thrown if there is a syntax error in
+		/// 	one of the options.</exception>
+		private static Options loadNewStyleOptions() {
+			UrlDir.UrlConfig[] configList = GameDatabase.Instance.GetConfigs("CustomAsteroidSettings");
+			if (configList.Length > 0) {
+				// Start with the default options
+				var options = new Options ();
+
+				foreach (UrlDir.UrlConfig settings in configList) {
+					ConfigNode.LoadObjectFromConfig (options, settings.config);
+				}
+				return options;
+			} else {
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Reads a pre-MM options file.
+		/// </summary>
+		/// <returns>The options in <c>oldOptionFile()</c>, or the default for any unspecified
+		///     option. The <c>versionNumber</c> field shall contain the version number
+		///     of the options file, or "" if no such file exists.</returns>
+		/// <exception cref="ArgumentException">Thrown if there is a syntax error in
+		/// 	the options file.</exception>
+		private static Options loadOldStyleOptions() {
+			// Start with the default options
+			var options = new Options();
+
+			ConfigNode optFile = ConfigNode.Load(oldOptionFile());
+			if (optFile != null) {
+				ConfigNode.LoadObjectFromConfig(options, optFile);
+				// Backward-compatible with initial release
+				if (!optFile.HasValue ("VersionNumber")) {
+					options.versionNumber = "0.1.0";
+				}
+				// Backward-compatible with versions 1.1.0 and earlier
+				if (!optFile.HasValue ("Spawner") && optFile.HasValue ("UseCustomSpawner")) {
+					options.spawner = optFile.GetValue ("UseCustomSpawner").Equals ("False")
+						? SpawnerType.Stock : SpawnerType.FixedRate;
+				}
+			} else {
+				options.versionNumber = "";
+			}
+			return options;
+		}
+
+		/// <summary>
+		/// Replaces a missing or out-of-date preferences file. Failures to write the file to disk are logged and ignored.
+		/// </summary>
+		/// <param name="oldData">The data to store in the new file.</param>
+		private static void updateOptionFile(Options oldData) {
+			try {
+				oldData.save();
+				if (oldData.versionNumber.Length == 0) {
+					Debug.Log ("[CustomAsteroids]: no config file found at " + optionFile () + "; creating new one");
+				} else {
+					Debug.Log ("[CustomAsteroids]: loaded config file from version " + oldData.versionNumber +
+						"; updating to version " + latestVersion ());
+				}
+			} catch (Exception e) {
+				Debug.LogError ("[CustomAsteroids]: settings could not be saved");
+				Debug.LogException (e);
 			}
 		}
 
@@ -189,11 +231,20 @@ namespace Starstrider42.CustomAsteroids {
 		}
 
 		/// <summary>
-		/// Identifies the Custom Asteroids config file. Does not throw exceptions.
+		/// Identifies the version 1.4 and earlier Custom Asteroids config file. Does not throw exceptions.
 		/// </summary>
 		/// <returns>An absolute path to the config file.</returns>
-		private static string optionFile() {
+		private static string oldOptionFile() {
 			return KSPUtil.ApplicationRootPath + "GameData/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg";
+		}
+
+		/// <summary>
+		/// Identifies the MM-compatible Custom Asteroids config file. Does not throw exceptions.
+		/// </summary>
+		/// <returns>An absolute path to the config file.</returns>
+		private static string optionFile ()
+		{
+			return KSPUtil.ApplicationRootPath + "GameData/CustomAsteroids/Custom Asteroids Settings.cfg";
 		}
 
 		/// <summary>

@@ -1,7 +1,7 @@
 Custom Asteroids Options                         {#options}
 ============
 
-When it is first run, Custom Asteroids creates a config file in `GameData/CustomAsteroids/PluginData/Custom Asteroids Settings.cfg`. This file may be used to toggle the following options:
+When it is first run, Custom Asteroids creates a config file in `GameData/CustomAsteroids/Custom Asteroids Settings.cfg` (as of version 1.5). This file may be used to toggle the following options:
 
 * `RenameAsteroids`: if True (the default), asteroids will be named by the group they belong to. If False, asteroids will keep their default names.
 * `Spawner`: may be set to FixedRate (the default) or Stock. In FixedRate mode, asteroids will be discovered at a steady rate. In Stock mode, new asteroids will quickly appear any time there are no untracked asteroids.
