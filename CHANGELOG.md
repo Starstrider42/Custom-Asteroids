@@ -9,6 +9,7 @@ Unreleased
 
 ### Changes
 
+* Silicates, Hydrates, Gypsum, ExoticMinerals, and RareMetals added to asteroid configs. Stony and carbonaceous asteroids now have Hydrates *instead of* Water.
 * Options format and file location have changed to let mods force options (e.g., asteroid lifetime) using ModuleManager. Old options files will be migrated automatically.
 * All stock configs now explicitly say which probability distributions they are using. This change is purely for self-documentation; the defaults for each orbital element are still the same.
 
