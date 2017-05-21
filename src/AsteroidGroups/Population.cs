@@ -7,38 +7,25 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
-	internal sealed class Population : AsteroidSet {
-		/// <summary>A unique name for the population.</summary>
-		[Persistent] private readonly string name;
-		/// <summary>The name of asteroids belonging to this population.</summary>
-		[Persistent] private readonly string title;
+	sealed class Population : AbstractAsteroidSet {
 		/// <summary>The name of the celestial object orbited by the asteroids.</summary>
-		[Persistent] private readonly string centralBody;
-		/// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
-		[Persistent] private readonly double spawnRate;
+		[Persistent] readonly string centralBody;
 
 		/// <summary>The size (range) of orbits in this population.</summary>
-		[Persistent] private readonly SizeRange orbitSize;
+		[Persistent] readonly SizeRange orbitSize;
 		/// <summary>The eccentricity (range) of orbits in this population.</summary>
-		[Persistent] private readonly ValueRange eccentricity;
+		[Persistent] readonly ValueRange eccentricity;
 		/// <summary>The inclination (range) of orbits in this population.</summary>
-		[Persistent] private readonly ValueRange inclination;
+		[Persistent] readonly ValueRange inclination;
 		/// <summary>The argument/longitude of periapsis (range) of orbits in this population.</summary>
-		[Persistent] private readonly PeriRange periapsis;
+		[Persistent] readonly PeriRange periapsis;
 		/// <summary>The longitude of ascending node (range) of orbits in this population.</summary>
-		[Persistent] private readonly ValueRange ascNode;
+		[Persistent] readonly ValueRange ascNode;
 		/// <summary>The range of positions along the orbit for asteroids in this population.</summary>
-		[Persistent] private readonly PhaseRange orbitPhase;
+		[Persistent] readonly PhaseRange orbitPhase;
 
 		/// <summary>The plane relative to which the orbit is specified. Null means to use the default plane.</summary>
-		[Persistent] private readonly string refPlane;
-
-		/// <summary>The exploration state in which these asteroids will appear. Always appear if null.</summary>
-		[Persistent] private readonly Condition detectable;
-
-		/// <summary>Relative ocurrence rates of asteroid classes.</summary>
-		[Persistent(name = "asteroidTypes", collectionIndex = "key")]
-		private readonly Proportions<string> classRatios;
+		[Persistent] readonly string refPlane;
 
 		/// <summary>
 		/// Creates a dummy population. The object is initialized to a state in which it will not be expected to 
@@ -47,56 +34,41 @@ namespace Starstrider42.CustomAsteroids {
 		/// <para>Does not throw exceptions.</para>
 		/// </summary>
 		internal Population() {
-			this.name = "invalid";
-			this.title = "Ast.";
-			this.centralBody = "Sun";
-			this.spawnRate = 0.0;			// Safeguard: don't make asteroids until the values are set
+			centralBody = "Sun";
 
-			this.orbitSize = new  SizeRange(ValueRange.Distribution.LogUniform, SizeRange.Type.SemimajorAxis);
-			this.eccentricity = new ValueRange(ValueRange.Distribution.Rayleigh, min: 0.0, max: 1.0);
-			this.inclination = new ValueRange(ValueRange.Distribution.Rayleigh);
-			this.periapsis = new  PeriRange(ValueRange.Distribution.Uniform, PeriRange.Type.Argument, 
+			orbitSize = new  SizeRange(ValueRange.Distribution.LogUniform, SizeRange.Type.SemimajorAxis);
+			eccentricity = new ValueRange(ValueRange.Distribution.Rayleigh, min: 0.0, max: 1.0);
+			inclination = new ValueRange(ValueRange.Distribution.Rayleigh);
+			periapsis = new  PeriRange(ValueRange.Distribution.Uniform, PeriRange.Type.Argument,
 				min: 0.0, max: 360.0);
-			this.ascNode = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
-			this.orbitPhase = new PhaseRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0, 
+			ascNode = new ValueRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0);
+			orbitPhase = new PhaseRange(ValueRange.Distribution.Uniform, min: 0.0, max: 360.0,
 				type: PhaseRange.PhaseType.MeanAnomaly, epoch: PhaseRange.EpochType.GameStart);
 
-			this.refPlane = null;
-
-			this.detectable = null;
-
-			this.classRatios = new Proportions<string>(new [] {"1.0 PotatoRoid"});
+			refPlane = null;
 		}
 
-		public Orbit drawOrbit() {
-			#if DEBUG
-			if (detectable == null) {
-				Debug.Log("No condition attached.");
-			} else {
-				Debug.Log("Condition: " + detectable);
-			}
-			#endif
-
+		public override Orbit drawOrbit() {
 			// Would like to only calculate this once, but I don't know for sure that this object will
 			// be initialized after FlightGlobals
 			CelestialBody orbitee = AsteroidManager.getPlanetByName(centralBody);
 
-			Debug.Log($"[CustomAsteroids]: drawing orbit from {name}");
+			Debug.Log($"[CustomAsteroids]: drawing orbit from {getName ()}");
 
 			// Properties with only one reasonable parametrization
-			double e = wrappedDraw(eccentricity, name, "eccentricity");
+			double e = wrappedDraw(eccentricity, getName (), "eccentricity");
 			if (e < 0.0) {
 				throw new InvalidOperationException(
-					$"Asteroids in group '{name}' cannot have negative eccentricity (generated {e})");
+					$"Asteroids in group '{getName ()}' cannot have negative eccentricity (generated {e})");
 			}
 			// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
 			// So it's ok to just have positive inclinations
-			double i = wrappedDraw(inclination, name, "inclination");
-			double lAn = wrappedDraw(ascNode, name, "ascNode");
+			double i = wrappedDraw(inclination, getName (), "inclination");
+			double lAn = wrappedDraw(ascNode, getName (), "ascNode");
 
 			// Position of periapsis
 			double aPe;
-			double peri= wrappedDraw(periapsis, name, "periapsis");
+			double peri= wrappedDraw(periapsis, getName (), "periapsis");
 			switch (periapsis.getParam()) {
 			case PeriRange.Type.Argument:
 				aPe = peri;
@@ -106,12 +78,12 @@ namespace Starstrider42.CustomAsteroids {
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{name}' cannot describe periapsis position using {periapsis.getParam()}");
+					$"Asteroids in group '{getName ()}' cannot describe periapsis position using {periapsis.getParam()}");
 			}
 
 			// Semimajor axis
 			double a;
-			double size = wrappedDraw(orbitSize, name, "orbitSize");
+			double size = wrappedDraw(orbitSize, getName (), "orbitSize");
 			switch (orbitSize.getParam()) {
 			case SizeRange.Type.SemimajorAxis:
 				a = size;
@@ -122,18 +94,18 @@ namespace Starstrider42.CustomAsteroids {
 			case SizeRange.Type.Apoapsis:
 				if (e > 1.0) {
 					throw new InvalidOperationException(
-						$"Asteroids in group '{name}' cannot constrain apoapsis on unbound orbits (eccentricity {e})");
+						$"Asteroids in group '{getName ()}' cannot constrain apoapsis on unbound orbits (eccentricity {e})");
 				}
 				a = size / (1.0 + e);
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{name}' cannot describe orbit size using {orbitSize.getParam()}");
+					$"Asteroids in group '{getName ()}' cannot describe orbit size using {orbitSize.getParam()}");
 			}
 
 			// Mean anomaly at given epoch
 			double mEp, epoch;
-			double phase = wrappedDraw(orbitPhase, name, "orbitPhase");
+			double phase = wrappedDraw(orbitPhase, getName (), "orbitPhase");
 			switch (orbitPhase.getParam()) {
 			case PhaseRange.PhaseType.MeanAnomaly:
 				// Mean anomaly is the ONLY orbital angle that needs to be given in radians
@@ -144,7 +116,7 @@ namespace Starstrider42.CustomAsteroids {
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{name}' cannot describe orbit position using type {orbitSize.getParam()}");
+					$"Asteroids in group '{getName ()}' cannot describe orbit position using type {orbitSize.getParam()}");
 			}
 			switch (orbitPhase.getEpoch()) {
 			case PhaseRange.EpochType.GameStart:
@@ -155,7 +127,7 @@ namespace Starstrider42.CustomAsteroids {
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{name}' cannot describe orbit position using type {orbitSize.getParam()}");
+					$"Asteroids in group '{getName ()}' cannot describe orbit position using type {orbitSize.getParam()}");
 			}
 
 			// Fix accidentally hyperbolic orbits
@@ -174,51 +146,6 @@ namespace Starstrider42.CustomAsteroids {
 			return newOrbit;
 		}
 
-		private double wrappedDraw(ValueRange property, string group, string propertyName) {
-			try {
-				return property.draw();
-			} catch (ArgumentException e) {
-				throw new InvalidOperationException (
-					$"Could not set orbital element '{propertyName}' for group '{group}'.", e);
-			}
-		}
-
-		public string drawAsteroidType() {
-			try {
-				return AsteroidManager.drawAsteroidType(classRatios);
-			} catch (InvalidOperationException e) {
-				Util.errorToPlayer(e, $"Could not select asteroid class for group '{name}'.");
-				Debug.LogException(e);
-				return "PotatoRoid";
-			}
-		}
-
-		public double getSpawnRate() {
-			if (detectable == null || detectable.check()) {
-				return spawnRate;
-			} else {
-				return 0.0;
-			}
-		}
-
-		public string getName() {
-			return name;
-		}
-
-		public string getAsteroidName() {
-			return title;
-		}
-
-		/// <summary>
-		/// Returns a <see cref="System.String"/> that represents the current object.
-		/// </summary>
-		/// <returns>A simple string identifying the object.</returns>
-		/// 
-		/// <seealso cref="Object.ToString()"/> 
-		public override string ToString() {
-			return getName();
-		}
-
 		/// <summary>
 		/// Converts an orbital longitude to an anomaly. Does not throw exceptions.
 		/// </summary>
@@ -231,7 +158,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// <returns>The angle between the periapsis point and a position in the planet's orbital plane, in degrees. 
 		/// 	Will be mean, eccentric, or true anomaly, corresponding to the type of longitude provided.</returns>
-		private static double longToAnomaly(double longitude, double i, double aPe, double lAn) {
+		static double longToAnomaly(double longitude, double i, double aPe, double lAn) {
 			// Why doesn't KSP.Orbit have a function for this?
 			// Cos[θ+ω] == Cos[i] Cos[l-Ω]/Sqrt[1 - Sin[i]^2 Cos[l-Ω]^2]
 			// Sin[θ+ω] ==        Sin[l-Ω]/Sqrt[1 - Sin[i]^2 Cos[l-Ω]^2]
@@ -252,9 +179,9 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// <param name="orbit">The orbit relative to the population's reference frame.</param>
 		/// 
-		/// <exception cref="System.InvalidOperationException">Thrown if the desired transform could not be 
+		/// <exception cref="InvalidOperationException">Thrown if the desired transform could not be
 		/// carried out.</exception>
-		private void frameTransform(Orbit orbit) {
+		void frameTransform(Orbit orbit) {
 			ReferencePlane plane = refPlane != null 
 				? AsteroidManager.getReferencePlane(refPlane) 
 				: AsteroidManager.getDefaultPlane();
