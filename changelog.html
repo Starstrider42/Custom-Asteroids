@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.4</span>
+   &#160;<span id="projectnumber">1.5</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -105,6 +105,19 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Custom Asteroids conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. In addition to the actual <a href="http://starstrider42.github.io/Custom-Asteroids/">public API</a>, the <a href="http://starstrider42.github.io/Custom-Asteroids/newbelts.html">format of asteroid population files</a> and the information stored in KSP save files will be considered part of the API for the purpose of versioning.</p>
+<h2>Version 1.5.0 </h2>
+<h3>Changes</h3>
+<ul>
+<li>Support for KSP 1.3.</li>
+<li>Silicates, Hydrates, Gypsum, ExoticMinerals, and RareMetals added to asteroid configs. Stony and carbonaceous asteroids now have Hydrates <em>instead of</em> Water.</li>
+<li>Options format and file location have changed to let mods force options (e.g., asteroid lifetime) using ModuleManager. Old options files will be migrated automatically.</li>
+<li>All stock configs now explicitly say which probability distributions they are using. This change is purely for self-documentation; the defaults for each orbital element are still the same.</li>
+</ul>
+<h2>Version 1.4.1 </h2>
+<h3>Bug Fixes</h3>
+<ul>
+<li>Exception messages are more specific about which config node is responsible for failures.</li>
+</ul>
 <h2>Version 1.4.0 </h2>
 <h3>Changes</h3>
 <ul>
@@ -222,7 +235,7 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Feb 19 2017 17:11:54 for Custom Asteroids by
+    <li class="footer">Generated on Mon May 29 2017 11:20:22 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>
