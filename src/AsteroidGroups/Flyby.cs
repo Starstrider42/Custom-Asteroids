@@ -8,7 +8,7 @@ namespace Starstrider42.CustomAsteroids
     /// </summary>
     ///
     /// <remarks>To avoid breaking the persistence code, Flyby may not have subclasses.</remarks>
-    sealed class Flyby : AbstractAsteroidSet
+    internal sealed class Flyby : AbstractAsteroidSet
     {
         /// <summary>The name of the celestial object the asteroids will approach.</summary>
         [Persistent]

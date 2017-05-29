@@ -6,7 +6,7 @@ namespace Starstrider42.CustomAsteroids
     /// <summary>
     /// Contains default implementations of methods from AsteroidSet.
     /// </summary>
-    abstract class AbstractAsteroidSet : AsteroidSet
+    internal abstract class AbstractAsteroidSet : AsteroidSet
     {
         // Persistent fields must be directly visible to subclasses :(
         /// <summary>A unique name for the population.</summary>

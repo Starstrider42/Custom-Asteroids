@@ -7,7 +7,7 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	/// 
 	/// <remarks>To avoid breaking the persistence code, Population may not have subclasses.</remarks>
-	sealed class Population : AbstractAsteroidSet {
+	internal sealed class Population : AbstractAsteroidSet {
 		/// <summary>The name of the celestial object orbited by the asteroids.</summary>
 		[Persistent] readonly string centralBody;
 
