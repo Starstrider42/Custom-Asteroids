@@ -4,11 +4,12 @@ Version History                         {#changelog}
 Custom Asteroids conforms to version 2.0.0 of the [Semantic Versioning specification](http://semver.org/spec/v2.0.0.html). 
 All version numbers are to be interpreted as described therein. In addition to the actual [public API](http://starstrider42.github.io/Custom-Asteroids/), the [format of asteroid population files](http://starstrider42.github.io/Custom-Asteroids/newbelts.html) and the information stored in KSP save files will be considered part of the API for the purpose of versioning.
 
-Unreleased
+Version 1.5.0
 ------------
 
 ### Changes
 
+* Support for KSP 1.3.
 * Silicates, Hydrates, Gypsum, ExoticMinerals, and RareMetals added to asteroid configs. Stony and carbonaceous asteroids now have Hydrates *instead of* Water.
 * Options format and file location have changed to let mods force options (e.g., asteroid lifetime) using ModuleManager. Old options files will be migrated automatically.
 * All stock configs now explicitly say which probability distributions they are using. This change is purely for self-documentation; the defaults for each orbital element are still the same.
