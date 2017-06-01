@@ -8,13 +8,16 @@ namespace Starstrider42.CustomAsteroids {
 	/// </summary>
 	public sealed class CustomAsteroidData : PartModule {
 		/// <summary>The name of the composition class to use.</summary>
-		/// <remarks>The class is displayed to the user, but is not intended for use by code. 
-		/// Must be public to initialize it from part config.</remarks>
-		[KSPField(isPersistant = true, guiActive = true, guiActiveEditor = true, guiName = "Type")]
+		/// <remarks>Intended for use by code.</remarks>
+		[KSPField]
 		public string composition;
+		/// <summary>The name of the composition class to use.</summary>
+		/// <remarks>Intended for display to the user.</remarks>
+		[KSPField (guiActive = true, guiActiveEditor = true, guiName = "Type")]
+		public string displayComposition;
 
 		public CustomAsteroidData() {
-			this.composition = "Stony";
+			displayComposition = composition = "Stony";
 		}
 
 		#if DEBUG
