@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using KSP.Localization;
 
 namespace Starstrider42.CustomAsteroids {
 
@@ -103,14 +104,16 @@ namespace Starstrider42.CustomAsteroids {
 			if (parsed[0].Success) {
 				int m, n;
 				if (!Int32.TryParse(parsed["m"].ToString(), out m)) {
-					throw new ArgumentException($"In {rawValue}, cannot parse '{parsed["m"]}' as an integer");
+					throw new ArgumentException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoInteger", rawValue, parsed["m"]));
 				}
 				if (!Int32.TryParse(parsed["n"].ToString(), out n)) {
-					throw new ArgumentException($"In {rawValue}, cannot parse '{parsed["n"]}' as an integer");
+					throw new ArgumentException (
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoInteger", rawValue, parsed["n"]));
 				}
 				if (m <= 0 || n <= 0) {
 					throw new ArgumentException(
-						$"Mean-motion resonance must have positive integers (gave {m}:{n} in {rawValue})");
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorMmrNotPositive", m, n, rawValue));
 				}
 
 				return getPlanetProperty(parsed["planet"].ToString(), "sma")

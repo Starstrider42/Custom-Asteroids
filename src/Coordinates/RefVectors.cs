@@ -1,4 +1,5 @@
 using System;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -7,7 +8,7 @@ namespace Starstrider42.CustomAsteroids {
 		[Persistent(name = "name")] private readonly string id;
 		/// <summary>A vector perpendicular to the reference plane.</summary>
 		[Persistent] private readonly Vector3d normVector;
-		/// <summary>A vector pointing towards the reference direction.</summaname
+		/// <summary>A vector pointing towards the reference direction.</summary>
 		[Persistent] private readonly Vector3d refVector;
 
 		/// <summary>Workhorse object for handling the geometry.</summary>
@@ -24,7 +25,7 @@ namespace Starstrider42.CustomAsteroids {
 			if (impl != null) {
 				return impl.toDefaultFrame(inFrame);
 			} else {
-				throw new InvalidOperationException($"RefVectors {name} has not been initialized properly.");
+				throw new InvalidOperationException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorRefVectorCorrupt", name));
 			}
 		}
 
@@ -49,13 +50,15 @@ namespace Starstrider42.CustomAsteroids {
 		public void PersistenceLoad() {
 			try {
 				if (normVector.magnitude < 1e-8) {
-					throw new InvalidOperationException($"The normal to a plane in {name} cannot be zero.");
+					throw new InvalidOperationException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorRefVectorNoZero", name));
 				}
 
 				// Only the component in the plane is useful
 				Vector3d trueReference = refVector - Vector3d.Project(refVector, normVector);
 				if (trueReference.magnitude < 1e-8) {
-					throw new InvalidOperationException($"The reference vector in {name} cannot be parallel to the normal.");
+					throw new InvalidOperationException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorRefVectorDegenerate", name));
 				}
 
 				Quaternion q = Quaternion.FromToRotation(Planetarium.up.xzy, normVector);

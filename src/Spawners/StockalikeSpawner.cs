@@ -1,3 +1,4 @@
+using KSP.Localization;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -31,12 +32,12 @@ namespace Starstrider42.CustomAsteroids {
 		/// </summary>
 		protected override void checkSpawn() {
 			if (areAsteroidsTrackable()
-			    && countUntrackedAsteroids() < Random.Range(SPAWN_GROUP_MIN_LIMIT, SPAWN_GROUP_MAX_LIMIT)) {
+				&& countUntrackedAsteroids() < Random.Range(SPAWN_GROUP_MIN_LIMIT, SPAWN_GROUP_MAX_LIMIT)) {
 				if (Random.Range(0.0f, 1.0f) < 1.0f / (1.0f + SPAWN_ODDS_AGAINST)) {
 					spawnAsteroid();
 				} else {
-					Debug.Log("[StockalikeSpawner]: No new objects this time. "
-						+ "(Odds are 1:" + SPAWN_ODDS_AGAINST + ")");
+					Debug.Log("[StockalikeSpawner]: "
+							  + Localizer.Format ("#autoLOC_CustomAsteroids_LogSpawnStock", SPAWN_ODDS_AGAINST));
 				}
 			}
 		}

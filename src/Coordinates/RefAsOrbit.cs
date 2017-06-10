@@ -1,4 +1,5 @@
 using System;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -27,7 +28,8 @@ namespace Starstrider42.CustomAsteroids {
 			if (impl != null) {
 				return impl.toDefaultFrame(inFrame);
 			} else {
-				throw new InvalidOperationException($"RefAsOrbit {name} has not been initialized properly.");
+				throw new InvalidOperationException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorRefOrbitCorrupt", name));
 			}
 		}
 

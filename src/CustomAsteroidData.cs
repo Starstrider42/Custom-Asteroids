@@ -1,12 +1,15 @@
-using System.Collections.Generic;
-using UnityEngine;
 using System;
+using System.Collections.Generic;
+using KSP.Localization;
+using UnityEngine;
 
-namespace Starstrider42.CustomAsteroids {
+namespace Starstrider42.CustomAsteroids
+{
 	/// <summary>
 	/// Represents asteroid-specific information not included in the stock game.
 	/// </summary>
-	public sealed class CustomAsteroidData : PartModule {
+	public sealed class CustomAsteroidData : PartModule
+	{
 		/// <summary>The name of the composition class to use.</summary>
 		/// <remarks>Intended for use by code.</remarks>
 		[KSPField]
@@ -16,8 +19,20 @@ namespace Starstrider42.CustomAsteroids {
 		[KSPField (guiActive = true, guiActiveEditor = true, guiName = "Type")]
 		public string displayComposition;
 
-		public CustomAsteroidData() {
-			displayComposition = composition = "Stony";
+		public CustomAsteroidData ()
+		{
+			composition = "Stony";
+			displayComposition = Localizer.Format ("#autoLOC_CustomAsteroids_CompStony");
+		}
+
+		public override void OnStart (StartState state) {
+			base.OnStart (state);
+
+			// Thanks DMagic!
+			Fields ["displayComposition"].guiName = Localizer.Format ("#autoLOC_CustomAsteroids_GuiClass");
+			#if DEBUG
+			Events ["dumpResources"].guiName = Localizer.Format ("#autoLOC_CustomAsteroids_GuiDebugResource");
+			#endif
 		}
 
 		#if DEBUG
@@ -35,32 +50,35 @@ namespace Starstrider42.CustomAsteroids {
 				double resourceMass = summary.currentMassVal - summary.massThresholdVal;
 
 				System.Text.StringBuilder report = new System.Text.StringBuilder();
-				report.AppendLine(String.Format(
-						"ASTEROID {0} RESOURCE REPORT",
+				report.AppendLine(Localizer.Format(
+						"#autoLOC_CustomAsteroids_LogResourceHeader",
 						part.FindModuleImplementing<ModuleAsteroid>().AsteroidName));
-				report.AppendLine(String.Format("Class: {0}", composition));
-				report.AppendLine(String.Format(
-						"{0:F1} out of {1:F1} tons ({2:P1}) taken by resources",
-						resourceMass,
-						summary.currentMassVal,
-						resourceMass / summary.currentMassVal));
+				report.AppendLine (Localizer.Format ("#autoLOC_CustomAsteroids_GuiClass") + ": " + composition);
+				report.AppendLine(Localizer.Format(
+						"#autoLOC_CustomAsteroids_LogResourceSummary",
+						string.Format ("{0:F1}", resourceMass),
+						string.Format ("{0:F1}", summary.currentMassVal),
+						string.Format ("{0:P1}", resourceMass / summary.currentMassVal)));
 				report.AppendLine();
 
 				foreach (ModuleAsteroidResource resource in resources) {
-					report.AppendLine(String.Format("Resource: {0}", resource.resourceName));
-					report.AppendLine(String.Format(
-							"\tAmount {0:F1} tons ({1:P1})",
-							resource.abundance * resourceMass,
-							resource.displayAbundance));
+					report.AppendLine(Localizer.Format("#autoLOC_CustomAsteroids_LogResourceName", resource.resourceName));
+					report.AppendLine(Localizer.Format(
+							"#autoLOC_CustomAsteroids_LogResourceAmount",
+							string.Format ("{0:F1}", resource.abundance * resourceMass),
+							string.Format ("{0:P1}", resource.displayAbundance)));
 					if (resource.abundance < 1e-6) {
-						report.AppendLine(String.Format("\tFound in only {0:D}% of asteroids.", resource.presenceChance));
+						report.AppendLine(Localizer.Format("#autoLOC_CustomAsteroids_LogResourceFreq",
+														   string.Format ("{0:D}", resource.presenceChance)));
 					}
-					report.AppendLine(String.Format("\tNominal abundance {0:D}-{1:D}%", resource.lowRange, resource.highRange));
+					report.AppendLine(Localizer.Format("#autoLOC_CustomAsteroids_LogResourceDistrib",
+													   string.Format ("{0:D}", resource.lowRange),
+													   string.Format ("{0:D}", resource.highRange)));
 					report.AppendLine();
 				}
 
 				Debug.Log(report.ToString());
-				ScreenMessages.PostScreenMessage("Asteroid resources recorded and logged.", 
+				ScreenMessages.PostScreenMessage(Localizer.Format ("#autoLOC_CustomAsteroids_LogResourceEnd"), 
 					5.0f, ScreenMessageStyle.UPPER_CENTER);
 			}
 		}

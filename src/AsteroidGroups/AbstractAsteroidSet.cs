@@ -1,4 +1,5 @@
 ﻿using System;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids
@@ -12,7 +13,8 @@ namespace Starstrider42.CustomAsteroids
         /// <summary>A unique name for the population.</summary>
         [Persistent]
         protected readonly string name;
-        /// <summary>The name of asteroids belonging to this population.</summary>
+        /// <summary>The name of asteroids belonging to this population, or a localization format string
+        /// where &lt;&lt;1&gt;&gt; is a placeholder for the asteroid ID.</summary>
         [Persistent]
         protected readonly string title;
         /// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
@@ -35,7 +37,7 @@ namespace Starstrider42.CustomAsteroids
         internal AbstractAsteroidSet ()
         {
             name = "invalid";
-            title = "Ast.";
+            title = Localizer.GetStringByTag ("#autoLOC_6001923");
             spawnRate = 0.0;           // Safeguard: don't make asteroids until the values are set
 
             detectable = null;
@@ -50,7 +52,7 @@ namespace Starstrider42.CustomAsteroids
             try {
                 return AsteroidManager.drawAsteroidType (classRatios);
             } catch (InvalidOperationException e) {
-                Util.errorToPlayer (e, $"Could not select asteroid class for group '{name}'.");
+                Util.errorToPlayer (e, Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoClass", name));
                 Debug.LogException (e);
                 return "PotatoRoid";
             }
@@ -98,7 +100,7 @@ namespace Starstrider42.CustomAsteroids
                 return property.draw ();
             } catch (ArgumentException e) {
                 throw new InvalidOperationException (
-                    $"Could not set property '{propertyName}' for group '{group}'.", e);
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoValue", propertyName, group), e);
             }
         }
     }

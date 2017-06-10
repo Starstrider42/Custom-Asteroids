@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -42,7 +43,8 @@ namespace Starstrider42.CustomAsteroids {
 				foreach (UrlDir.UrlConfig curSet in configList) {
 					foreach (ConfigNode curNode in curSet.config.nodes) {
 						#if DEBUG
-						Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
+						Debug.Log("[CustomAsteroids]: "
+							+ Localizer.Format ("#autoLOC_CustomAsteroids_LogConfig", curNode));
 						#endif
 						try {
 							AsteroidSet pop = null;
@@ -66,23 +68,25 @@ namespace Starstrider42.CustomAsteroids {
 							}
 						} catch (Exception e) {
 							var nodeName = curNode.GetValue("name");
-							Debug.LogError($"[CustomAsteroids]: failed to load population '{nodeName}'");
+							var error = Localizer.Format ("#autoLOC_CustomAsteroids_ErrorLoadGroup", nodeName);
+							Debug.LogError($"[CustomAsteroids]: " + error);
 							Debug.LogException(e);
-							Util.errorToPlayer(e, $"Could not load asteroid group \"{nodeName}\".");
+							Util.errorToPlayer(e, error);
 						}	// Attempt to parse remaining populations
 					}
 				}
 
 				#if DEBUG
 				foreach (AsteroidSet x in allPops.asteroidPops) {
-					Debug.Log("[CustomAsteroids]: Asteroid set '" + x + "' loaded");
+					Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogLoadGroup", x));
 				}
 				#endif
 
 				if (allPops.asteroidPops.Count == 0) {
-					Debug.LogWarning("[CustomAsteroids]: Custom Asteroids could not find any configs in GameData!");
+					Debug.LogWarning("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoConfig1"));
 					ScreenMessages.PostScreenMessage(
-						"Custom Asteroids could not find any configs in GameData.\nAsteroids will not appear.", 
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoConfig1") + "\n"
+							+ Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoConfig2"),
 						10.0f, ScreenMessageStyle.UPPER_CENTER);
 				}
 
@@ -103,14 +107,13 @@ namespace Starstrider42.CustomAsteroids {
 		/// which to choose, or if all spawn rates are zero, or if any rate is negative</exception> 
 		internal AsteroidSet drawAsteroidSet() {
 			try {
-				// A typedef! A typedef! My kerbdom for a typedef!
-				List<Pair<AsteroidSet, double>> bins = new List<Pair<AsteroidSet, double>>();
+				var bins = new List<Pair<AsteroidSet, double>>();
 				foreach (AsteroidSet x in asteroidPops) {
 					bins.Add(new Pair<AsteroidSet, double>(x, x.getSpawnRate()));
 				}
 				return RandomDist.weightedSample(bins);
 			} catch (ArgumentException e) {
-				throw new InvalidOperationException("Could not select population", e);
+				throw new InvalidOperationException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoGroup"), e);
 			}
 		}
 
@@ -167,7 +170,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// </summary>
 		internal DefaultAsteroids() {
 			this.name = "default";
-			this.title = "Ast.";
+			this.title = Localizer.GetStringByTag ("#autoLOC_6001923");
 			this.spawnRate = 0.0;
 
 			this.classRatios = new Proportions<string>(new [] {"1.0 PotatoRoid"});
@@ -177,7 +180,7 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return AsteroidManager.drawAsteroidType(classRatios);
 			} catch (InvalidOperationException e) {
-				Util.errorToPlayer(e, $"Could not select asteroid class for {name}.");
+				Util.errorToPlayer(e, Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoClass", name));
 				Debug.LogException(e);
 				return "PotatoRoid";
 			}
@@ -226,16 +229,16 @@ namespace Starstrider42.CustomAsteroids {
 				double mEp = Math.PI / 180.0 * RandomDist.drawAngle();
 				double epoch = Planetarium.GetUniversalTime();
 
-				Debug.Log("[CustomAsteroids]: new orbit at " + a + " m, e = " + e + ", i = " + i
-					+ ", aPe = " + aPe + ", lAn = " + lAn + ", mEp = " + mEp + " at epoch " + epoch);
+				Debug.Log("[CustomAsteroids]: "
+						  + Localizer.Format ("#autoLOC_CustomAsteroids_LogOrbit", a, e, i, aPe, lAn, mEp, epoch));
 				return new Orbit(i, e, a, lAn, aPe, mEp, epoch, dres);
 			} else if (kerbin != null) {
 				// Kerbin interceptors
 				double delay = RandomDist.drawUniform(12.5, 55.0);
-				Debug.Log("[CustomAsteroids]: new orbit will pass by kerbin in " + delay + " days");
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogDefault", delay));
 				return Orbit.CreateRandomOrbitFlyBy(kerbin, delay);
 			} else {
-				throw new InvalidOperationException("Cannot create stockalike orbits; Kerbin not found!");
+				throw new InvalidOperationException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorDefaultNoKerbin"));
 			}
 		}
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -78,7 +79,8 @@ namespace Starstrider42.CustomAsteroids {
 			case Condition.Operator.Or:
 				return clauses.Any(clause => clause.check());
 			default:
-				throw new InvalidOperationException($"Unexpected combine value: {combine}");
+				throw new InvalidOperationException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadOp", combine));
 			}
 		}
 
@@ -93,7 +95,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// format. The program state shall be unchanged in the event of an exception.</exception>
 		private static GamePredicate parse(string input) {
 			Regex inputTemplate = new Regex("(?<planet>.+)\\s*\\.\\s*(?<pred>\\w+?)(?<type>manned|unmanned)?$", 
-				                      RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+									  RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 			
 			if (inputTemplate.Match(input).Groups[0].Success) {
 				GroupCollection parsed = inputTemplate.Match(input).Groups;
@@ -128,10 +130,12 @@ namespace Starstrider42.CustomAsteroids {
 				case "nowlanded":
 					return new VesselPredicate(planet, VesselPredicate.Test.Landed, type);
 				default:
-					throw new ArgumentException($"Unknown condition '{pred}'", "input");
+					throw new ArgumentException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionInputBadType", pred), nameof (input));
 				}
 			} else {
-				throw new ArgumentException($"Cannot parse '{input}' as a body condition.", "input");
+				throw new ArgumentException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionInputBad", input), nameof (input));
 			}
 		}
 
@@ -148,7 +152,9 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return innerData.ToString();
 			} catch (InvalidOperationException e) {
-				throw new ArgumentException($"Corrupted predicate {innerData} found.", "innerData", e);
+				throw new ArgumentException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadPred", innerData),
+					nameof (innerData), e);
 			}
 		}
 
@@ -291,7 +297,9 @@ namespace Starstrider42.CustomAsteroids {
 					ProgressNode node = ProgressTracking.Instance.FindNode(path);
 					if (node == null) {
 						throw new InvalidOperationException(
-							$"In condition {ToString()}: no such achievement node: {String.Join(".", path)}.");
+							Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionContext", ToString ()) + " "
+							+ Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadAchieve",
+											  String.Join (".", path)));
 					}
 
 					bool result;
@@ -307,7 +315,8 @@ namespace Starstrider42.CustomAsteroids {
 						break;
 					default:
 						throw new InvalidOperationException(
-							$"In condition {ToString()}: no such condition modifier: {whoQualifies}.");
+							Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionContext", ToString ()) + ""
+							+ Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadRestriction", whoQualifies));
 					}
 
 					if (result) {
@@ -323,7 +332,8 @@ namespace Starstrider42.CustomAsteroids {
 			public override string ToString() {
 				foreach (string[] achievement in lookup) {
 					if (achievement.Length < 2) {
-						throw new InvalidOperationException($"Invalid planet achievement: {achievement}");
+						throw new InvalidOperationException(
+							Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadAchieve", achievement));
 					}
 					string achieveType = achievement[0];
 					switch (achievement[1].ToLower()) {
@@ -352,11 +362,13 @@ namespace Starstrider42.CustomAsteroids {
 					case VesselType.Unmanned:
 						return achieveType + whoQualifies;
 					default:
-						throw new InvalidOperationException($"No such condition modifier: {whoQualifies}.");
+						throw new InvalidOperationException(
+							Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadRestriction", whoQualifies));
 					}
 				}
 
-				throw new InvalidOperationException($"Only unknown conditions: {lookup}");
+				throw new InvalidOperationException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateNoAchieve", lookup));
 			}
 		}
 
@@ -396,11 +408,12 @@ namespace Starstrider42.CustomAsteroids {
 					}
 
 					bool correctType = whoQualifies == VesselType.Any
-					                   || (isVesselManned(v) 
+									   || (isVesselManned(v)
 							? whoQualifies == VesselType.Manned 
 							: whoQualifies == VesselType.Unmanned);
 					#if DEBUG
-					Debug.Log($"Vessel {v.GetName()} qualifies as {whoQualifies}: {correctType}");
+					Debug.Log(Localizer.Format ("#autoLOC_CustomAsteroids_LogAchievement",
+												v.GetName (), whoQualifies, correctType));
 					#endif
 
 					if (correctType && v.mainBody == FlightGlobals.Bodies[body]) {
@@ -409,8 +422,8 @@ namespace Starstrider42.CustomAsteroids {
 							return true;
 						case Test.Orbiting:
 							if (!v.LandedOrSplashed
-							    && v.orbit.eccentricity < 1.0
-							    && v.orbit.PeA > v.mainBody.atmosphereDepth) {
+								&& v.orbit.eccentricity < 1.0
+								&& v.orbit.PeA > v.mainBody.atmosphereDepth) {
 								return true;
 							}
 							break;
@@ -421,7 +434,8 @@ namespace Starstrider42.CustomAsteroids {
 							break;
 						default:
 							throw new InvalidOperationException(
-								$"In condition {ToString ()}: no such vessel state: {state}");
+								Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionContext", ToString ()) + " "
+								+ Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadVesssel", state));
 						}
 					}
 				}
@@ -438,7 +452,8 @@ namespace Starstrider42.CustomAsteroids {
 			/// <returns><c>true</c>, if manned, <c>false</c> if unmanned.</returns>
 			private static bool isVesselManned(Vessel v) {
 				#if DEBUG
-				Debug.Log($"Vessel {v.GetName()} has crew {v.GetVesselCrew().Count}/{v.GetCrewCapacity()}");
+				Debug.Log(Localizer.Format ("#autoLOC_CustomAsteroids_LogCrew",
+											v.GetName(), v.GetVesselCrew ().Count, v.GetCrewCapacity ()));
 				#endif
 
 				// v.GetCrewCapacity() and v.GetCrewCount() appear to only work if vessel is loaded
@@ -467,7 +482,8 @@ namespace Starstrider42.CustomAsteroids {
 					desc += "nowlanded";
 					break;
 				default:
-					throw new InvalidOperationException($"No such vessel state: {state}");
+					throw new InvalidOperationException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadVesssel", state));
 				}
 
 				switch (whoQualifies) {
@@ -477,7 +493,8 @@ namespace Starstrider42.CustomAsteroids {
 				case VesselType.Unmanned:
 					return desc + whoQualifies;
 				default:
-					throw new InvalidOperationException($"No such vessel state filter: {whoQualifies}");
+					throw new InvalidOperationException (
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorConditionStateBadRestriction", whoQualifies));
 				}
 			}
 

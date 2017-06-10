@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -42,7 +43,7 @@ namespace Starstrider42.CustomAsteroids {
 					allRefs.defaultRef = curSet.config.GetValue("defaultRef");
 					foreach (ConfigNode curNode in curSet.config.nodes) {
 						#if DEBUG
-						Debug.Log("[CustomAsteroids]: ConfigNode '" + curNode + "' loaded");
+						Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogConfig", curNode));
 						#endif
 						try {
 							ReferencePlane plane = null;
@@ -61,22 +62,25 @@ namespace Starstrider42.CustomAsteroids {
 							}
 						} catch (Exception e) {
 							var nodeName = curNode.GetValue("name");
-							Debug.LogError($"[CustomAsteroids]: failed to load reference plane '{nodeName}'.");
+							var error = Localizer.Format ("#autoLOC_CustomAsteroids_ErrorLoadRefPlane", nodeName);
+							Debug.LogError("[CustomAsteroids]: " + error);
 							Debug.LogException(e);
-							Util.errorToPlayer (e, $"Could not load reference plane \"{nodeName}\".");
+							Util.errorToPlayer (e, error);
 						}	// Attempt to parse remaining populations
 					}
 				}
 
 				#if DEBUG
 				foreach (ReferencePlane x in allRefs.refs) {
-					Debug.Log($"[CustomAsteroids]: reference plane '{x}' loaded");
+					Debug.Log($"[CustomAsteroids]: "
+							  + Localizer.Format ("#autoLOC_CustomAsteroids_LogLoadRefPlane", x));
 				}
 				#endif
 
 				if (allRefs.defaultRef != null && allRefs.getReferenceSet() == null) {
-					Debug.LogError($"[CustomAsteroids]: no such reference plane '{allRefs.defaultRef}'");
-					Util.errorToPlayer("Could not find reference plane \"{0}\".", allRefs.defaultRef);
+					string error = Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoDefaultPlane", allRefs.defaultRef);
+					Debug.LogError($"[CustomAsteroids]: " + error);
+					Util.errorToPlayerLoc (error);
 					allRefs.defaultRef = null;
 				}
 

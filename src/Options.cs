@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -72,7 +73,7 @@ namespace Starstrider42.CustomAsteroids {
 				var outFile = new System.IO.FileInfo(optionFile());
 				System.IO.Directory.CreateDirectory(outFile.DirectoryName);
 				parentNode.Save(outFile.FullName);
-				Debug.Log("[CustomAsteroids]: settings saved");
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOptionsSave"));
 			} finally {
 				versionNumber = trueVersion;
 			}
@@ -85,7 +86,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// file, or the default settings if no such file exists or the file is corrupted.</returns>
 		internal static Options load() {
 			try {
-				Debug.Log("[CustomAsteroids]: loading settings...");
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOptionsLoad1"));
 
 				var allOptions = loadNewStyleOptions();
 				if (allOptions == null) {
@@ -98,14 +99,15 @@ namespace Starstrider42.CustomAsteroids {
 					updateOptionFile(allOptions);
 				}
 
-				Debug.Log("[CustomAsteroids]: settings loaded");
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOptionsLoad2"));
 
 				return allOptions;
 			} catch (ArgumentException e) {
-				Debug.LogError ("[CustomAsteroids]: Could not load options; reverting to default.");
+				Debug.LogError ("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOptionsNoLoad"));
 				Debug.LogException (e);
 				ScreenMessages.PostScreenMessage (
-					"[CustomAsteroids]: Could not load CustomAsteroids options. Cause: " + e.Message,
+					"[CustomAsteroids]: " + Localizer.Format (
+						"#autoLOC_CustomAsteroids_ErrorBasic", "#autoLOC_CustomAsteroids_LogOptionsNoLoad", e.Message),
 					10.0f, ScreenMessageStyle.UPPER_CENTER);
 				return new Options();
 			} catch {
@@ -138,8 +140,8 @@ namespace Starstrider42.CustomAsteroids {
 		/// Reads a pre-MM options file.
 		/// </summary>
 		/// <returns>The options in <c>oldOptionFile()</c>, or the default for any unspecified
-		///     option. The <c>versionNumber</c> field shall contain the version number
-		///     of the options file, or "" if no such file exists.</returns>
+		///	 option. The <c>versionNumber</c> field shall contain the version number
+		///	 of the options file, or "" if no such file exists.</returns>
 		/// <exception cref="ArgumentException">Thrown if there is a syntax error in
 		/// 	the options file.</exception>
 		private static Options loadOldStyleOptions() {
@@ -172,13 +174,16 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				oldData.save();
 				if (oldData.versionNumber.Length == 0) {
-					Debug.Log ("[CustomAsteroids]: no config file found at " + optionFile () + "; creating new one");
+					Debug.Log ("[CustomAsteroids]: "
+							   + Localizer.Format ("#autoLOC_CustomAsteroids_LogNoOptions", optionFile ()));
 				} else {
-					Debug.Log ("[CustomAsteroids]: loaded config file from version " + oldData.versionNumber +
-						"; updating to version " + latestVersion ());
+					Debug.Log ("[CustomAsteroids]: "
+							   + Localizer.Format ("#autoLOC_CustomAsteroids_LogOldOptions",
+												   oldData.versionNumber,
+												   latestVersion ()));
 				}
 			} catch (Exception e) {
-				Debug.LogError ("[CustomAsteroids]: settings could not be saved");
+				Debug.LogError ("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOptionsNoSave"));
 				Debug.LogException (e);
 			}
 		}
@@ -217,15 +222,16 @@ namespace Starstrider42.CustomAsteroids {
 		internal Pair<float, float> getUntrackedTimes() {
 			if (minUntrackedLifetime < 0.0f) {
 				throw new InvalidOperationException(
-					$"Minimum untracked time may not be negative (gave {minUntrackedLifetime})");
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOptionsBadMin", minUntrackedLifetime));
 			}
 			if (maxUntrackedLifetime <= 0.0f) {
 				throw new InvalidOperationException(
-					$"Maximum untracked time must be positive (gave {maxUntrackedLifetime})");
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOptionsBadMax", maxUntrackedLifetime));
 			}
 			if (maxUntrackedLifetime < minUntrackedLifetime) {
-				throw new InvalidOperationException($"Maximum untracked time must be at least minimum time "
-				                                    + "(gave {minUntrackedLifetime} > {maxUntrackedLifetime})");
+				throw new InvalidOperationException (
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOptionsBadRange",
+								  minUntrackedLifetime, maxUntrackedLifetime));
 			}
 			return new Pair<float, float>(minUntrackedLifetime, maxUntrackedLifetime);
 		}

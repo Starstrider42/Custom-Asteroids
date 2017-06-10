@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using KSP.Localization;
 using UnityEngine;
 
 // Is there a good way to sync version number between here, Xamarin solution, doxygen, the markdown files, and Git tags?
@@ -28,7 +29,8 @@ namespace Starstrider42.CustomAsteroids {
 				allowedPops = PopulationLoader.load();
 				knownFrames = ReferenceLoader.load();
 
-				Debug.Log("[CustomAsteroids]: " + allowedPops.getTotalRate() + " new discoveries per Earth day.");
+				Debug.Log("[CustomAsteroids]: "
+						  + Localizer.Format ("#autoLOC_CustomAsteroids_LogLoadedStatus", allowedPops.getTotalRate ()));
 			} catch {
 				// Ensure the contents of AsteroidManager are predictable even in the event of an exception
 				// Though an exception thrown by a static constructor is basically unrecoverable...
@@ -99,7 +101,7 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return RandomDist.weightedSample(typeRatios.asPairList());
 			} catch (ArgumentException e) {
-				throw new InvalidOperationException("Could not draw asteroid type.", e);
+				throw new InvalidOperationException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoClass2"), e);
 			}
 		}
 
@@ -117,7 +119,8 @@ namespace Starstrider42.CustomAsteroids {
 			//		be initialized after FlightGlobals
 			CelestialBody theBody = FlightGlobals.Bodies.Find(body => body.name == name);
 			if (theBody == null) {
-				throw new ArgumentException($"Could not find celestial body named {name}", "name");
+				throw new ArgumentException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoPlanet", name), nameof (name));
 			}
 			return theBody;
 		}

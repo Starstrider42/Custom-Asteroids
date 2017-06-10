@@ -1,4 +1,5 @@
 ﻿using System;
+using KSP.Localization;
 
 namespace Starstrider42 {
 
@@ -65,19 +66,22 @@ namespace Starstrider42 {
 			/// 	is positive.</exception> 
 			internal static T weightedSample<T>(System.Collections.Generic.IList<Pair<T,double>> weightedChoices) {
 				if (weightedChoices.Count == 0) {
-					throw new ArgumentException("Cannot choose from an empty set.", "weightedChoices");
+					throw new ArgumentException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoSample"), nameof (weightedChoices));
 				}
 				double norm = 0.0;
 				foreach (Pair<T,double> choice in weightedChoices) {
 					if (choice.second < 0) {
-						throw new ArgumentOutOfRangeException("weightedChoices",
-							$"The weight of any option may not be negative (gave {choice.second} for {choice.first}.)");
+						throw new ArgumentOutOfRangeException(
+							nameof (weightedChoices),
+							Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNegativeSample",
+											  choice.second, choice.first));
 					}
 					norm += choice.second;
 				}
 				if (norm <= 0.0) {
-					throw new ArgumentOutOfRangeException("weightedChoices",
-						"The weights of the options may not all be zero.");
+					throw new ArgumentOutOfRangeException(
+						nameof (weightedChoices), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorZeroSample"));
 				}
 
 				// important: no exceptions beyond this point
@@ -127,9 +131,8 @@ namespace Starstrider42 {
 			/// be unchanged in the event of an exception.</exception> 
 			internal static double drawUniform(double a, double b) {
 				if (b < a) {
-					throw new ArgumentOutOfRangeException("a",
-						"In a uniform distribution, the first parameter must be no more than the second "
-							+ $"(gave {a} < {b})");
+					throw new ArgumentOutOfRangeException(
+						nameof (a), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorUniformRange", a, b));
 				}
 
 				// IMPORTANT: don't let anything throw beyond this point
@@ -151,14 +154,12 @@ namespace Starstrider42 {
 			/// exception.</exception> 
 			internal static double drawLogUniform(double a, double b) {
 				if (b < a) {
-					throw new ArgumentOutOfRangeException("a",
-						"In a log-uniform distribution, the first parameter must be no more than the second "
-							+ $"(gave {a} < {b})");
+					throw new ArgumentOutOfRangeException(
+						nameof (a), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorLogUniformRange", a, b));
 				}
 				if (a <= 0) {
-					throw new ArgumentOutOfRangeException("a",
-						"In a log-uniform distribution, all parameters must be positive "
-							+ $"(gave a = {a}, b = {b})");
+					throw new ArgumentOutOfRangeException(
+						nameof (a), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorLogUniformPositive", a, b));
 				}
 
 				// IMPORTANT: don't let anything throw beyond this point
@@ -177,8 +178,8 @@ namespace Starstrider42 {
 			/// shall be unchanged in the event of an exception.</exception>
 			internal static double drawExponential(double mean) {
 				if (mean < 0.0) {
-					throw new ArgumentOutOfRangeException("mean",
-						$"An exponential distribution cannot have a negative mean (gave {mean})");
+					throw new ArgumentOutOfRangeException(
+						nameof (mean), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorExponentialMean", mean));
 				}
 				// IMPORTANT: don't let anything throw beyond this point
 				return -mean * Math.Log(UnityEngine.Random.value);
@@ -194,8 +195,8 @@ namespace Starstrider42 {
 			/// shall be unchanged in the event of an exception.</exception>
 			internal static double drawRayleigh(double sigma) {
 				if (sigma < 0.0) {
-					throw new ArgumentOutOfRangeException("sigma",
-						$"A Rayleigh distribution cannot have a negative sigma (gave {sigma})");
+					throw new ArgumentOutOfRangeException(
+						nameof (sigma), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorRayleighMean", sigma));
 				}
 				// IMPORTANT: don't let anything throw beyond this point
 				return Math.Sqrt(-2.0 * sigma * sigma * Math.Log(UnityEngine.Random.value));
@@ -214,8 +215,8 @@ namespace Starstrider42 {
 			/// shall be unchanged in the event of an exception.</exception> 
 			internal static double drawNormal(double mean, double stddev) {
 				if (stddev < 0.0) {
-					throw new ArgumentOutOfRangeException("stddev",
-						$"A normal distribution cannot have a negative width (gave {stddev})");
+					throw new ArgumentOutOfRangeException(
+						nameof (stddev), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNormalStd", stddev));
 				}
 
 				// IMPORTANT: don't let anything throw beyond this point
@@ -251,8 +252,8 @@ namespace Starstrider42 {
 			/// shall be unchanged in the event of an exception.</exception> 
 			internal static double drawLognormal(double mu, double sigma) {
 				if (sigma < 0.0) {
-					throw new ArgumentOutOfRangeException("sigma",
-						$"A lognormal distribution cannot have a negative width (gave {sigma})");
+					throw new ArgumentOutOfRangeException(
+						nameof (sigma), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorLogNormWidth", sigma));
 				}
 
 				// IMPORTANT: don't let anything throw beyond this point
@@ -275,12 +276,12 @@ namespace Starstrider42 {
 			/// shall be unchanged in the event of an exception.</exception> 
 			internal static double drawGamma(double k, double theta) {
 				if (k <= 0.0) {
-					throw new ArgumentOutOfRangeException("k",
-						$"A gamma distribution cannot have a negative shape parameter (gave k = {k})");
+					throw new ArgumentOutOfRangeException(
+						nameof (k), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorGammaShape", k));
 				}
 				if (theta <= 0.0) {
-					throw new ArgumentOutOfRangeException("theta",
-						$"A gamma distribution cannot have a negative scale parameter (gave theta = {theta})");
+					throw new ArgumentOutOfRangeException(
+						nameof (theta), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorGammaScale", theta));
 				}
 
 				// IMPORTANT: don't let anything throw beyond this point
@@ -317,12 +318,12 @@ namespace Starstrider42 {
 			/// shall be unchanged in the event of an exception.</exception>
 			internal static double drawBeta(double alpha, double beta) {
 				if (alpha <= 0.0) {
-					throw new ArgumentOutOfRangeException("alpha",
-						$"A beta distribution cannot have a negative shape parameter (gave alpha = {alpha})");
+					throw new ArgumentOutOfRangeException(
+						nameof (alpha), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorBetaAlpha", alpha));
 				}
 				if (beta <= 0.0) {
-					throw new ArgumentOutOfRangeException("beta",
-						$"A beta distribution cannot have a negative shape parameter (gave beta = {beta})");
+					throw new ArgumentOutOfRangeException(
+						nameof (beta), Localizer.Format ("#autoLOC_CustomAsteroids_ErrorBetaBeta", beta));
 				}
 
 				// IMPORTANT: don't let anything throw beyond this point

@@ -1,4 +1,5 @@
 ﻿using System;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -53,13 +54,13 @@ namespace Starstrider42.CustomAsteroids {
 			// be initialized after FlightGlobals
 			CelestialBody orbitee = AsteroidManager.getPlanetByName(centralBody);
 
-			Debug.Log($"[CustomAsteroids]: drawing orbit from {getName ()}");
+			Debug.Log($"[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOrbitDraw", getName ()));
 
 			// Properties with only one reasonable parametrization
 			double e = wrappedDraw(eccentricity, getName (), "eccentricity");
 			if (e < 0.0) {
-				throw new InvalidOperationException(
-					$"Asteroids in group '{getName ()}' cannot have negative eccentricity (generated {e})");
+				throw new InvalidOperationException (
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOrbitBadEcc", getName (), e));
 			}
 			// Sign of inclination is redundant with 180-degree shift in longitude of ascending node
 			// So it's ok to just have positive inclinations
@@ -78,7 +79,7 @@ namespace Starstrider42.CustomAsteroids {
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{getName ()}' cannot describe periapsis position using {periapsis.getParam()}");
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOrbitBadPeri", getName (), periapsis.getParam ()));
 			}
 
 			// Semimajor axis
@@ -94,19 +95,19 @@ namespace Starstrider42.CustomAsteroids {
 			case SizeRange.Type.Apoapsis:
 				if (e > 1.0) {
 					throw new InvalidOperationException(
-						$"Asteroids in group '{getName ()}' cannot constrain apoapsis on unbound orbits (eccentricity {e})");
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOrbitHyperbolicApo", getName (), e));
 				}
 				a = size / (1.0 + e);
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{getName ()}' cannot describe orbit size using {orbitSize.getParam()}");
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOrbitBadSize", getName (), orbitSize.getParam ()));
 			}
 
 			// Mean anomaly at given epoch
 			double mEp, epoch;
 			double phase = wrappedDraw(orbitPhase, getName (), "orbitPhase");
-			switch (orbitPhase.getParam()) {
+			switch (orbitPhase.getParam ()) {
 			case PhaseRange.PhaseType.MeanAnomaly:
 				// Mean anomaly is the ONLY orbital angle that needs to be given in radians
 				mEp = Math.PI / 180.0 * phase;
@@ -116,9 +117,9 @@ namespace Starstrider42.CustomAsteroids {
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{getName ()}' cannot describe orbit position using type {orbitSize.getParam()}");
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOrbitBadPhase", getName (), orbitPhase.getParam ()));
 			}
-			switch (orbitPhase.getEpoch()) {
+			switch (orbitPhase.getEpoch ()) {
 			case PhaseRange.EpochType.GameStart:
 				epoch = 0.0;
 				break;
@@ -127,7 +128,7 @@ namespace Starstrider42.CustomAsteroids {
 				break;
 			default:
 				throw new InvalidOperationException(
-					$"Asteroids in group '{getName ()}' cannot describe orbit position using type {orbitSize.getParam()}");
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOrbitBadEpoch", getName (), orbitPhase.getEpoch ()));
 			}
 
 			// Fix accidentally hyperbolic orbits
@@ -135,8 +136,8 @@ namespace Starstrider42.CustomAsteroids {
 				a = -a;
 			}
 
-			Debug.Log($"[CustomAsteroids]: new orbit at {a} m, e = {e}, i = {i}, "
-			          + $"aPe = {aPe}, lAn = {lAn}, mEp = {mEp} at epoch {epoch}");
+			Debug.Log($"[CustomAsteroids]: "
+				+ Localizer.Format ("#autoLOC_CustomAsteroids_LogOrbit", a, e, i, aPe, lAn, mEp, epoch));
 
 			// Does Orbit(...) throw exceptions?
 			Orbit newOrbit = new Orbit(i, e, a, lAn, aPe, mEp, epoch, orbitee);
@@ -191,7 +192,7 @@ namespace Starstrider42.CustomAsteroids {
 				Vector3d v = orbit.getOrbitalVelocityAtUT(ut);
 
 				#if DEBUG
-				Debug.Log($"Transforming orbit from frame {plane}");
+				Debug.Log ("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogRotate", plane));
 				#endif
 
 				Vector3d xNew = plane.toDefaultFrame(x);
@@ -199,7 +200,7 @@ namespace Starstrider42.CustomAsteroids {
 
 				orbit.UpdateFromStateVectors(xNew, vNew, orbit.referenceBody, ut);
 			} else if (refPlane != null) {
-				throw new InvalidOperationException($"No such reference frame: {refPlane}");
+				throw new InvalidOperationException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOrbitRotate", refPlane));
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using KSP.Localization;
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>
@@ -18,19 +19,19 @@ namespace Starstrider42.CustomAsteroids {
 		protected const string PLANET_FORMAT = "(?<planet>.+)";
 		/// <summary>Parse format for planet properties.</summary>
 		protected const string PROP_FORMAT = "(?<prop>rad|soi|sma|per|apo|ecc|inc|(a|l)pe|lan|mn(a|l)0"
-		                                     + "|p(rot|sol|orb)|v(esc|orb|min|max))";
+											 + "|p(rot|sol|orb)|v(esc|orb|min|max))";
 		/// <summary>Parse format for planets, with properties.</summary>
 		protected const string PLANET_PROP = PLANET_FORMAT + "\\s*\\.\\s*" + PROP_FORMAT;
 
 		// Unfortunately, planet name can have pretty much any character
 		/// <summary>Defines the syntax for a Ratio declaration.</summary>
 		private static readonly Regex ratioDecl = new Regex("Ratio\\(\\s*" + PLANET_PROP + "\\s*,"
-			                                          + "\\s*(?<ratio>[-+.e\\d]+)\\s*\\)", 
-			                                          RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+													  + "\\s*(?<ratio>[-+.e\\d]+)\\s*\\)",
+													  RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 		/// <summary>Defines the syntax for an Offset declaration.</summary>
 		private static readonly Regex sumDecl = new Regex("Offset\\(\\s*" + PLANET_PROP + "\\s*,"
-			                                        + "\\s*(?<incr>[-+.e\\d]+)\\s*\\)", 
-			                                        RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+													+ "\\s*(?<incr>[-+.e\\d]+)\\s*\\)",
+													RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
 		// For some reason, ConfigNode can't load a SizeRange unless SizeRange has access to these
 		//	members -- even though ConfigNodes seem to completely ignore permissions in all other cases
@@ -101,11 +102,10 @@ namespace Starstrider42.CustomAsteroids {
 				return RandomDist.drawNormal(avg, stdDev);
 			case Distribution.LogNormal:
 				if (avg <= 0.0) {
-					throw new ArgumentException($"Lognormal distribution must have positive mean (gave {avg}).");
+					throw new ArgumentException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorLogNormMean", avg));
 				}
 				if (stdDev <= 0.0) {
-					throw new ArgumentException(
-						$"Lognormal distribution must have positive standard deviation (gave {stdDev}).");
+					throw new ArgumentException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorLogNormStd", stdDev));
 				}
 				double quad = Math.Sqrt(avg * avg + stdDev * stdDev);
 				double mu = Math.Log(avg * avg / quad);
@@ -117,11 +117,10 @@ namespace Starstrider42.CustomAsteroids {
 				return RandomDist.drawExponential(avg);
 			case Distribution.Gamma:
 				if (avg <= 0.0) {
-					throw new ArgumentException($"Gamma distribution must have positive mean (gave {avg}).");
+					throw new ArgumentException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorGammaMean", avg));
 				}
 				if (stdDev <= 0.0) {
-					throw new ArgumentException(
-						$"Gamma distribution must have positive standard deviation (gave {stdDev}).");
+					throw new ArgumentException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorGammaStd", stdDev));
 				}
 				double k = (avg / stdDev);
 				k = k * k;
@@ -130,11 +129,10 @@ namespace Starstrider42.CustomAsteroids {
 			case Distribution.Beta:
 				if (avg <= min || avg >= max) {
 					throw new ArgumentException(
-						$"Beta distribution must have mean between min and max (gave {min} < {avg} < {max}).");
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorBetaMean", min, avg, max));
 				}
 				if (stdDev <= 0.0) {
-					throw new ArgumentException(
-						$"Beta distribution must have positive standard deviation (gave {stdDev}).");
+					throw new ArgumentException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorBetaStd", stdDev));
 				}
 				double scaledMean = (avg - min) / (max - min);
 				double scaledStdDev = stdDev / (max - min);
@@ -146,7 +144,8 @@ namespace Starstrider42.CustomAsteroids {
 			case Distribution.Isotropic: 
 				return RandomDist.drawIsotropic();
 			default: 
-				throw new InvalidOperationException($"Invalid distribution specified: {dist}.");
+				throw new InvalidOperationException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorBadDistribution", dist));
 			}
 		}
 
@@ -214,7 +213,7 @@ namespace Starstrider42.CustomAsteroids {
 				double ratio;
 				if (!Double.TryParse(parsed["ratio"].ToString(), out ratio)) {
 					throw new ArgumentException(
-						$"In {rawValue}, cannot parse '{parsed["ratio"]}' as a floating point number");
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoFloat", rawValue, parsed["ratio"]));
 				}
 				retVal = getPlanetProperty(parsed["planet"].ToString(), parsed["prop"].ToString()) * ratio;
 			} else if (sumDecl.Match(rawValue).Groups[0].Success) {
@@ -222,11 +221,12 @@ namespace Starstrider42.CustomAsteroids {
 				double delta;
 				if (!Double.TryParse(parsed["incr"].ToString(), out delta)) {
 					throw new ArgumentException(
-						$"In {rawValue}, cannot parse '{parsed["incr"]}' as a floating point number");
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoFloat", rawValue, parsed["incr"]));
 				}
 				retVal = getPlanetProperty(parsed["planet"].ToString(), parsed["prop"].ToString()) + delta;
 			} else if (!Double.TryParse(rawValue, out retVal)) {
-				throw new ArgumentException($"Cannot parse '{rawValue}' as a floating point number", "rawValue");
+				throw new ArgumentException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoFloat2", rawValue), nameof (rawValue));
 			}
 			return retVal;
 		}
@@ -261,13 +261,15 @@ namespace Starstrider42.CustomAsteroids {
 				if (body.solarRotationPeriod) {
 					return body.solarDayLength;
 				} else {
-					throw new ArgumentException($"Celestial body '{planet}' does not have a solar day", "property");
+					throw new ArgumentException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorPlanetNoDay", planet), nameof (property));
 				}
 			case "vesc":
 				return Math.Sqrt(2 * body.gravParameter / body.Radius);
 			default:
 				if (body.GetOrbitDriver() == null) {
-					throw new ArgumentException($"Celestial body '{planet}' does not have an orbit", "planet");
+					throw new ArgumentException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorPlanetNoOrbit", planet), nameof (planet));
 				}
 				Orbit orbit = body.GetOrbit();
 
@@ -313,7 +315,8 @@ namespace Starstrider42.CustomAsteroids {
 				case "vmax":
 					return orbit.getOrbitalSpeedAtDistance(orbit.PeR);
 				default:
-					throw new ArgumentException($"Unsupported celestial body property: {property}", "property");
+					throw new ArgumentException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorPlanetBadProperty", property), nameof (property));
 				}
 			}
 		}

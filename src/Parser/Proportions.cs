@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using KSP.Localization;
 
 namespace Starstrider42.CustomAsteroids {
 	/// <summary>
@@ -51,18 +52,20 @@ namespace Starstrider42.CustomAsteroids {
 		/// format. The program state shall be unchanged in the event of an exception.</exception>
 		private static Pair<string, double> parse(string input) {
 			Regex inputTemplate = new Regex("(?<rate>[-+.e\\d]+)\\s+(?<id>\\w+)", 
-				                      RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+									  RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
 			if (inputTemplate.Match(input).Groups[0].Success) {
 				GroupCollection parsed = inputTemplate.Match(input).Groups;
 				double rate;
 				if (!Double.TryParse(parsed["rate"].ToString(), out rate)) {
-					throw new ArgumentException($"In conditions, cannot parse '{parsed["rate"]}' as a floating point number");
+					throw new ArgumentException(
+						Localizer.Format ("#autoLOC_CustomAsteroids_ErrorProportionBadRate", parsed["rate"]));
 				}
 
 				return new Pair<string, double>(parsed["id"].ToString(), rate);
 			} else {
-				throw new ArgumentException($"In conditions, cannot parse '{input}' as a number and name");
+				throw new ArgumentException (
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorProportionBadFormat", input));
 			}
 		}
 

@@ -1,4 +1,5 @@
 using System;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids
@@ -43,14 +44,14 @@ namespace Starstrider42.CustomAsteroids
         {
             CelestialBody body = AsteroidManager.getPlanetByName (targetBody);
 
-            Debug.Log ("[CustomAsteroids]: drawing orbit from " + getName ());
+            Debug.Log ("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOrbitDraw", getName ()));
 
             double deltaV = wrappedDraw (vSoi, getName (), "vSoi");
             double deltaT = wrappedDraw (warnTime, getName (), "warnTime");
 
             if (deltaV <= 0.0) {
                 throw new InvalidOperationException (
-                    $"Asteroids in group '{getName ()}' must have positive SOI entry speed (generated {deltaV})");
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadVInf", getName (), deltaV));
             }
             // Negative deltaT is allowed
 
@@ -60,7 +61,7 @@ namespace Starstrider42.CustomAsteroids
                 double b = wrappedDraw (approach, getName (), "approach");
                 if (b < 0.0) {
                     throw new InvalidOperationException (
-                        $"Asteroids in group '{getName ()}' cannot have negative impact parameters (generated {b})");
+                        Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadB", getName (), b));
                 }
                 double a = -body.gravParameter / (deltaV * deltaV);
                 double x = b / a;
@@ -70,16 +71,18 @@ namespace Starstrider42.CustomAsteroids
                 peri = wrappedDraw (approach, getName (), "approach");
                 if (peri < 0.0) {
                     throw new InvalidOperationException (
-                        $"Asteroids in group '{getName ()}' cannot have negative periapses (generated {peri})");
+                        Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadPeri", getName (), peri));
                 }
                 break;
             default:
                 throw new InvalidOperationException (
-                    $"Asteroids in group '{getName ()}' cannot describe approach distance using type {approach.getParam ()}");
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadApproach", getName (), approach.getParam ()));
             }
 #if DEBUG
-            Debug.Log ($"[CustomAsteroids]: Asteroid will pass {peri} m from {targetBody} in {deltaT / (6.0 * 3600.0)} Kerbin days. "
-                      + $"V_infinity = {deltaV} m/s.");
+            Debug.Log ($"[CustomAsteroids]: "
+                       + Localizer.Format ("#autoLOC_CustomAsteroids_LogFlyby",
+                                          peri, targetBody, deltaT / (6.0 * 3600.0), deltaV)
+                      );
 #endif
 
             Orbit newOrbit = createHyperbolicOrbit (body, peri, deltaV, Planetarium.GetUniversalTime () + deltaT);
@@ -106,10 +109,12 @@ namespace Starstrider42.CustomAsteroids
         static Orbit createHyperbolicOrbit (CelestialBody body, double periapsis, double vInf, double utPeri)
         {
             if (vInf <= 0.0) {
-                throw new ArgumentException ($"Hyperbolic orbits must have positive excess speed, gave {vInf} vInf");
+                throw new ArgumentException (
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorHyperBadVInf", vInf), nameof (vInf));
             }
             if (periapsis < 0.0) {
-                throw new ArgumentException ($"Orbits cannot have a negative periapsis, gave {periapsis} periapsis");
+                throw new ArgumentException (
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorHyperBadPeri", periapsis), nameof (periapsis));
             }
 
             double a = -body.gravParameter / (vInf * vInf);
@@ -120,8 +125,8 @@ namespace Starstrider42.CustomAsteroids
             double lAn = RandomDist.drawAngle ();
             double aPe = RandomDist.drawAngle ();
 
-            Debug.Log ($"[CustomAsteroids]: new hyperbolic orbit around {body.bodyName} at {a} m, "
-                      + $"e = {e}, i = {i}, aPe = {aPe}, lAn = {lAn}");
+            Debug.Log ($"[CustomAsteroids]: "
+                       + Localizer.Format ("#autoLOC_CustomAsteroids_LogHyperOrbit", body.bodyName, a, e, i, aPe, lAn));
 
             return new Orbit (i, e, a, lAn, aPe, 0.0, utPeri, body);
         }
@@ -145,18 +150,18 @@ namespace Starstrider42.CustomAsteroids
         {
             if (!needsSoITransition (oldOrbit)) {
                 throw new InvalidOperationException (
-                    $"Orbit is in the correct SoI ({oldOrbit.referenceBody}); no patching needed.");
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiInvalid", oldOrbit.referenceBody));
             }
             if (oldOrbit.referenceBody.GetOrbitDriver () == null) {
                 throw new ArgumentException (
-                    $"Object does not orbit a body with a parent, but {oldOrbit.referenceBody}.", nameof (oldOrbit));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoParent", oldOrbit.referenceBody));
             }
             CelestialBody oldParent = oldOrbit.referenceBody;
             CelestialBody newParent = oldParent.orbit.referenceBody;
 
             double utSoi = getSoiCrossing (oldOrbit);
 #if DEBUG
-            Debug.Log ($"Patching SoI transition from {oldParent} to {newParent} at UT {utSoi}");
+            Debug.Log (Localizer.Format ("#autoLOC_CustomAsteroids_LogSoi", oldParent, newParent, utSoi));
 #endif
             // Need position/velocity relative to newParent, not oldParent or absolute
             Vector3d xNewParent = oldOrbit.getRelativePositionAtUT (utSoi)
@@ -207,16 +212,18 @@ namespace Starstrider42.CustomAsteroids
 
             double soi = hyperbolic.referenceBody.sphereOfInfluence;
             if (double.IsInfinity (soi) || double.IsNaN (soi)) {
-                throw new ArgumentException ($"Body {hyperbolic.referenceBody} does not have a sphere of influence.",
+                throw new ArgumentException (
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoSoi", hyperbolic.referenceBody),
                     nameof (hyperbolic));
             }
-            if (hyperbolic.eccentricity < 1.0 && hyperbolic.ApR > soi) {
-                throw new ArgumentException ($"Orbit {hyperbolic} does not leave SoI.", nameof (hyperbolic));
+            if (hyperbolic.eccentricity < 1.0 && hyperbolic.ApR < soi) {
+                throw new ArgumentException (
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoExit", hyperbolic), nameof (hyperbolic));
             }
 
             double innerUT = hyperbolic.epoch - hyperbolic.ObTAtEpoch;
             double outerUT = innerUT;
-            double pseudoPeriod = -2.0 * Math.PI / hyperbolic.GetMeanMotion (hyperbolic.semiMajorAxis);
+            double pseudoPeriod = Math.Abs (2.0 * Math.PI / hyperbolic.GetMeanMotion (hyperbolic.semiMajorAxis));
 
             if (innerUT > Planetarium.GetUniversalTime ()) {
                 // Search for SoI entry

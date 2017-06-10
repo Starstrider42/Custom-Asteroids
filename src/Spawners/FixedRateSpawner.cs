@@ -1,3 +1,4 @@
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -47,7 +48,8 @@ namespace Starstrider42.CustomAsteroids {
 			// More than one asteroid per tick is unlikely even at 100,000×
 			while (Planetarium.GetUniversalTime() > nextAsteroid) {
 				if (areAsteroidsTrackable()) {
-					Debug.Log("[FixedRateSpawner]: asteroid discovered at UT " + nextAsteroid);
+					Debug.Log("[FixedRateSpawner]: "
+							  + Localizer.Format ("#autoLOC_CustomAsteroids_LogSpawnInterval", nextAsteroid));
 					spawnAsteroid();
 				}
 

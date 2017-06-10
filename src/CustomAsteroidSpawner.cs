@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -35,7 +36,8 @@ namespace Starstrider42.CustomAsteroids {
 				this.spawner = new StockalikeSpawner();
 				break;
 			default:
-				throw new System.InvalidOperationException($"Unknown spawner type: {spawnerType}");
+				throw new System.InvalidOperationException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoSpawner", spawnerType));
 			}
 		}
 
@@ -62,10 +64,10 @@ namespace Starstrider42.CustomAsteroids {
 					scen.StopAllCoroutines();
 					Destroy(scen);
 				}
-				Debug.Log("[CustomAsteroids]: stock spawner has been shut down.");
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogKillSpawner"));
 			} else {
 				#if DEBUG
-				Debug.Log("[CustomAsteroids]: stock spawner not found, doing nothing.");
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogNoSpawner"));
 				#endif
 			}
 		}
@@ -97,7 +99,7 @@ namespace Starstrider42.CustomAsteroids {
 				}
 			}
 			foreach (Vessel v in newAsteroids) {
-				Debug.Log ("[CustomAsteroids]: deleting unauthorized asteroid " + v.vesselName);
+				Debug.Log ("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogKillAsteroid", v.vesselName));
 				HighLogic.CurrentGame.DestroyVessel(v);
 			}
 		}
@@ -108,7 +110,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// 
 		/// @see[Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.Start.html)
 		internal void Start() {
-			Debug.Log("[CustomAsteroids]: Booting asteroid driver...");
+			Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogStart"));
 			driverRoutine = driver();
 			StartCoroutine(driverRoutine);
 		}
@@ -120,7 +122,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// @see [Unity Documentation](http://docs.unity3d.com/Documentation/ScriptReference/MonoBehaviour.OnDestroy.html)
 		internal void OnDestroy() {
 			if (driverRoutine != null) {
-				Debug.Log("[CustomAsteroids]: Shutting down asteroid driver...");
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogStop"));
 				StopCoroutine(driverRoutine);
 			}
 		}
@@ -128,12 +130,13 @@ namespace Starstrider42.CustomAsteroids {
 		/// <summary>Controls scheduling of asteroid discovery and loss. Actual asteroid code is 
 		/// delegated to <c>spawner</c>.</summary>
 		private IEnumerator<WaitForSeconds> driver() {
-			Debug.Log("[CustomAsteroids]: Asteroid driver started.");
+			Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogDriverOk"));
 			// Loop will be terminated by StopCoroutine
 			while (true) {
 				float waitSeconds = spawner.asteroidCheck();
 				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Next check in " + waitSeconds + " s.");
+				Debug.Log("[CustomAsteroids]: "
+						  + Localizer.Format ("#autoLOC_CustomAsteroids_LogDriverTick", waitSeconds));
 				#endif
 				yield return new WaitForSeconds(waitSeconds);
 			}
@@ -158,9 +161,6 @@ namespace Starstrider42.CustomAsteroids {
 		public override void OnLoad(ConfigNode node) {
 			base.OnLoad(node);
 
-			#if DEBUG
-			Debug.Log("[CustomAsteroids]: full node = " + node);
-			#endif
 			ConfigNode thisNode = node.GetNode("SpawnState");
 			if (thisNode != null) {
 				ConfigNode.LoadObjectFromConfig(this, thisNode);

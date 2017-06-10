@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using KSP.Localization;
 using UnityEngine;
 
 namespace Starstrider42.CustomAsteroids {
@@ -12,7 +14,7 @@ namespace Starstrider42.CustomAsteroids {
 
 		/// <summary>
 		/// Returns the sizeCurve used by the stock spawner as of KSP 1.0.5. This corresponds to the following 
-		/// size distribution: 12% class A, 13% class B, 49% class C, 13% class D, and 12% class E.
+		/// size distribution: 12% class A, 13% class B, 50% class C, 13% class D, and 12% class E.
 		/// </summary>
 		private static readonly FloatCurve stockSizeCurve = new FloatCurve(new []
 			{
@@ -21,6 +23,10 @@ namespace Starstrider42.CustomAsteroids {
 				new Keyframe(0.7f, 0.55f, 0.875f, 0.875f), 
 				new Keyframe(1.0f, 1.0f, 1.5f, 1.5f)
 			});
+
+		private static readonly Regex astName = new Regex (
+			Localizer.GetStringByTag ("#autoLOC_6001923").Replace ("<<1>>", "(?<id>[\\w-]+)"),
+			RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
 		/// <summary>
 		/// Initializes internal state common to all spawners.
@@ -38,7 +44,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// checks will never be scheduled less than 0.1 seconds apart.</returns>
 		internal float asteroidCheck() {
 			#if DEBUG
-			Debug.Log("[CustomAsteroids]: asteroidCheck()  called.");
+			Debug.Log("[CustomAsteroids]: asteroidCheck()");
 			#endif
 			checkDespawn();
 			checkSpawn();
@@ -79,7 +85,7 @@ namespace Starstrider42.CustomAsteroids {
 		/// </summary>
 		protected virtual void checkDespawn() {
 			if (FlightGlobals.Vessels != null) {
-				// Not sure if C# iterators support concurrent modification; play it safe
+				// C# iterators don't support concurrent modification
 				List<Vessel> toDelete = new List<Vessel>();
 
 				foreach (Vessel v in FlightGlobals.Vessels) {
@@ -95,8 +101,8 @@ namespace Starstrider42.CustomAsteroids {
 				}
 
 				foreach (Vessel oldAsteroid in toDelete) {
-					Debug.Log("[CustomAsteroids]: asteroid " + oldAsteroid.GetName()
-						+ " has been untracked for too long and is now lost.");
+					Debug.Log("[CustomAsteroids]: "
+							  + Localizer.Format ("#autoLOC_CustomAsteroids_LogUnspawn", oldAsteroid.GetName ()));
 					oldAsteroid.Die();
 				}
 			}
@@ -133,7 +139,7 @@ namespace Starstrider42.CustomAsteroids {
 			try {
 				return spawnAsteroid(AsteroidManager.drawAsteroidSet());
 			} catch (Exception e) {
-				Util.errorToPlayer(e, "Could not create new asteroid.");
+				Util.errorToPlayer(e, Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSpawnFail"));
 				Debug.LogException(e);
 				return null;
 			}
@@ -159,10 +165,10 @@ namespace Starstrider42.CustomAsteroids {
 			ConfigNode[] partList = makeAsteroidParts(group);
 
 			// Stock spawner reports its module name, so do the same for custom spawns
-			Debug.Log($"[{GetType().Name}]: New object found: {name} in asteroid set {group}.");
+			Debug.Log($"[{GetType().Name}]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogSpawn", name, group));
 
 			ConfigNode vessel = ProtoVessel.CreateVesselNode(name, VesselType.SpaceObject, orbit, 
-				                    0, partList, new ConfigNode("ACTIONGROUPS"), trackingInfo);
+									0, partList, new ConfigNode("ACTIONGROUPS"), trackingInfo);
 
 			// IMPORTANT: no exceptions past this point!
 
@@ -197,15 +203,18 @@ namespace Starstrider42.CustomAsteroids {
 		private static string makeName(AsteroidSet group) {
 			string name = DiscoverableObjectsUtil.GenerateAsteroidName();
 			if (AsteroidManager.getOptions().getRenameOption()) {
-				string newBase = group.getAsteroidName();
-				if (name.IndexOf("Ast. ") >= 0) {
-					// Keep only the ID number
-					string id = name.Substring(name.IndexOf("Ast. ") + "Ast. ".Length);
-					name = newBase + " " + id;
+				GroupCollection parsed = astName.Match (name).Groups;
+				if (parsed[0].Success) {
+					string newBase = group.getAsteroidName ();
+					if (!newBase.Contains ("<<1>>")) {
+						newBase += " <<1>>";
+					}
+					string id = parsed ["id"].ToString ();
+					name = Localizer.Format (newBase, id);
 				}
 				// if asteroid name doesn't match expected format, leave it as-is
 				#if DEBUG
-				Debug.Log("[CustomAsteroids]: Asteroid renamed to " + name);
+				Debug.Log("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogRename", name));
 				#endif
 			}
 
@@ -228,9 +237,9 @@ namespace Starstrider42.CustomAsteroids {
 			double maxLifetime = trackTimes.second * SECONDS_PER_EARTH_DAY;
 			UntrackedObjectClass size = (UntrackedObjectClass) (int) 
 				(stockSizeCurve.Evaluate(UnityEngine.Random.Range(0.0f, 1.0f))
-			                            * Enum.GetNames(typeof(UntrackedObjectClass)).Length);
+										* Enum.GetNames(typeof(UntrackedObjectClass)).Length);
 			ConfigNode trackingInfo = ProtoVessel.CreateDiscoveryNode(
-				                          DiscoveryLevels.Presence, size, lifetime, maxLifetime);
+										  DiscoveryLevels.Presence, size, lifetime, maxLifetime);
 			return trackingInfo;
 		}
 
@@ -254,7 +263,8 @@ namespace Starstrider42.CustomAsteroids {
 				return new[] { potato };
 			} catch (Exception e) {
 				// Really? That's what CreatePartNode throws?
-				throw new InvalidOperationException($"No such Part: {part}", e);
+				throw new InvalidOperationException(
+					Localizer.Format ("#autoLOC_CustomAsteroids_ErrorTypeBadPart", part), e);
 			}
 		}
 	}
