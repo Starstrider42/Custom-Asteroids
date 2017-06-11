@@ -7,6 +7,11 @@ All version numbers are to be interpreted as described therein. In addition to t
 Unreleased Changes
 ------------
 
+### New Features
+
+* Custom Asteroids is fully localizable.
+* Asteroid group titles can now use the string "<<1>>" to say where the asteroid ID should go. Names without this string will continue to use the old behavior (where the title is a prefix for the asteroid ID).
+
 ### Bug Fixes
 
 * Intercept orbits that enter the target planet's SOI at very low speeds are now handled correctly.

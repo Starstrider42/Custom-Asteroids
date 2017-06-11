@@ -15,9 +15,11 @@ Basic Usage                                     {#basic}
 The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 * `name`: a unique, machine-readable name. Must not contain spaces.
 * `title`: a descriptive name. If `RenameAsteroids = True` is set in the [settings file](http://starstrider42.github.io/Custom-Asteroids/options.html), 
-    this name will replace the generic "Ast." in the asteroids' name.
-* `centralBody`: the name of the object the asteroids will orbit. Must exactly match the name of an 
-    in-game celestial body.
+    this name will replace the generic "Ast." in the asteroids' name. May be a
+    localization string. If the title contains the string "<<1>>", it will be
+    replaced by the asteroid's unique ID; otherwise, the ID will be appended to the title.
+* `centralBody`: the name of the object the asteroids will orbit. Must exactly match the
+    internal (i.e., English) name of an in-game celestial body.
 * `spawnRate`: must be a nonnegative number. If `Spawner = FixedRate` is set in the 
     [settings file](http://starstrider42.github.io/Custom-Asteroids/options.html), this value gives 
     the number of asteroids detected per Earth day. If `Spawner = Stock`, only the ratio to all the 
@@ -38,8 +40,8 @@ The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 
 The most frequently used fields in each `INTERCEPT` block are the following:
 * `name`, `title`, `spawnRate`: have the same meanings as above
-* `targetBody`: the name of the object the asteroids will approach. Must exactly match the name of an 
-    in-game celestial body.
+* `targetBody`: the name of the object the asteroids will approach. Must exactly match the
+    internal (i.e., English) name of an in-game celestial body.
 * `approach`: a block describing how far from `targetBody` the asteroid would pass if not for the 
     planet's gravity. Parameters:
     - `max`: the maximum approach distance any asteroid from this group will have, in meters. The special 
@@ -145,7 +147,7 @@ Each `ASTEROIDGROUP` block can have up to eight parameters, six of which corresp
 
 Starting from Custom Asteroids 1.3, an optional `detectable` block allows asteroids to appear only under certain conditions. If no block is provided, asteroids will always appear. The block consists of an optional field and a list of conditions:
 * `combine`: this field may be set to either And (all conditions must be met for asteroids to appear) or Or (any condition must be met). If omitted, defaults to And.
-* `conditions`: this block contains a list of conditions, one per line, prefixed by 'condition ='. Conditions must have the form '&lt;planet&gt;.&lt;test&gt;'. &lt;planet&gt; is the name of a celestial body, and &lt;test&gt; is one of 
+* `conditions`: this block contains a list of conditions, one per line, prefixed by 'condition ='. Conditions must have the form '&lt;planet&gt;.&lt;test&gt;'. &lt;planet&gt; is the internal (English) name of a celestial body, and &lt;test&gt; is one of
     - reached: the condition is met if a vessel has ever entered the sphere of influence of &lt;planet&gt;.
     - hadorbit: the condition is met if a vessel has ever entered a stable orbit around &lt;planet&gt;.
     - hadlanded:  the condition is met if a vessel has ever landed on &lt;planet&gt;.
