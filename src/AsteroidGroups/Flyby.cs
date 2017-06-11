@@ -15,7 +15,8 @@ namespace Starstrider42.CustomAsteroids
         [Persistent]
         readonly string targetBody;
         /// <summary>
-        /// The distance by which the asteroid would miss <c>targetBody</c> without gravitational focusing.
+        /// The distance by which the asteroid would miss <c>targetBody</c> without gravitational
+        /// focusing.
         /// </summary>
         [Persistent]
         readonly ApproachRange approach;
@@ -27,9 +28,10 @@ namespace Starstrider42.CustomAsteroids
         readonly ValueRange vSoi;
 
         /// <summary>
-        /// Creates a dummy flyby group. The object is initialized to a state in which it will not be expected to
-        /// generate orbits. Any orbits that <em>are</em> generated will be located inside Kerbin, causing the game
-        /// to immediately delete the object with the orbit. Does not throw exceptions.
+        /// Creates a dummy flyby group. The object is initialized to a state in which it will not
+        /// be expected to generate orbits. Any orbits that <em>are</em> generated will be located
+        /// inside Kerbin, causing the game to immediately delete the object with the orbit. Does
+        /// not throw exceptions.
         /// </summary>
         internal Flyby ()
         {
@@ -44,14 +46,16 @@ namespace Starstrider42.CustomAsteroids
         {
             CelestialBody body = AsteroidManager.getPlanetByName (targetBody);
 
-            Debug.Log ("[CustomAsteroids]: " + Localizer.Format ("#autoLOC_CustomAsteroids_LogOrbitDraw", getName ()));
+            Debug.Log ("[CustomAsteroids]: "
+                       + Localizer.Format ("#autoLOC_CustomAsteroids_LogOrbitDraw", getName ()));
 
             double deltaV = wrappedDraw (vSoi, getName (), "vSoi");
             double deltaT = wrappedDraw (warnTime, getName (), "warnTime");
 
             if (deltaV <= 0.0) {
                 throw new InvalidOperationException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadVInf", getName (), deltaV));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadVInf",
+                                      getName (), deltaV));
             }
             // Negative deltaT is allowed
 
@@ -71,12 +75,14 @@ namespace Starstrider42.CustomAsteroids
                 peri = wrappedDraw (approach, getName (), "approach");
                 if (peri < 0.0) {
                     throw new InvalidOperationException (
-                        Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadPeri", getName (), peri));
+                        Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadPeri",
+                                          getName (), peri));
                 }
                 break;
             default:
                 throw new InvalidOperationException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadApproach", getName (), approach.getParam ()));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorFlybyBadApproach",
+                                      getName (), approach.getParam ()));
             }
 #if DEBUG
             Debug.Log ($"[CustomAsteroids]: "
@@ -85,9 +91,11 @@ namespace Starstrider42.CustomAsteroids
                       );
 #endif
 
-            Orbit newOrbit = createHyperbolicOrbit (body, peri, deltaV, Planetarium.GetUniversalTime () + deltaT);
-            // Sun has sphereOfInfluence = +Infinity, so condition will always fail for Sun-centric orbit
-            // No special treatment needed for the case where the orbit lies entirely outside the SoI
+            Orbit newOrbit = createHyperbolicOrbit (body, peri, deltaV,
+                                                    Planetarium.GetUniversalTime () + deltaT);
+            // Sun has sphereOfInfluence = +Infinity, so condition will always fail for Sun-centric
+            // orbit. No special treatment needed for the case where the orbit lies entirely outside
+            // the SoI
             while (needsSoITransition (newOrbit)) {
                 newOrbit = patchToParent (newOrbit);
             }
@@ -100,21 +108,26 @@ namespace Starstrider42.CustomAsteroids
         /// </summary>
         /// <returns>The newly created orbit, with state vectors anchored to its periapsis.</returns>
         /// <param name="body">The celestial body at the focus of the orbit.</param>
-        /// <param name="periapsis">The periapsis (from the body center), in meters. Must not be negative.</param>
-        /// <param name="vInf">The excess speed associated with the orbit, in meters per second. Must be positive.</param>
+        /// <param name="periapsis">The periapsis (from the body center), in meters. Must not be
+        /// negative.</param>
+        /// <param name="vInf">The excess speed associated with the orbit, in meters per second.
+        /// Must be positive.</param>
         /// <param name="utPeri">The absolute time of periapsis passage.</param>
         ///
-        /// <exception cref="ArgumentException">Thrown if either <c>periapsis</c> or <c>vInf</c> are out
-        /// of bounds.</exception>
-        static Orbit createHyperbolicOrbit (CelestialBody body, double periapsis, double vInf, double utPeri)
+        /// <exception cref="ArgumentException">Thrown if either <c>periapsis</c> or <c>vInf</c>
+        /// are out of bounds.</exception>
+        static Orbit createHyperbolicOrbit (CelestialBody body, double periapsis, double vInf,
+                                            double utPeri)
         {
             if (vInf <= 0.0) {
                 throw new ArgumentException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorHyperBadVInf", vInf), nameof (vInf));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorHyperBadVInf", vInf),
+                    nameof (vInf));
             }
             if (periapsis < 0.0) {
                 throw new ArgumentException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorHyperBadPeri", periapsis), nameof (periapsis));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorHyperBadPeri", periapsis),
+                    nameof (periapsis));
             }
 
             double a = -body.gravParameter / (vInf * vInf);
@@ -126,42 +139,47 @@ namespace Starstrider42.CustomAsteroids
             double aPe = RandomDist.drawAngle ();
 
             Debug.Log ($"[CustomAsteroids]: "
-                       + Localizer.Format ("#autoLOC_CustomAsteroids_LogHyperOrbit", body.bodyName, a, e, i, aPe, lAn));
+                       + Localizer.Format ("#autoLOC_CustomAsteroids_LogHyperOrbit", body.bodyName,
+                                           a, e, i, aPe, lAn));
 
             return new Orbit (i, e, a, lAn, aPe, 0.0, utPeri, body);
         }
 
         /// <summary>
-        /// Returns the orbit adjacent to the given orbit. <c>oldOrbit</c> must leave its reference body' SoI. If the
-        /// orbit's epoch of periapsis is in the future, the returned orbit will precede <c>oldOrbit</c>; if it is in
-        /// the past, the returned orbit will follow <c>oldOrbit</c>.
+        /// Returns the orbit adjacent to the given orbit. <c>oldOrbit</c> must leave its reference
+        /// body' SoI. If the orbit's epoch of periapsis is in the future, the returned orbit will
+        /// precede <c>oldOrbit</c>; if it is in the past, the returned orbit will follow
+        /// <c>oldOrbit</c>.
         /// </summary>
-        /// <returns>An orbit around the parent body of <c>oldOrbit</c>'s body, that patches seamlessly with
-        /// <c>oldOrbit</c> at its body' SoI boundary. See main description for whether it's an incoming or outgoing
-        /// patch.</returns>
-        /// <param name="oldOrbit">The orbit to use as a reference for patching. The time interval in which the orbit
-        /// is inside the indicated SoI must not include the current time.</param>
+        /// <returns>An orbit around the parent body of <c>oldOrbit</c>'s body, that patches
+        /// seamlessly with <c>oldOrbit</c> at its body' SoI boundary. See main description for
+        /// whether it's an incoming or outgoing patch.</returns>
+        /// <param name="oldOrbit">The orbit to use as a reference for patching. The time interval
+        /// in which the orbit is inside the indicated SoI must not include the current time.</param>
         ///
         /// <exception cref="ArgumentException">Thrown if <c>oldOrbit</c> does not intersect a sphere
         /// of influence.</exception>
-        /// <exception cref="InvalidOperationException">Thrown if an object following <c>oldOrbit</c> would be
-        /// inside its parent body's sphere of influence at the current time.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if an object following <c>oldOrbit</c>
+        /// would be inside its parent body's sphere of influence at the current time.</exception>
         static Orbit patchToParent (Orbit oldOrbit)
         {
             if (!needsSoITransition (oldOrbit)) {
                 throw new InvalidOperationException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiInvalid", oldOrbit.referenceBody));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiInvalid",
+                                      oldOrbit.referenceBody));
             }
             if (oldOrbit.referenceBody.GetOrbitDriver () == null) {
                 throw new ArgumentException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoParent", oldOrbit.referenceBody));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoParent",
+                                      oldOrbit.referenceBody));
             }
             CelestialBody oldParent = oldOrbit.referenceBody;
             CelestialBody newParent = oldParent.orbit.referenceBody;
 
             double utSoi = getSoiCrossing (oldOrbit);
 #if DEBUG
-            Debug.Log (Localizer.Format ("#autoLOC_CustomAsteroids_LogSoi", oldParent, newParent, utSoi));
+            Debug.Log (Localizer.Format ("#autoLOC_CustomAsteroids_LogSoi",
+                                         oldParent, newParent, utSoi));
 #endif
             // Need position/velocity relative to newParent, not oldParent or absolute
             Vector3d xNewParent = oldOrbit.getRelativePositionAtUT (utSoi)
@@ -175,10 +193,11 @@ namespace Starstrider42.CustomAsteroids
         }
 
         /// <summary>
-        /// Returns whether the given orbit undergoes any SoI transitions between its characteristic epoch and the
-        /// current time. Does not throw exceptions.
+        /// Returns whether the given orbit undergoes any SoI transitions between its
+        /// characteristic epoch and the current time. Does not throw exceptions.
         /// </summary>
-        /// <returns><c>true</c>, if the orbit needs to be corrected for an SoI transition, <c>false</c> otherwise.</returns>
+        /// <returns><c>true</c>, if the orbit needs to be corrected for an SoI transition,
+        /// <c>false</c> otherwise.</returns>
         /// <param name="orbit">The orbit to test</param>
         static bool needsSoITransition (Orbit orbit)
         {
@@ -187,24 +206,25 @@ namespace Starstrider42.CustomAsteroids
 
             if (orbit.eccentricity >= 1.0) {
                 return orbit.getRelativePositionAtUT (now).magnitude > soi;
-            } else {
-                // If an elliptical orbit leaves the SoI, then getRelativePositionAtUT gives misleading results
-                // after the SoI transition.
-                return (orbit.ApR > soi)
-                    && ((Math.Abs (now - orbit.epoch) > 0.5 * orbit.period)
-                        || (orbit.getRelativePositionAtUT (now).magnitude > soi));
             }
+            // If an elliptical orbit leaves the SoI, then getRelativePositionAtUT gives
+            // misleading results after the SoI transition.
+            return (orbit.ApR > soi)
+                && ((Math.Abs (now - orbit.epoch) > 0.5 * orbit.period)
+                    || (orbit.getRelativePositionAtUT (now).magnitude > soi));
         }
 
         /// <summary>
-        /// Returns the time at which the given orbit enters its parent body's sphere of influence (if in the future)
-        /// or exits it (if in the past). If the orbit is always outside the sphere of influence, returns the nominal
-        /// time of periapsis.
+        /// Returns the time at which the given orbit enters its parent body's sphere of influence
+        /// (if in the future) or exits it (if in the past). If the orbit is always outside the
+        /// sphere of influence, returns the nominal time of periapsis.
         /// </summary>
         /// <returns>The UT of SoI entry/exit, to within 1 second.</returns>
-        /// <param name="hyperbolic">An unbound orbit. MUST have a parent body with a sphere of influence.</param>
+        /// <param name="hyperbolic">An unbound orbit. MUST have a parent body with a sphere of
+        /// influence.</param>
         ///
-        /// <exception cref="ArgumentException">Thrown if orbit does not intersect a sphere of influence.</exception>
+        /// <exception cref="ArgumentException">Thrown if orbit does not intersect a sphere of
+        /// influence.</exception>
         static double getSoiCrossing (Orbit hyperbolic)
         {
             // Desired accuracy of result, in seconds
@@ -213,17 +233,20 @@ namespace Starstrider42.CustomAsteroids
             double soi = hyperbolic.referenceBody.sphereOfInfluence;
             if (double.IsInfinity (soi) || double.IsNaN (soi)) {
                 throw new ArgumentException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoSoi", hyperbolic.referenceBody),
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoSoi",
+                                      hyperbolic.referenceBody),
                     nameof (hyperbolic));
             }
             if (hyperbolic.eccentricity < 1.0 && hyperbolic.ApR < soi) {
                 throw new ArgumentException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoExit", hyperbolic), nameof (hyperbolic));
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSoiNoExit", hyperbolic),
+                    nameof (hyperbolic));
             }
 
             double innerUT = hyperbolic.epoch - hyperbolic.ObTAtEpoch;
             double outerUT = innerUT;
-            double pseudoPeriod = Math.Abs (2.0 * Math.PI / hyperbolic.GetMeanMotion (hyperbolic.semiMajorAxis));
+            double pseudoPeriod = Math.Abs (2.0 * Math.PI
+                                            / hyperbolic.GetMeanMotion (hyperbolic.semiMajorAxis));
 
             if (innerUT > Planetarium.GetUniversalTime ()) {
                 // Search for SoI entry

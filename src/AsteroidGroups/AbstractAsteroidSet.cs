@@ -13,15 +13,16 @@ namespace Starstrider42.CustomAsteroids
         /// <summary>A unique name for the population.</summary>
         [Persistent]
         protected readonly string name;
-        /// <summary>The name of asteroids belonging to this population, or a localization format string
-        /// where &lt;&lt;1&gt;&gt; is a placeholder for the asteroid ID.</summary>
+        /// <summary>The name of asteroids belonging to this population, or a localization format
+        /// string where &lt;&lt;1&gt;&gt; is a placeholder for the asteroid ID.</summary>
         [Persistent]
         protected readonly string title;
         /// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
         [Persistent]
         protected readonly double spawnRate;
 
-        /// <summary>The exploration state in which these asteroids will appear. Always appear if null.</summary>
+        /// <summary>The exploration state in which these asteroids will appear. Always appear
+        /// if null.</summary>
         [Persistent]
         protected readonly Condition detectable;
 
@@ -30,8 +31,8 @@ namespace Starstrider42.CustomAsteroids
         protected readonly Proportions<string> classRatios;
 
         /// <summary>
-        /// Creates a dummy population. The object is initialized to a state in which it will not be expected to
-        /// generate orbits.
+        /// Creates a dummy population. The object is initialized to a state in which it will not
+        /// be expected to generate orbits.
         /// <para>Does not throw exceptions.</para>
         /// </summary>
         internal AbstractAsteroidSet ()
@@ -52,7 +53,9 @@ namespace Starstrider42.CustomAsteroids
             try {
                 return AsteroidManager.drawAsteroidType (classRatios);
             } catch (InvalidOperationException e) {
-                Util.errorToPlayer (e, Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoClass", name));
+                Util.errorToPlayer (e, Localizer.Format (
+                    "#autoLOC_CustomAsteroids_ErrorNoClass",
+                    name));
                 Debug.LogException (e);
                 return "PotatoRoid";
             }
@@ -79,7 +82,8 @@ namespace Starstrider42.CustomAsteroids
         /// <summary>
         /// Returns a <see cref="string"/> that represents the current object.
         /// </summary>
-        /// <returns>A simple string identifying the object. Defaults to the internal asteroid group name.</returns>
+        /// <returns>A simple string identifying the object. Defaults to the internal asteroid
+        /// group name.</returns>
         ///
         /// <seealso cref="object.ToString()"/>
         public override string ToString ()
@@ -88,7 +92,8 @@ namespace Starstrider42.CustomAsteroids
         }
 
         /// <summary>
-        /// Attempts to draws a value from a distribution, providing a human-friendly error otherwise.
+        /// Attempts to draws a value from a distribution, providing a human-friendly error
+        /// otherwise.
         /// </summary>
         /// <returns>The drawn value.</returns>
         /// <param name="property">The distribution to draw from.</param>
@@ -100,7 +105,9 @@ namespace Starstrider42.CustomAsteroids
                 return property.draw ();
             } catch (ArgumentException e) {
                 throw new InvalidOperationException (
-                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoValue", propertyName, group), e);
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoValue",
+                                      propertyName, group),
+                    e);
             }
         }
     }
