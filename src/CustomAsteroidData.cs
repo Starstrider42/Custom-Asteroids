@@ -15,7 +15,8 @@ namespace Starstrider42.CustomAsteroids
         public string composition;
         /// <summary>The name of the composition class to use.</summary>
         /// <remarks>Intended for display to the user.</remarks>
-        [KSPField (guiActive = true, guiActiveEditor = true, guiName = "Type")]
+        [KSPField (guiActive = true, guiActiveEditor = true,
+                   guiName = "#autoLOC_CustomAsteroids_GuiClass")]
         public string displayComposition;
 
         public CustomAsteroidData ()
@@ -24,26 +25,13 @@ namespace Starstrider42.CustomAsteroids
             displayComposition = Localizer.Format ("#autoLOC_CustomAsteroids_CompStony");
         }
 
-        public override void OnStart (StartState state)
-        {
-            base.OnStart (state);
-
-            // Thanks DMagic!
-            Fields ["displayComposition"].guiName =
-                Localizer.Format ("#autoLOC_CustomAsteroids_GuiClass");
-#if DEBUG
-            Events ["dumpResources"].guiName =
-                Localizer.Format ("#autoLOC_CustomAsteroids_GuiDebugResource");
-#endif
-        }
-
 #if DEBUG
         [KSPEvent (
             guiActive = true,
             guiActiveUnfocused = true,
             unfocusedRange = 1000,
             externalToEVAOnly = false,
-            guiName = "Survey Asteroid")]
+            guiName = "#autoLOC_CustomAsteroids_GuiDebugResource")]
         public void dumpResources ()
         {
             ModuleAsteroidInfo summary = part.FindModuleImplementing<ModuleAsteroidInfo> ();
