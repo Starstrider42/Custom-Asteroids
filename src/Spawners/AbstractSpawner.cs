@@ -60,6 +60,27 @@ namespace Starstrider42.CustomAsteroids
             return Mathf.Max (checkInterval () / TimeWarp.CurrentRate, 0.1f);
         }
 
+        /// <summary>Change seed of Unity's random number generator to a new value.</summary>
+        /// <remarks>For reasons unknown, the RNG must be frequently re-seeded to
+        /// prevent cycles.</remarks>
+        private void resetRng ()
+        {
+            int newSeed = UnityEngine.Random.Range (0, int.MaxValue);
+            resetRng (newSeed);
+        }
+
+        /// <summary>Change seed of Unity's random number generator to a specific value.</summary>
+        /// <remarks>For reasons unknown, the RNG must be frequently re-seeded to
+        /// prevent cycles.</remarks>
+        /// <param name="seed">The new seed.</param>
+        private void resetRng (int seed)
+        {
+#if DEBUG
+            Debug.Log ($"[CustomAsteroids]: resetting seed to {seed}");
+#endif
+            UnityEngine.Random.InitState (seed);
+        }
+
         /// <summary>
         /// <para>The interval, in in-game seconds, at which the spawner checks for asteroid
         /// creation or deletion. Depending on the implementation, this may be far more frequent
@@ -154,6 +175,7 @@ namespace Starstrider42.CustomAsteroids
         /// assume the returned vessel is already registered in the game.</returns>
         protected ProtoVessel spawnAsteroid ()
         {
+            resetRng ();
             try {
                 return spawnAsteroid (AsteroidManager.drawAsteroidSet ());
             } catch (Exception e) {
