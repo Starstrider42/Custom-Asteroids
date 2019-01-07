@@ -19,6 +19,7 @@ namespace Starstrider42.CustomAsteroids
     public class CustomAsteroidSpawner : ScenarioModule
     {
         /// <summary>Handles asteroid spawning behaviour.</summary>
+        [Persistent]
         readonly AbstractSpawner spawner;
 
         /// <summary>Unity trick to get start/stop behaviour without a method name.</summary>
