@@ -16,6 +16,7 @@ Unreleased Changes
 
 * Intercept orbits that enter the target planet's SOI at very low speeds are now handled correctly.
 * Identical asteroids are much less likely to appear in the same game.
+* Asteroids renamed through the right-click menu will no longer be deleted.
 
 Version 1.5.0
 ------------

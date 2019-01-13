@@ -87,14 +87,14 @@ namespace Starstrider42.CustomAsteroids
         System.Collections.IEnumerator freezeAsteroids ()
         {
             // Do not assume FlightGlobals.Vessels has been populated yet
-            var oldAsteroids = new List<string> ();
+            var oldAsteroids = new List<uint> ();
             ConfigNode config = HighLogic.CurrentGame.config;
             if (config != null && config.GetNode ("FLIGHTSTATE") != null
                 && config.GetNode ("FLIGHTSTATE").GetNodes () != null) {
                 foreach (ConfigNode node in config.GetNode ("FLIGHTSTATE").GetNodes ()) {
                     if (node.name == "VESSEL"
                             && node.GetValue ("type") == VesselType.SpaceObject.ToString ()) {
-                        oldAsteroids.Add (node.GetValue ("name"));
+                        oldAsteroids.Add (uint.Parse(node.GetValue ("persistentId")));
                     }
                 }
             }
@@ -104,7 +104,7 @@ namespace Starstrider42.CustomAsteroids
 
             var newAsteroids = new List<Vessel> ();
             foreach (Vessel v in FlightGlobals.Vessels) {
-                if (v.vesselType == VesselType.SpaceObject && !oldAsteroids.Contains (v.vesselName)) {
+                if (v.vesselType == VesselType.SpaceObject && !oldAsteroids.Contains (v.persistentId)) {
                     newAsteroids.Add (v);
                 }
             }
