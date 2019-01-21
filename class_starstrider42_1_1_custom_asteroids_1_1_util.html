@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.5</span>
+   &#160;<span id="projectnumber">1.6</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -123,6 +123,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a7cf5ca147bf695e9a3a83482630f2662"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_util.html#a7cf5ca147bf695e9a3a83482630f2662">errorToPlayer</a> (string format, params object[] param)</td></tr>
 <tr class="memdesc:a7cf5ca147bf695e9a3a83482630f2662"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints an error message visible to the player.  <a href="#a7cf5ca147bf695e9a3a83482630f2662">More...</a><br /></td></tr>
 <tr class="separator:a7cf5ca147bf695e9a3a83482630f2662"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2991f85797f80a541aa6e2549dcbf0da"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_util.html#a2991f85797f80a541aa6e2549dcbf0da">errorToPlayerLoc</a> (string format, params object[] param)</td></tr>
+<tr class="memdesc:a2991f85797f80a541aa6e2549dcbf0da"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints an error message visible to the player.  <a href="#a2991f85797f80a541aa6e2549dcbf0da">More...</a><br /></td></tr>
+<tr class="separator:a2991f85797f80a541aa6e2549dcbf0da"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a022f950415174fadb4eebe13713df954"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_util.html#a022f950415174fadb4eebe13713df954">errorToPlayer</a> (Exception e, string summary)</td></tr>
 <tr class="memdesc:a022f950415174fadb4eebe13713df954"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints an exception visible to the player.  <a href="#a022f950415174fadb4eebe13713df954">More...</a><br /></td></tr>
 <tr class="separator:a022f950415174fadb4eebe13713df954"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -146,7 +149,7 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">params object[]&#160;</td>
+          <td class="paramtype">params object   []&#160;</td>
           <td class="paramname"><em>param</em>&#160;</td>
         </tr>
         <tr>
@@ -172,6 +175,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <p>Based on code from RemoteTech.</p>
+<dl class="deprecated"><dt><b><a class="el" href="deprecated.html#_deprecated000004">Deprecated:</a></b></dt><dd>This method does not support localization; use errorToPlayerLoc instead. </dd></dl>
 
 </div>
 </div>
@@ -219,6 +223,50 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a2991f85797f80a541aa6e2549dcbf0da"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void Starstrider42.CustomAsteroids.Util.errorToPlayerLoc </td>
+          <td>(</td>
+          <td class="paramtype">string&#160;</td>
+          <td class="paramname"><em>format</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">params object   []&#160;</td>
+          <td class="paramname"><em>param</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Prints an error message visible to the player. </p>
+<p>Does not throw exceptions. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">format</td><td>The error message, a localization tag, or a Lingoona format string for the message.</td></tr>
+    <tr><td class="paramname">param</td><td>Any parameters to place in the format string (optional).</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/Util.cs</li>
 </ul>
@@ -228,7 +276,7 @@ Static Public Member Functions</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_util.html">Util</a></li>
-    <li class="footer">Generated on Mon May 29 2017 11:20:22 for Custom Asteroids by
+    <li class="footer">Generated on Sun Jan 20 2019 17:38:06 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>

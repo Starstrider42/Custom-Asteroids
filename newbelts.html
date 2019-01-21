@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.5</span>
+   &#160;<span id="projectnumber">1.6</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -112,8 +112,8 @@ $(document).ready(function(){initNavTree('newbelts.html','');});
 Basic Usage                                     </h1>
 <p>The most frequently used fields in each <code>ASTEROIDGROUP</code> block are the following:</p><ul>
 <li><code>name</code>: a unique, machine-readable name. Must not contain spaces.</li>
-<li><code>title</code>: a descriptive name. If <code>RenameAsteroids = True</code> is set in the <a href="http://starstrider42.github.io/Custom-Asteroids/options.html">settings file</a>, this name will replace the generic "Ast." in the asteroids' name.</li>
-<li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the name of an in-game celestial body.</li>
+<li><code>title</code>: a descriptive name. If <code>RenameAsteroids = True</code> is set in the <a href="http://starstrider42.github.io/Custom-Asteroids/options.html">settings file</a>, this name will replace the generic "Ast." in the asteroids' name. May be a localization string. If the title contains the string "&lt;&lt;1&gt;&gt;", it will be replaced by the asteroid's unique ID; otherwise, the ID will be appended to the title.</li>
+<li><code>centralBody</code>: the name of the object the asteroids will orbit. Must exactly match the internal (i.e., English) name of an in-game celestial body.</li>
 <li><code>spawnRate</code>: must be a nonnegative number. If <code>Spawner = FixedRate</code> is set in the <a href="http://starstrider42.github.io/Custom-Asteroids/options.html">settings file</a>, this value gives the number of asteroids detected per Earth day. If <code>Spawner = Stock</code>, only the ratio to all the other <code>spawnRate</code> values matters.</li>
 <li><code>orbitSize</code>: a block describing how far from <code>centralBody</code> the asteroid's orbit is found. Parameters:<ul>
 <li><code>type</code>: Describes which orbital element is constrained by <code>min</code> and <code>max</code>. Allowed values are SemimajorAxis, Periapsis, or Apoapsis. Default is SemimajorAxis.</li>
@@ -132,7 +132,7 @@ Basic Usage                                     </h1>
 </ul>
 <p>The most frequently used fields in each <code>INTERCEPT</code> block are the following:</p><ul>
 <li><code>name</code>, <code>title</code>, <code>spawnRate</code>: have the same meanings as above</li>
-<li><code>targetBody</code>: the name of the object the asteroids will approach. Must exactly match the name of an in-game celestial body.</li>
+<li><code>targetBody</code>: the name of the object the asteroids will approach. Must exactly match the internal (i.e., English) name of an in-game celestial body.</li>
 <li><code>approach</code>: a block describing how far from <code>targetBody</code> the asteroid would pass if not for the planet's gravity. Parameters:<ul>
 <li><code>max</code>: the maximum approach distance any asteroid from this group will have, in meters. The special value <code>Ratio(&lt;targetBody&gt;.soi, 1.0)</code> allows all trajectories that intercept the target's sphere of influence, no matter where (fill in <code>&lt;targetBody&gt;</code> with the correct name).</li>
 </ul>
@@ -210,7 +210,7 @@ ASTEROIDGROUP                                      </h2>
 </ul>
 <p>Starting from Custom Asteroids 1.3, an optional <code>detectable</code> block allows asteroids to appear only under certain conditions. If no block is provided, asteroids will always appear. The block consists of an optional field and a list of conditions:</p><ul>
 <li><code>combine</code>: this field may be set to either And (all conditions must be met for asteroids to appear) or Or (any condition must be met). If omitted, defaults to And.</li>
-<li><code>conditions</code>: this block contains a list of conditions, one per line, prefixed by 'condition ='. Conditions must have the form '&lt;planet&gt;.&lt;test&gt;'. &lt;planet&gt; is the name of a celestial body, and &lt;test&gt; is one of<ul>
+<li><code>conditions</code>: this block contains a list of conditions, one per line, prefixed by 'condition ='. Conditions must have the form '&lt;planet&gt;.&lt;test&gt;'. &lt;planet&gt; is the internal (English) name of a celestial body, and &lt;test&gt; is one of<ul>
 <li>reached: the condition is met if a vessel has ever entered the sphere of influence of &lt;planet&gt;.</li>
 <li>hadorbit: the condition is met if a vessel has ever entered a stable orbit around &lt;planet&gt;.</li>
 <li>hadlanded: the condition is met if a vessel has ever landed on &lt;planet&gt;.</li>
@@ -256,7 +256,7 @@ CustomAsteroidPlanes                               </h2>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Mon May 29 2017 11:20:22 for Custom Asteroids by
+    <li class="footer">Generated on Sun Jan 20 2019 17:38:06 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>
