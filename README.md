@@ -7,6 +7,8 @@ Custom Asteroids preserves the basic mechanics of Kerbal Space Program, in that 
 
 To use Custom Asteroids, install the mod in your `GameData` directory. New asteroids in both new and old save games will immediately be generated according to the new rules. Asteroids already created, including untracked asteroids, will not be affected. There is no in-game interface; Custom Asteroids works entirely in the background. Several options may be set in a [separate file](http://starstrider42.github.io/Custom-Asteroids/options.html).
 
+Additional config packs can be found in the [Custom-Asteroids-Extras](https://github.com/Starstrider42/Custom-Asteroids-Extras) repository.
+
 License
 ------------
 Custom Asteroids is released under the MIT License. A copy of the license can be found in the file `LICENSE` in the mod directory, or online at http://opensource.org/licenses/MIT.
