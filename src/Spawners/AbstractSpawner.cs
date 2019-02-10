@@ -139,6 +139,7 @@ namespace Starstrider42.CustomAsteroids
                               + Localizer.Format ("#autoLOC_CustomAsteroids_LogUnspawn",
                                                   oldAsteroid.GetName ()));
                     oldAsteroid.Die ();
+                    CustomAsteroidRegistry.Instance.UnregisterAsteroid (oldAsteroid);
                 }
             }
         }
@@ -177,12 +178,40 @@ namespace Starstrider42.CustomAsteroids
         {
             resetRng ();
             try {
-                return spawnAsteroid (AsteroidManager.drawAsteroidSet ());
+                AsteroidSet group = AsteroidManager.drawAsteroidSet ();
+                ProtoVessel asteroid = spawnAsteroid (group);
+                try {
+                    registerAsteroid (asteroid, group);
+                } catch (ArgumentException e) {
+                    Debug.LogWarning ("[CustomAsteroids]: Duplicate entry in CustomAsteroidRegistry.");
+                    Debug.LogException (e);
+                }
+                return asteroid;
             } catch (Exception e) {
                 Util.errorToPlayer (e, Localizer.Format ("#autoLOC_CustomAsteroids_ErrorSpawnFail"));
                 Debug.LogException (e);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Registers basic information on an asteroid in <see cref="CustomAsteroidRegistry"/>.
+        /// </summary>
+        /// <param name="asteroid">The asteroid to register.</param>
+        /// <param name="group">The AsteroidSet from which the asteroid was drawn.</param>
+        /// <remarks>This method must only be called by <see cref="spawnAsteroid()"/>, and is
+        /// provided as part of the API for reference. It stores the following information:
+        /// <list type="bullet">
+        /// <item>
+        ///     <term>parentSet</term>
+        ///     <description>The unique ID of <paramref name="group"/>.</description>
+        /// </item>
+        /// </list>
+        /// </remarks>
+        static void registerAsteroid (ProtoVessel asteroid, AsteroidSet group)
+        {
+            CustomAsteroidRegistry.Instance.RegisterAsteroid (
+                asteroid, new AsteroidInfo (asteroid, group.getName ()));
         }
 
         /// <summary>
@@ -214,8 +243,6 @@ namespace Starstrider42.CustomAsteroids
 
             ConfigNode vessel = ProtoVessel.CreateVesselNode (name, VesselType.SpaceObject, orbit,
                                     0, partList, new ConfigNode ("ACTIONGROUPS"), trackingInfo);
-
-            // IMPORTANT: no exceptions past this point!
 
             return HighLogic.CurrentGame.AddVessel (vessel);
         }

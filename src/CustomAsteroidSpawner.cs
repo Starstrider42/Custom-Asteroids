@@ -113,6 +113,9 @@ namespace Starstrider42.CustomAsteroids
                            + Localizer.Format ("#autoLOC_CustomAsteroids_LogKillAsteroid", v.vesselName));
                 HighLogic.CurrentGame.DestroyVessel (v);
             }
+
+            // Any asteroids not despawned by us may be stuck in the registry; do periodic cleanups
+            CustomAsteroidRegistry.Instance.CleanRegistry ();
         }
 
         /// <summary>
