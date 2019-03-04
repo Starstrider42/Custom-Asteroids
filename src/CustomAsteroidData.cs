@@ -19,6 +19,18 @@ namespace Starstrider42.CustomAsteroids
                    guiName = "#autoLOC_CustomAsteroids_GuiClass")]
         public string displayComposition;
 
+        /// <summary>
+        /// The unique ID of the asteroid set that created this asteroid.
+        /// </summary>
+        /// <value>The name of the set, or null if inapplicable or unknown.</value>
+        /// <remarks>The returned name is <em>not</em> guaranteed to match any currently
+        /// loaded asteroid config.</remarks>
+        public string parentSet {
+            get {
+                return CustomAsteroidRegistry.Instance.LookupAsteroid (vessel).parentSet;
+            }
+        }
+
         public CustomAsteroidData ()
         {
             composition = "Stony";
