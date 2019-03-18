@@ -92,6 +92,26 @@ namespace Starstrider42.CustomAsteroids
         }
 
         /// <summary>
+        /// Counts the number of asteroids from a specific set.
+        /// </summary>
+        /// <param name="group">The AsteroidSet of interest.</param>
+        /// <returns>The number of asteroids known to have been spawned from <c>group</c>.</returns>
+        internal static int countAsteroidsInSet (AsteroidSet group)
+        {
+            int count = 0;
+            string id = group.getName ();
+            foreach (Vessel v in FlightGlobals.Vessels) {
+                if (v.vesselType == VesselType.SpaceObject) {
+                    AsteroidInfo info = CustomAsteroidRegistry.Instance.LookupAsteroid (v);
+                    if (info != null && info.parentSet == id) {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
         /// Returns the specified reference frame.
         /// </summary>
         ///
