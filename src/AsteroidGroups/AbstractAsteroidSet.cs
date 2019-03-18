@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using KSP.Localization;
 using UnityEngine;
 
@@ -20,6 +20,9 @@ namespace Starstrider42.CustomAsteroids
         /// <summary>The rate, in asteroids per Earth day, at which asteroids are discovered.</summary>
         [Persistent]
         protected readonly double spawnRate;
+        /// <summary>The maximum number of asteroids which can exist at any given time.</summary>
+        [Persistent]
+        protected readonly int spawnMax;
 
         /// <summary>The exploration state in which these asteroids will appear. Always appear
         /// if null.</summary>
@@ -40,6 +43,7 @@ namespace Starstrider42.CustomAsteroids
             name = "invalid";
             title = Localizer.GetStringByTag ("#autoLOC_6001923");
             spawnRate = 0.0;           // Safeguard: don't make asteroids until the values are set
+            spawnMax = int.MaxValue;
 
             detectable = null;
 
@@ -63,10 +67,13 @@ namespace Starstrider42.CustomAsteroids
 
         public double getSpawnRate ()
         {
-            if (detectable == null || detectable.check ()) {
-                return spawnRate;
+            if (detectable != null && !detectable.check ()) {
+                return 0.0;
             }
-            return 0.0;
+            if (AsteroidManager.countAsteroidsInSet (this) >= spawnMax) {
+                return 0.0;
+            }
+            return spawnRate;
         }
 
         public string getName ()

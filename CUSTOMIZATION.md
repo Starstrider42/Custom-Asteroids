@@ -160,6 +160,8 @@ Any test may have "Manned" or "Unmanned" appended to restrict the test to vessel
 
 Starting from Custom Asteroids 1.3, an optional `asteroidTypes` block allows asteroids to have parts other than "PotatoRoid", the stock asteroid part. If no block is provided, all asteroids will be PotatoRoids. The block consists of a list of entries in the format 'key = &lt;weight&gt; &lt;part&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid types. &lt;part&gt; must be the name of the part used to represent the asteroid. Custom Asteroids ships with four such parts, "CaAsteroidMetal", "CaAsteroidCarbon", "CaAsteroidIcy", and "CaCometActive". The "Ca" prefix in these names is reserved for future enhancements to Custom Asteroids, and third-party modders are asked not to use it.
 
+Starting from Custom Asteroids 1.7, an optional `spawnMax` field allows asteroids to appear only up to a fixed count (for example, `spawnMax = 1` will create unique asteroids). Both tracked and untracked asteroids count toward the limit. Combining a high spawn rate and a low spawn limit is not encouraged
+
 INTERCEPT                                          {#adv_intercept}
 ------------
 
@@ -178,6 +180,7 @@ Each `INTERCEPT` block can have up to five parameters:
     This indirectly controls the asteroid's eccentricity and inclination (higher approach speeds 
     correspond to eccentric, inclined orbits). If omitted, a range of speeds that allows easy capture 
     is used. Distribution defaults to LogNormal if unspecified.
+* `spawnMax`: a limit on the number of asteroids that can appear at a time. This block works exactly as for `ASTEROIDGROUP`.
 * `detectable`: a set of conditions that need to be met before asteroids appear. This block works exactly as for `ASTEROIDGROUP`.
 * `asteroidTypes`: a list of asteroid parts used to represent asteroids. This block works exactly as for `ASTEROIDGROUP`.
 
