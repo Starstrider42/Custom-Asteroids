@@ -166,7 +166,7 @@ namespace Starstrider42.CustomAsteroids
     /// <summary>
     /// An entry in the asteroid registry.
     /// </summary>
-    internal sealed class AsteroidInfo
+    public sealed class AsteroidInfo
     {
         /// <summary>
         /// Persistent ID for the asteroid vessel.
