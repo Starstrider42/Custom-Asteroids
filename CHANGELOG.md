@@ -11,6 +11,10 @@ Unreleased Changes
 
 * Asteroid groups can now have limits on the number of asteroids that spawn at once.
 
+### Bug Fixes
+
+* Solar day (<planet>.psol in configs) is now correctly calculated for bodies other than Kerbin.
+
 Version 1.6.0
 ------------
 

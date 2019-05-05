@@ -258,6 +258,27 @@ namespace Starstrider42.CustomAsteroids
         }
 
         /// <summary>
+        /// Gets the orbit of this body around the sun.
+        /// </summary>
+        /// <returns>If the Sun, returns <c>null</c>. If a planet, returns its orbit. If a moon,
+        /// returns its planet's orbit.</returns>
+        /// <param name="body">The object whose motion around the Sun is desired.</param>
+        private static Orbit getHeliocentricOrbit (CelestialBody body)
+        {
+            if (body.GetOrbitDriver () == null) {
+                return null;
+            } else {
+                Orbit orbit = body.GetOrbit ();
+                Orbit parentOrbit = getHeliocentricOrbit (orbit.referenceBody);
+                if (parentOrbit == null) {
+                    return orbit;
+                } else {
+                    return parentOrbit;
+                }
+            }
+        }
+
+        /// <summary>
         /// Returns the desired property of a known celestial body.
         /// </summary>
         ///
@@ -285,12 +306,19 @@ namespace Starstrider42.CustomAsteroids
             case "prot":
                 return body.rotates ? body.rotationPeriod : double.PositiveInfinity;
             case "psol":
-                if (body.solarRotationPeriod) {
-                    return body.solarDayLength;
-                } else {
-                    throw new ArgumentException (
+                if (body.rotates) {
+                    Orbit sunOrbit = getHeliocentricOrbit (body);
+                    if (sunOrbit != null) {
+                        double rotPeriod = body.rotationPeriod;
+                        double orbPeriod = sunOrbit.period;
+                        return rotPeriod / (1.0 - rotPeriod / orbPeriod);
+                    } else {
+                        throw new ArgumentException (
                         Localizer.Format ("#autoLOC_CustomAsteroids_ErrorPlanetNoDay", planet),
                         nameof (property));
+                    }
+                } else {
+                    return double.PositiveInfinity;
                 }
             case "vesc":
                 return Math.Sqrt (2 * body.gravParameter / body.Radius);
