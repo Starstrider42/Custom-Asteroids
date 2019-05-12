@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['errortoplayer',['errorToPlayer',['../class_starstrider42_1_1_custom_asteroids_1_1_util.html#a7cf5ca147bf695e9a3a83482630f2662',1,'Starstrider42.CustomAsteroids.Util.errorToPlayer(string format, params object[] param)'],['../class_starstrider42_1_1_custom_asteroids_1_1_util.html#a022f950415174fadb4eebe13713df954',1,'Starstrider42.CustomAsteroids.Util.errorToPlayer(Exception e, string summary)']]],
-  ['errortoplayerloc',['errorToPlayerLoc',['../class_starstrider42_1_1_custom_asteroids_1_1_util.html#a2991f85797f80a541aa6e2549dcbf0da',1,'Starstrider42::CustomAsteroids::Util']]]
+  ['asteroidinfo',['AsteroidInfo',['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#aad7866e59b3496c484fd64303ae64fbb',1,'Starstrider42.CustomAsteroids.AsteroidInfo.AsteroidInfo(ConfigNode vessel, string parentSet)'],['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#af977cfc0afc8db7d367e3c678841a26d',1,'Starstrider42.CustomAsteroids.AsteroidInfo.AsteroidInfo(ProtoVessel vessel, string parentSet)'],['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#ab76186e663a51bc9775b5d622135dfa2',1,'Starstrider42.CustomAsteroids.AsteroidInfo.AsteroidInfo(Vessel vessel, string parentSet)']]]
 ];

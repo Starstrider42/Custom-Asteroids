@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['composition',['composition',['../class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_data.html#a66cd1e2e63282319fff20f36de9ea95b',1,'Starstrider42::CustomAsteroids::CustomAsteroidData']]],
-  ['customasteroiddata',['CustomAsteroidData',['../class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_data.html',1,'Starstrider42::CustomAsteroids']]],
-  ['customasteroidspawner',['CustomAsteroidSpawner',['../class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html',1,'Starstrider42::CustomAsteroids']]],
-  ['custom_28izing_29_20asteroids',['Custom(izing) Asteroids',['../newbelts.html',1,'']]],
-  ['custom_20asteroids_20options',['Custom Asteroids Options',['../options.html',1,'']]]
+  ['asteroidinfo',['AsteroidInfo',['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html',1,'Starstrider42::CustomAsteroids']]],
+  ['asteroidinfo',['AsteroidInfo',['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#aad7866e59b3496c484fd64303ae64fbb',1,'Starstrider42.CustomAsteroids.AsteroidInfo.AsteroidInfo(ConfigNode vessel, string parentSet)'],['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#af977cfc0afc8db7d367e3c678841a26d',1,'Starstrider42.CustomAsteroids.AsteroidInfo.AsteroidInfo(ProtoVessel vessel, string parentSet)'],['../class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#ab76186e663a51bc9775b5d622135dfa2',1,'Starstrider42.CustomAsteroids.AsteroidInfo.AsteroidInfo(Vessel vessel, string parentSet)']]]
 ];

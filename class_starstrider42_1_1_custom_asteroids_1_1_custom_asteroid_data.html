@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.6</span>
+   &#160;<span id="projectnumber">1.7</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -109,6 +109,7 @@ $(document).ready(function(){initNavTree('class_starstrider42_1_1_custom_asteroi
 <div class="header">
   <div class="summary">
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#properties">Properties</a> &#124;
 <a href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_data-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Starstrider42.CustomAsteroids.CustomAsteroidData Class Reference</div>  </div>
@@ -128,6 +129,12 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a66dee01b2743d76e966f61b50041af8a"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_data.html#a66dee01b2743d76e966f61b50041af8a">displayComposition</a></td></tr>
 <tr class="memdesc:a66dee01b2743d76e966f61b50041af8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">The name of the composition class to use.  <a href="#a66dee01b2743d76e966f61b50041af8a">More...</a><br /></td></tr>
 <tr class="separator:a66dee01b2743d76e966f61b50041af8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="properties"></a>
+Properties</h2></td></tr>
+<tr class="memitem:aeb9b829e40314591502aa8863f7dabec"><td class="memItemLeft" align="right" valign="top">string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_data.html#aeb9b829e40314591502aa8863f7dabec">parentSet</a><code> [get]</code></td></tr>
+<tr class="memdesc:aeb9b829e40314591502aa8863f7dabec"><td class="mdescLeft">&#160;</td><td class="mdescRight">The unique ID of the asteroid set that created this asteroid.  <a href="#aeb9b829e40314591502aa8863f7dabec">More...</a><br /></td></tr>
+<tr class="separator:aeb9b829e40314591502aa8863f7dabec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Represents asteroid-specific information not included in the stock game. </p>
@@ -162,6 +169,31 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<h2 class="groupheader">Property Documentation</h2>
+<a class="anchor" id="aeb9b829e40314591502aa8863f7dabec"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">string Starstrider42.CustomAsteroids.CustomAsteroidData.parentSet</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">get</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>The unique ID of the asteroid set that created this asteroid. </p>
+<p>The name of the set, or null if inapplicable or unknown.</p>
+<p>The returned name is <em>not</em> guaranteed to match any currently loaded asteroid config.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/CustomAsteroidData.cs</li>
 </ul>
@@ -171,7 +203,7 @@ Public Attributes</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a class="el" href="namespace_starstrider42.html">Starstrider42</a></li><li class="navelem"><a class="el" href="namespace_starstrider42_1_1_custom_asteroids.html">CustomAsteroids</a></li><li class="navelem"><a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_data.html">CustomAsteroidData</a></li>
-    <li class="footer">Generated on Sun Jan 20 2019 17:38:06 for Custom Asteroids by
+    <li class="footer">Generated on Sun May 12 2019 16:02:31 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>

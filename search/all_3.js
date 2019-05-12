@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['onawake',['OnAwake',['../class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a5a476cb908710ed98f34205decd0e142',1,'Starstrider42::CustomAsteroids::CustomAsteroidSpawner']]],
-  ['onload',['OnLoad',['../class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a96d2f419d9d17f2fb403dc5d5c3a269f',1,'Starstrider42::CustomAsteroids::CustomAsteroidSpawner']]],
-  ['onsave',['OnSave',['../class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a8db943c13c0ea5ba9a739c0391f5d3d8',1,'Starstrider42::CustomAsteroids::CustomAsteroidSpawner']]]
+  ['errortoplayer',['errorToPlayer',['../class_starstrider42_1_1_custom_asteroids_1_1_util.html#a7cf5ca147bf695e9a3a83482630f2662',1,'Starstrider42.CustomAsteroids.Util.errorToPlayer(string format, params object[] param)'],['../class_starstrider42_1_1_custom_asteroids_1_1_util.html#a022f950415174fadb4eebe13713df954',1,'Starstrider42.CustomAsteroids.Util.errorToPlayer(Exception e, string summary)']]],
+  ['errortoplayerloc',['errorToPlayerLoc',['../class_starstrider42_1_1_custom_asteroids_1_1_util.html#a2991f85797f80a541aa6e2549dcbf0da',1,'Starstrider42::CustomAsteroids::Util']]]
 ];

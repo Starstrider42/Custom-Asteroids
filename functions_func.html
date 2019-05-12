@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.6</span>
+   &#160;<span id="projectnumber">1.7</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -82,6 +82,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
       <li><a href="functions.html"><span>All</span></a></li>
       <li class="current"><a href="functions_func.html"><span>Functions</span></a></li>
       <li><a href="functions_vars.html"><span>Variables</span></a></li>
+      <li><a href="functions_prop.html"><span>Properties</span></a></li>
     </ul>
   </div>
 </div><!-- top -->
@@ -115,20 +116,34 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 
 <div class="contents">
 &#160;<ul>
+<li>AsteroidInfo()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#aad7866e59b3496c484fd64303ae64fbb">Starstrider42.CustomAsteroids.AsteroidInfo</a>
+</li>
+<li>CustomAsteroidRegistry()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_registry.html#aa4b7ca14bf12e7ad212b4556e64bb761">Starstrider42.CustomAsteroids.CustomAsteroidRegistry</a>
+</li>
 <li>errorToPlayer()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_util.html#a7cf5ca147bf695e9a3a83482630f2662">Starstrider42.CustomAsteroids.Util</a>
 </li>
 <li>errorToPlayerLoc()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_util.html#a2991f85797f80a541aa6e2549dcbf0da">Starstrider42.CustomAsteroids.Util</a>
 </li>
+<li>FromConfigNode()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#a99099b6ce8bc88b3de056d8bb6903839">Starstrider42.CustomAsteroids.AsteroidInfo</a>
+</li>
 <li>OnAwake()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a5a476cb908710ed98f34205decd0e142">Starstrider42.CustomAsteroids.CustomAsteroidSpawner</a>
 </li>
 <li>OnLoad()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a96d2f419d9d17f2fb403dc5d5c3a269f">Starstrider42.CustomAsteroids.CustomAsteroidSpawner</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_registry.html#a823ba66b70abefa27d0620723754fe76">Starstrider42.CustomAsteroids.CustomAsteroidRegistry</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a96d2f419d9d17f2fb403dc5d5c3a269f">Starstrider42.CustomAsteroids.CustomAsteroidSpawner</a>
 </li>
 <li>OnSave()
-: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a8db943c13c0ea5ba9a739c0391f5d3d8">Starstrider42.CustomAsteroids.CustomAsteroidSpawner</a>
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_registry.html#ae8771dcaa687f051eb2876f9267d8cbf">Starstrider42.CustomAsteroids.CustomAsteroidRegistry</a>
+, <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#a8db943c13c0ea5ba9a739c0391f5d3d8">Starstrider42.CustomAsteroids.CustomAsteroidSpawner</a>
+</li>
+<li>ToConfigNode()
+: <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_asteroid_info.html#a6f2e8c9ff7635447ef992903a7995728">Starstrider42.CustomAsteroids.AsteroidInfo</a>
 </li>
 <li>Update()
 : <a class="el" href="class_starstrider42_1_1_custom_asteroids_1_1_custom_asteroid_spawner.html#ae38e27a508bdcff809dced4bd945e887">Starstrider42.CustomAsteroids.CustomAsteroidSpawner</a>
@@ -139,7 +154,7 @@ $(document).ready(function(){initNavTree('functions_func.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sun Jan 20 2019 17:38:06 for Custom Asteroids by
+    <li class="footer">Generated on Sun May 12 2019 16:02:31 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>
