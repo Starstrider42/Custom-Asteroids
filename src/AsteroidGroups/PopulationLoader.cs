@@ -128,6 +128,7 @@ namespace Starstrider42.CustomAsteroids
         /// Returns the total spawn rate of all asteroid sets. Does not throw exceptions.
         /// </summary>
         /// <returns>The sum of all spawn rates for all sets, in asteroids per day.</returns>
+        /// <remarks>The rate can be affected by populations' situational modifiers, and may be zero.</remarks>
         internal double getTotalRate ()
         {
             double total = 0.0;

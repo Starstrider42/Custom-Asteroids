@@ -12,6 +12,7 @@ namespace Starstrider42.CustomAsteroids
         /// exceptions.
         /// </summary>
         /// <returns>The number of asteroids discovered per Earth day.</returns>
+        /// <remarks>The rate can be affected by situational modifiers, and may be zero.</remarks>
         double getSpawnRate ();
 
         /// <summary>

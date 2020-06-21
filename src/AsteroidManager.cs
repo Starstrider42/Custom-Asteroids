@@ -64,6 +64,7 @@ namespace Starstrider42.CustomAsteroids
         /// </summary>
         /// <returns>The total spawn rate, in asteroids per day, of all loaded asteroid
         /// sets.</returns>
+        /// <remarks>The rate can be affected by situational modifiers, and may be zero.</remarks>
         internal static double spawnRate ()
         {
             return allowedPops.getTotalRate ();
