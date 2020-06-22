@@ -38,6 +38,7 @@ namespace Starstrider42.CustomAsteroids
         protected override void checkSpawn ()
         {
             if (areAsteroidsTrackable ()
+                    && AsteroidManager.spawnRate() > 0.0
                     && countUntrackedAsteroids () < Random.Range (SPAWN_GROUP_MIN_LIMIT,
                                                                   SPAWN_GROUP_MAX_LIMIT)) {
                 if (Random.Range (0.0f, 1.0f) < 1.0f / (1.0f + SPAWN_ODDS_AGAINST)) {

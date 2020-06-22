@@ -56,7 +56,7 @@ namespace Starstrider42.CustomAsteroids
         {
             // More than one asteroid per tick is unlikely even at 100,000×
             while (Planetarium.GetUniversalTime () > nextAsteroid) {
-                if (areAsteroidsTrackable ()) {
+                if (areAsteroidsTrackable () && AsteroidManager.spawnRate() > 0.0) {
                     Debug.Log ("[FixedRateSpawner]: "
                               + Localizer.Format ("#autoLOC_CustomAsteroids_LogSpawnInterval",
                                                   nextAsteroid));

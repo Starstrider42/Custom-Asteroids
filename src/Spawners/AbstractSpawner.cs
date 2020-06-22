@@ -174,6 +174,7 @@ namespace Starstrider42.CustomAsteroids
         /// <returns>the newly created asteroid, or null if no asteroid was created. May be used as
         /// a hook by spawners that need more control over asteroid properties. Clients should
         /// assume the returned vessel is already registered in the game.</returns>
+        /// <remarks>At least one population must have a positive spawn rate.</remarks>
         protected ProtoVessel spawnAsteroid ()
         {
             resetRng ();
