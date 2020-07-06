@@ -10,6 +10,7 @@ Unreleased
 ### Bug Fixes
 
 * Loading a KSP game in which many years have passed no longer causes Custom Asteroids to "churn" through redundant asteroids.
+* Resource drills now work when Custom Asteroids is installed but Community Resource Pack is not.
 * Asteroid configs consisting entirely of limited-size or conditionally-spawned asteroids no longer emit error messages.
 * Asteroid configs consisting entirely of limited-size or conditionally-spawned asteroids no longer cause the spawner to get stuck in a zero-asteroid state.
 
