@@ -49,5 +49,15 @@ namespace Starstrider42.CustomAsteroids
         /// cannot produce valid types. The program will be in a consistent state in the event of
         /// an exception.</exception>
         string drawAsteroidType ();
+
+        /// <summary>
+        /// Generates a random asteroid size appropriate for this type.
+        /// </summary>
+        /// <returns>A standard KSP size class.</returns>
+        ///
+        /// <exception cref="System.InvalidOperationException">Thrown if the implementing object
+        /// cannot produce valid sizes. The program will be in a consistent state in the event of
+        /// an exception.</exception>
+        UntrackedObjectClass drawAsteroidSize ();
     }
 }

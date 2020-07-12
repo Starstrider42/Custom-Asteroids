@@ -207,6 +207,26 @@ namespace Starstrider42.CustomAsteroids
             }
         }
 
+        /// <summary>
+        /// Returns the sizeCurve used by the stock spawner as of KSP 1.0.5. This corresponds to
+        /// the following size distribution: 12% class A, 13% class B, 50% class C, 13% class D,
+        /// and 12% class E.
+        /// </summary>
+        private static readonly FloatCurve stockSizeCurve = new FloatCurve (new []
+            {
+                new Keyframe(0.0f, 0.0f, 1.5f, 1.5f),
+                new Keyframe(0.3f, 0.45f, 0.875f, 0.875f),
+                new Keyframe(0.7f, 0.55f, 0.875f, 0.875f),
+                new Keyframe(1.0f, 1.0f, 1.5f, 1.5f)
+            });
+
+        public UntrackedObjectClass drawAsteroidSize ()
+        {
+            // Asteroids appear to be hardcoded to be from size A to E, even though there are more classes now
+            return (UntrackedObjectClass)(int)
+                (stockSizeCurve.Evaluate (UnityEngine.Random.Range (0.0f, 1.0f)) * 5);
+        }
+
         public double getSpawnRate ()
         {
             return spawnRate;
