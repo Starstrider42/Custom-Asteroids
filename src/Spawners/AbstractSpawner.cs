@@ -301,13 +301,10 @@ namespace Starstrider42.CustomAsteroids
         /// null.</exception>
         private static ConfigNode makeDiscoveryInfo (AsteroidSet group)
         {
-            Pair<float, float> trackTimes = AsteroidManager.getOptions ().getUntrackedTimes ();
-            double lifetime = UnityEngine.Random.Range (trackTimes.first, trackTimes.second)
-                                         * SECONDS_PER_EARTH_DAY;
-            double maxLifetime = trackTimes.second * SECONDS_PER_EARTH_DAY;
+            Pair<double, double> lifetimes = group.drawTrackingTime ();
             UntrackedObjectClass size = group.drawAsteroidSize ();
             ConfigNode trackingInfo = ProtoVessel.CreateDiscoveryNode (
-                                          DiscoveryLevels.Presence, size, lifetime, maxLifetime);
+                                          DiscoveryLevels.Presence, size, lifetimes.first, lifetimes.second);
             return trackingInfo;
         }
 

@@ -59,5 +59,16 @@ namespace Starstrider42.CustomAsteroids
         /// cannot produce valid sizes. The program will be in a consistent state in the event of
         /// an exception.</exception>
         UntrackedObjectClass drawAsteroidSize ();
+
+        /// <summary>
+        /// Generates a random tracking lifetime appropriate for this type.
+        /// </summary>
+        /// <returns>The time left until the asteroid is lost and the time represented by a full
+        /// "Signal Strength" bar, both in seconds.</returns>
+        ///
+        /// <exception cref="System.InvalidOperationException">Thrown if the implementing object
+        /// cannot produce valid lifetimes. The program will be in a consistent state in the event of
+        /// an exception.</exception>
+        Pair<double, double> drawTrackingTime ();
     }
 }

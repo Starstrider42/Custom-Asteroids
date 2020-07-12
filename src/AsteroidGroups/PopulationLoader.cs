@@ -227,6 +227,18 @@ namespace Starstrider42.CustomAsteroids
                 (stockSizeCurve.Evaluate (UnityEngine.Random.Range (0.0f, 1.0f)) * 5);
         }
 
+        /// <summary>The length of an Earth day, in seconds.</summary>
+        private const double SECONDS_PER_EARTH_DAY = 24.0 * 3600.0;
+
+        public Pair<double, double> drawTrackingTime ()
+        {
+            Pair<float, float> trackTimes = AsteroidManager.getOptions ().getUntrackedTimes ();
+            double lifetime = UnityEngine.Random.Range (trackTimes.first, trackTimes.second)
+                                         * SECONDS_PER_EARTH_DAY;
+            double maxLifetime = trackTimes.second * SECONDS_PER_EARTH_DAY;
+            return new Pair<double, double> (lifetime, maxLifetime);
+        }
+
         public double getSpawnRate ()
         {
             return spawnRate;
