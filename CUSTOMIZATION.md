@@ -162,6 +162,8 @@ Starting from Custom Asteroids 1.3, an optional `asteroidTypes` block allows ast
 
 Starting from Custom Asteroids 1.7, an optional `spawnMax` field allows asteroids to appear only up to a fixed count (for example, `spawnMax = 1` will create unique asteroids). Both tracked and untracked asteroids count toward the limit. Combining a high spawn rate and a low spawn limit is not encouraged
 
+Starting from Custom Asteroids 1.8, an optional `sizes` block allows asteroids to have a specific distribution of sizes. If no block is provided, the stock size distribution for asteroids will be used. The block consists of a list of entries in the format 'key = &lt;weight&gt; &lt;class&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid sizes. &lt;class&gt; must be the name of an asteroid size class, such as B or E. Non-standard classes are not supported.
+
 INTERCEPT                                          {#adv_intercept}
 ------------
 
@@ -183,6 +185,7 @@ Each `INTERCEPT` block can have up to five parameters:
 * `spawnMax`: a limit on the number of asteroids that can appear at a time. This block works exactly as for `ASTEROIDGROUP`.
 * `detectable`: a set of conditions that need to be met before asteroids appear. This block works exactly as for `ASTEROIDGROUP`.
 * `asteroidTypes`: a list of asteroid parts used to represent asteroids. This block works exactly as for `ASTEROIDGROUP`.
+* `sizes`: a list of size classes. This block works exactly as for `ASTEROIDGROUP`.
 
 CustomAsteroidPlanes                               {#adv_planes}
 ------------

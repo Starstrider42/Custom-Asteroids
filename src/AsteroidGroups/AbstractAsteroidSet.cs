@@ -33,6 +33,11 @@ namespace Starstrider42.CustomAsteroids
         [Persistent (name = "asteroidTypes", collectionIndex = "key")]
         protected readonly Proportions<string> classRatios;
 
+        /// <summary>Relative ocurrence rates of asteroid classes. Revert to default algorithm
+        /// if null.</summary>
+        [Persistent (name = "sizes", collectionIndex = "key")]
+        protected readonly Proportions<string> sizeRatios;
+
         /// <summary>
         /// Creates a dummy population. The object is initialized to a state in which it will not
         /// be expected to generate orbits.
@@ -48,6 +53,8 @@ namespace Starstrider42.CustomAsteroids
             detectable = null;
 
             classRatios = new Proportions<string> (new [] { "1.0 PotatoRoid" });
+
+            sizeRatios = null;
         }
 
         public abstract Orbit drawOrbit ();
@@ -80,9 +87,26 @@ namespace Starstrider42.CustomAsteroids
 
         public UntrackedObjectClass drawAsteroidSize ()
         {
-            // Asteroids appear to be hardcoded to be from size A to E, even though there are more classes now
-            return (UntrackedObjectClass)(int)
-                (stockSizeCurve.Evaluate (UnityEngine.Random.Range (0.0f, 1.0f)) * 5);
+            if (sizeRatios != null)
+            {
+                string sizeName = RandomDist.weightedSample (sizeRatios.asPairList ());
+                if (Enum.TryParse (sizeName, true, out UntrackedObjectClass size))
+                {
+                    return size;
+                }
+                else
+                {
+                    Util.errorToPlayerLoc ("#autoLOC_CustomAsteroids_ErrorNoSize", sizeName, name);
+                    Debug.LogError ($"[CustomAsteroids]: Invalid asteroid size {sizeName} in group {name}.");
+                    return UntrackedObjectClass.C;
+                }
+            }
+            else
+            {
+                // Stock asteroids appear to be hardcoded to be from size A to E, even though there are more classes now
+                return (UntrackedObjectClass)(int)
+                    (stockSizeCurve.Evaluate (UnityEngine.Random.Range (0.0f, 1.0f)) * 5);
+            }
         }
 
         /// <summary>The length of an Earth day, in seconds.</summary>

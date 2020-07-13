@@ -7,6 +7,10 @@ All version numbers are to be interpreted as described therein. In addition to t
 Unreleased
 ------------
 
+### New Features
+
+* Asteroid groups can now have custom size distributions. They are still limited to the asteroid sizes provided by the stock game.
+
 ### Bug Fixes
 
 * Loading a KSP game in which many years have passed no longer causes Custom Asteroids to "churn" through redundant asteroids.
