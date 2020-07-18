@@ -9,8 +9,8 @@
 		"REPOSITORY": "Custom-Asteroids",
 		"ALLOW_PRE_RELEASE": false
 	},
-	"VERSION": "1.7.0",
-	"KSP_VERSION": "1.7.0",
+	"VERSION": "1.8.0",
+	"KSP_VERSION": "1.7.3",
 	"KSP_VERSION_MIN": "1.4.0",
 	"KSP_VERSION_MAX": "1.9.1"
 }
