@@ -90,15 +90,14 @@ namespace Starstrider42.CustomAsteroids
             if (sizeRatios != null)
             {
                 string sizeName = RandomDist.weightedSample (sizeRatios.asPairList ());
-                try
+                if (Enum.TryParse (sizeName, true, out UntrackedObjectClass size))
                 {
-                    return (UntrackedObjectClass)Enum.Parse(typeof(UntrackedObjectClass), sizeName, true);
+                    return size;
                 }
-                catch (ArgumentException e)
+                else
                 {
-                    Util.errorToPlayer (e, Localizer.Format (
-                        "#autoLOC_CustomAsteroids_ErrorNoSize", sizeName, name));
-                    Debug.LogException (e);
+                    Util.errorToPlayerLoc ("#autoLOC_CustomAsteroids_ErrorNoSize", sizeName, name);
+                    Debug.LogError ($"[CustomAsteroids]: Invalid asteroid size {sizeName} in group {name}.");
                     return UntrackedObjectClass.C;
                 }
             }
