@@ -222,15 +222,19 @@ namespace Starstrider42.CustomAsteroids
         {
             Orbit orbit = makeOrbit (group);
             string name = makeName (group);
-            ConfigNode trackingInfo = makeDiscoveryInfo (group);
             ConfigNode [] partList = makeAsteroidParts (group);
+            ConfigNode [] extraNodes = new ConfigNode []
+            {
+                new ConfigNode ("ACTIONGROUPS"),
+                makeDiscoveryInfo(group),
+            };
 
             // Stock spawner reports its module name, so do the same for custom spawns
             Debug.Log ($"[{GetType ().Name}]: "
                        + Localizer.Format ("#autoLOC_CustomAsteroids_LogSpawn", name, group));
 
             ConfigNode vessel = ProtoVessel.CreateVesselNode (name, VesselType.SpaceObject, orbit,
-                                    0, partList, new ConfigNode ("ACTIONGROUPS"), trackingInfo);
+                                    0, partList, extraNodes);
 
             return HighLogic.CurrentGame.AddVessel (vessel);
         }
