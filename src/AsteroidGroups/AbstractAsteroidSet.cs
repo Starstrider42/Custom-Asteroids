@@ -33,7 +33,7 @@ namespace Starstrider42.CustomAsteroids
         [Persistent (name = "asteroidTypes", collectionIndex = "key")]
         protected readonly Proportions<string> classRatios;
 
-        /// <summary>Relative ocurrence rates of asteroid classes. Revert to default algorithm
+        /// <summary>Relative ocurrence rates of asteroid sizes. Revert to default algorithm
         /// if null.</summary>
         [Persistent (name = "sizes", collectionIndex = "key")]
         protected readonly Proportions<string> sizeRatios;
