@@ -228,6 +228,7 @@ namespace Starstrider42.CustomAsteroids
             {
                 new ConfigNode ("ACTIONGROUPS"),
                 makeDiscoveryInfo(group, size),
+                makeVesselModules(group, partList, size),
             };
 
             // Stock spawner reports its module name, so do the same for custom spawns
@@ -311,6 +312,43 @@ namespace Starstrider42.CustomAsteroids
             ConfigNode trackingInfo = ProtoVessel.CreateDiscoveryNode (
                                           DiscoveryLevels.Presence, size, lifetimes.first, lifetimes.second);
             return trackingInfo;
+        }
+
+        /// <summary>
+        /// Generates any vessel modules needed by a particular asteroid.
+        /// </summary>
+        /// <param name="group">The asteroid group to which the asteroid belongs.</param>
+        /// <param name="partList">The part(s) from which the asteroid is made.</param>
+        /// <param name="size">The asteroid's size class.</param>
+        /// <returns>A <c>VesselModules</c> node containing all vessel modules besides
+        /// the defaults (currently <c>FlightIntegrator</c> and <c>AxisGroupModule</c>).</returns>
+        /// <exception cref="System.NullReferenceException">Thrown if <c>group</c> or <c>partList</c> is
+        /// null.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if <c>partList</c> does not
+        /// contain exactly one part, or contains an unsupported part. The program state will be
+        /// unchanged in the event of an exception.</exception>
+        private ConfigNode makeVesselModules(AsteroidSet group, ConfigNode[] partList, UntrackedObjectClass size)
+        {
+            if (partList.Length != 1)
+            {
+                throw new InvalidOperationException (
+                    Localizer.Format ("#autoLOC_CustomAsteroids_ErrorMultiParts", partList));
+            }
+            AvailablePart part = PartLoader.getPartInfoByName(partList[0].GetValue("name"));
+
+            ConfigNode wrapper = new ConfigNode("VESSELMODULES");
+            // CometVessel seems to be removed if there's no ModuleComet, but filter just in case
+            if (part.partPrefab.HasModuleImplementing<ModuleComet>())
+            {
+                string cometType = "intermediate";
+                bool cometName = true;
+                CometOrbitType stockClass = CometManager.GetCometOrbitType(cometType);
+                // As far as I can tell the object class is used to scale the activity level
+                ConfigNode moduleComet = CometManager.GenerateDefinition(stockClass, size, new System.Random().Next())
+                    .CreateVesselNode(false, 0.0f, !cometName);
+                wrapper.AddNode(moduleComet);
+            }
+            return wrapper;
         }
 
         /// <summary>
