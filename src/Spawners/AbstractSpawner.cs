@@ -324,9 +324,9 @@ namespace Starstrider42.CustomAsteroids
         /// the defaults (currently <c>FlightIntegrator</c> and <c>AxisGroupModule</c>).</returns>
         /// <exception cref="System.NullReferenceException">Thrown if <c>group</c> or <c>partList</c> is
         /// null.</exception>
-        /// <exception cref="System.InvalidOperationException">Thrown if <c>partList</c> does not
-        /// contain exactly one part, or contains an unsupported part. The program state will be
-        /// unchanged in the event of an exception.</exception>
+        /// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot generate
+        /// valid data, or if <c>partList</c> does not contain exactly one part, or contains an
+        /// unsupported part. The program state will be unchanged in the event of an exception.</exception>
         private ConfigNode makeVesselModules(AsteroidSet group, ConfigNode[] partList, UntrackedObjectClass size)
         {
             if (partList.Length != 1)
@@ -340,9 +340,13 @@ namespace Starstrider42.CustomAsteroids
             // CometVessel seems to be removed if there's no ModuleComet, but filter just in case
             if (part.partPrefab.HasModuleImplementing<ModuleComet>())
             {
-                string cometType = "intermediate";
-                bool cometName = true;
+                string cometType = group.getCometOrbit();
+                bool cometName = group.getUseCometName();
                 CometOrbitType stockClass = CometManager.GetCometOrbitType(cometType);
+                if (stockClass is null)
+                {
+                    throw new InvalidOperationException(Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNoCometType", cometType));
+                }
                 // As far as I can tell the object class is used to scale the activity level
                 ConfigNode moduleComet = CometManager.GenerateDefinition(stockClass, size, new System.Random().Next())
                     .CreateVesselNode(false, 0.0f, !cometName);

@@ -14,7 +14,8 @@ Basic Usage                                     {#basic}
 
 The most frequently used fields in each `ASTEROIDGROUP` block are the following:
 * `name`: a unique, machine-readable name. Must not contain spaces.
-* `title`: a descriptive name. If `RenameAsteroids = True` is set in the [settings file](http://starstrider42.github.io/Custom-Asteroids/options.html), 
+* `title`: a descriptive name. If `RenameAsteroids = True` is set in the [settings file](http://starstrider42.github.io/Custom-Asteroids/options.html)
+    and the asteroid is not a comet,
     this name will replace the generic "Ast." in the asteroids' name. May be a
     localization string. If the title contains the string "<<1>>", it will be
     replaced by the asteroid's unique ID; otherwise, the ID will be appended to the title.
@@ -158,11 +159,15 @@ Starting from Custom Asteroids 1.3, an optional `detectable` block allows astero
 
 Any test may have "Manned" or "Unmanned" appended to restrict the test to vessels that can or cannot support crew, respectively. For example, `Jool.noworbitUnmanned` means that asteroids will only appear while a probe is in orbit around Jool.
 
-Starting from Custom Asteroids 1.3, an optional `asteroidTypes` block allows asteroids to have parts other than "PotatoRoid", the stock asteroid part. If no block is provided, all asteroids will be PotatoRoids. The block consists of a list of entries in the format 'key = &lt;weight&gt; &lt;part&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid types. &lt;part&gt; must be the name of the part used to represent the asteroid. Custom Asteroids ships with four such parts, "CaAsteroidMetal", "CaAsteroidCarbon", "CaAsteroidIcy", and "CaCometActive". The "Ca" prefix in these names is reserved for future enhancements to Custom Asteroids, and third-party modders are asked not to use it.
+Starting from Custom Asteroids 1.3, an optional `asteroidTypes` block allows asteroids to have parts other than "PotatoRoid", the stock asteroid part. If no block is provided, all asteroids will be PotatoRoids. The block consists of a list of entries in the format 'key = &lt;weight&gt; &lt;part&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid types. &lt;part&gt; must be the name of the part used to represent the asteroid. This can be the stock "PotatoRoid" and "PotatoComet", or one of the three parts shipped with Custom Asteroids: "CaAsteroidMetal", "CaAsteroidCarbon", and "CaAsteroidIcy". The "Ca" prefix in these names is reserved for future enhancements to Custom Asteroids, and third-party modders are asked not to use it.
 
 Starting from Custom Asteroids 1.7, an optional `spawnMax` field allows asteroids to appear only up to a fixed count (for example, `spawnMax = 1` will create unique asteroids). Both tracked and untracked asteroids count toward the limit. Combining a high spawn rate and a low spawn limit is not encouraged
 
 Starting from Custom Asteroids 1.8, an optional `sizes` block allows asteroids to have a specific distribution of sizes. If no block is provided, the stock size distribution for asteroids will be used. The block consists of a list of entries in the format 'key = &lt;weight&gt; &lt;class&gt;'. &lt;weight&gt; must be a positive number, giving the relative ratios of different asteroid sizes. &lt;class&gt; must be the name of an asteroid size class, such as B or E. Non-standard classes are not supported.
+
+Starting from Custom Asteroids 1.9, an optional `orbitType` field specifies the `COMET_ORBIT_TYPE` block to use for the descriptions and science classes of any comets (all orbital elements are generated using the Custom Asteroids system instead). Stock KSP defines (in `Squad/Resources/CometDefs.cfg`) the orbits `short`, `intermediate`, `long`, and `interstellar`; `orbitType` defaults to `intermediate`. This field is ignored when an asteroid is spawned.
+
+Starting from Custom Asteroids 1.9, an optional `useCometName` field determines whether comets have comet-like or asteroid-like names. It defaults to `true` (comet-like). This field is ignored for asteroids, which must always use asteroid-like names. This field is mainly useful for creating icy bodies that, while they still sublimate if they approach the Sun, are not "comets".
 
 INTERCEPT                                          {#adv_intercept}
 ------------

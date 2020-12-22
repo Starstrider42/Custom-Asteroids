@@ -38,6 +38,15 @@ namespace Starstrider42.CustomAsteroids
         [Persistent (name = "sizes", collectionIndex = "key")]
         protected readonly Proportions<string> sizeRatios;
 
+        /// <summary>The orbit type to use for any comets from this set. Ignored for non-comets.</summary>
+        [Persistent]
+        protected readonly string orbitType;
+
+        /// <summary>Whether to use comet-like names for any comets from this set. Objects without
+        /// a ModuleComet always use asteroid-like names, regardless of this flag.</summary>
+        [Persistent]
+        protected readonly bool useCometName;
+
         /// <summary>
         /// Creates a dummy population. The object is initialized to a state in which it will not
         /// be expected to generate orbits.
@@ -55,6 +64,9 @@ namespace Starstrider42.CustomAsteroids
             classRatios = new Proportions<string> (new [] { "1.0 PotatoRoid" });
 
             sizeRatios = null;
+
+            orbitType = "intermediate";
+            useCometName = true;
         }
 
         public abstract Orbit drawOrbit ();
@@ -141,6 +153,10 @@ namespace Starstrider42.CustomAsteroids
         {
             return title;
         }
+
+        public string getCometOrbit () { return orbitType; }
+
+        public bool getUseCometName () { return useCometName; }
 
         /// <summary>
         /// Returns a <see cref="string"/> that represents the current object.

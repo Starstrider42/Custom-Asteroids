@@ -254,6 +254,10 @@ namespace Starstrider42.CustomAsteroids
             return title;
         }
 
+        public string getCometOrbit () { return "intermediate"; }
+
+        public bool getUseCometName () { return true; }
+
         /// <summary>
         /// Returns a <see cref="string"/> that represents the current object.
         /// </summary>

@@ -30,6 +30,19 @@ namespace Starstrider42.CustomAsteroids
         string getAsteroidName ();
 
         /// <summary>
+        /// Returns the comet orbit to use for any comets of this type. Does not throw exceptions.
+        /// </summary>
+        /// <returns>A string identifying the <c>COMET_ORBIT_TYPE</c> block to use. The name may be unvalidated.</returns>
+        string getCometOrbit ();
+
+        /// <summary>
+        /// Returns whether any comets of this type should have comet-like names. Does not throw exceptions.
+        /// </summary>
+        /// <returns><c>true</c> if comet-like names should be used,
+        /// <c>false</c> if asteroid-like names should be used.</returns>
+        bool getUseCometName ();
+
+        /// <summary>
         /// Generates a random orbit appropriate for this type.
         /// </summary>
         /// <returns>The orbit of a randomly selected member of the asteroid type.</returns>

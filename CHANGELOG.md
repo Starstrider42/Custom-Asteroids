@@ -7,6 +7,10 @@ All version numbers are to be interpreted as described therein. In addition to t
 Unreleased
 ------------
 
+### New Features
+
+* Asteroid groups can now create comets that behave according to stock rules (e.g., orbit-dependent science classes).
+
 ### Changes
 
 * Nerfed spawn rate of Drestroids slightly.
