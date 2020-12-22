@@ -13,6 +13,7 @@ Unreleased
 
 ### Changes
 
+* The `CaCometActive` part and `cometSample` experiment are now deprecated; use `PotatoComet` instead. They will be removed in version 2.0.0.
 * Nerfed spawn rate of Drestroids slightly.
 
 Version 1.8.0
