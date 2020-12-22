@@ -222,11 +222,12 @@ namespace Starstrider42.CustomAsteroids
         {
             Orbit orbit = makeOrbit (group);
             string name = makeName (group);
+            UntrackedObjectClass size = group.drawAsteroidSize ();
             ConfigNode [] partList = makeAsteroidParts (group);
             ConfigNode [] extraNodes = new ConfigNode []
             {
                 new ConfigNode ("ACTIONGROUPS"),
-                makeDiscoveryInfo(group),
+                makeDiscoveryInfo(group, size),
             };
 
             // Stock spawner reports its module name, so do the same for custom spawns
@@ -296,6 +297,7 @@ namespace Starstrider42.CustomAsteroids
         /// </summary>
         ///
         /// <param name="group">The set to which the asteroid belongs.</param>
+        /// <param name="size">The asteroid's size class.</param>
         /// <returns>A ConfigNode storing the asteroid's DiscoveryInfo object.</returns>
         ///
         /// <exception cref="System.InvalidOperationException">Thrown if <c>group</c> cannot
@@ -303,10 +305,9 @@ namespace Starstrider42.CustomAsteroids
         /// exception.</exception>
         /// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is
         /// null.</exception>
-        private static ConfigNode makeDiscoveryInfo (AsteroidSet group)
+        private static ConfigNode makeDiscoveryInfo (AsteroidSet group, UntrackedObjectClass size)
         {
             Pair<double, double> lifetimes = group.drawTrackingTime ();
-            UntrackedObjectClass size = group.drawAsteroidSize ();
             ConfigNode trackingInfo = ProtoVessel.CreateDiscoveryNode (
                                           DiscoveryLevels.Presence, size, lifetimes.first, lifetimes.second);
             return trackingInfo;
