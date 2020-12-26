@@ -110,12 +110,22 @@ namespace Starstrider42.CustomAsteroids
         /// Return all information on a specific asteroid.
         /// </summary>
         /// <returns>The registered info, or <c>null</c> if the asteroid is not registered.</returns>
+        /// <param name="vessel">The persistent ID of the asteroid to search for.</param>
+        internal AsteroidInfo LookupAsteroid (uint id)
+        {
+            AsteroidInfo result = null;
+            asteroids.TryGetValue (id, out result);
+            return result;
+        }
+
+        /// <summary>
+        /// Return all information on a specific asteroid.
+        /// </summary>
+        /// <returns>The registered info, or <c>null</c> if the asteroid is not registered.</returns>
         /// <param name="vessel">The asteroid to search for.</param>
         internal AsteroidInfo LookupAsteroid (Vessel vessel)
         {
-            AsteroidInfo result = null;
-            asteroids.TryGetValue (vessel.persistentId, out result);
-            return result;
+            return LookupAsteroid (vessel.persistentId);
         }
 
         /// <summary>
