@@ -238,7 +238,17 @@ namespace Starstrider42.CustomAsteroids
             ConfigNode vessel = ProtoVessel.CreateVesselNode (name, VesselType.SpaceObject, orbit,
                                     0, partList, extraNodes);
 
-            return HighLogic.CurrentGame.AddVessel (vessel);
+            ProtoVessel newVessel = HighLogic.CurrentGame.AddVessel(vessel);
+            // For some reason you can always retrieve a CometVessel for any Vessel; check parts instead
+            if (isComet(partList))
+            {
+                GameEvents.onCometSpawned.Fire(newVessel.vesselRef);
+            }
+            else
+            {
+                GameEvents.onAsteroidSpawned.Fire(newVessel.vesselRef);
+            }
+            return newVessel;
         }
 
         /// <summary>
@@ -315,6 +325,22 @@ namespace Starstrider42.CustomAsteroids
         }
 
         /// <summary>
+        /// Determines whether asteroid parts represent a comet.
+        /// </summary>
+        /// <param name="partList"></param>
+        /// <returns><c>true</c> if comet, <c>false</c> if asteroid.</returns>
+        private bool isComet(ConfigNode[] partList)
+        {
+            foreach (ConfigNode node in partList)
+            {
+                AvailablePart part = PartLoader.getPartInfoByName(node.GetValue("name"));
+                if (part.partPrefab.HasModuleImplementing<ModuleComet> ())
+                    return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Generates any vessel modules needed by a particular asteroid.
         /// </summary>
         /// <param name="group">The asteroid group to which the asteroid belongs.</param>
@@ -334,11 +360,10 @@ namespace Starstrider42.CustomAsteroids
                 throw new InvalidOperationException (
                     Localizer.Format ("#autoLOC_CustomAsteroids_ErrorMultiParts", partList));
             }
-            AvailablePart part = PartLoader.getPartInfoByName(partList[0].GetValue("name"));
 
             ConfigNode wrapper = new ConfigNode("VESSELMODULES");
             // CometVessel seems to be removed if there's no ModuleComet, but filter just in case
-            if (part.partPrefab.HasModuleImplementing<ModuleComet>())
+            if (isComet(partList))
             {
                 string cometType = group.getCometOrbit();
                 bool cometName = group.getUseCometName();

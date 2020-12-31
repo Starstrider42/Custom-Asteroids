@@ -18,6 +18,10 @@ Unreleased
 * Added a "Main Belt Comet" comet class.
 * Nerfed spawn rate of Drestroids slightly.
 
+### Bug Fixes
+
+* New asteroids/comets now trigger the corresponding game events.
+
 Version 1.8.0
 ------------
 
