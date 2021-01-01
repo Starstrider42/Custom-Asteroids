@@ -17,6 +17,7 @@ Unreleased
 * `Stockalike.cfg` now emulates the four stock comet classes. Comets have been removed from `Basic Asteroids.cfg` and `Trans-Jool.cfg`.
 * Added a "Main Belt Comet" comet class.
 * Nerfed spawn rates of Drestroids and Jool Trojans.
+* Modernized Kuper belt objects and made them more realistic.
 
 ### Bug Fixes
 
