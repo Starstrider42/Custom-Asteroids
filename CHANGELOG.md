@@ -16,7 +16,7 @@ Unreleased
 * The `CaCometActive` part and `cometSample` experiment are now deprecated; use `PotatoComet` instead. They will be removed in version 2.0.0.
 * `Stockalike.cfg` now emulates the four stock comet classes. Comets have been removed from `Basic Asteroids.cfg` and `Trans-Jool.cfg`.
 * Added a "Main Belt Comet" comet class.
-* Nerfed spawn rate of Drestroids slightly.
+* Nerfed spawn rates of Drestroids and Jool Trojans.
 
 ### Bug Fixes
 
