@@ -18,6 +18,7 @@ Unreleased
 * Added a "Main Belt Comet" comet class.
 * Nerfed spawn rates of Drestroids and Jool Trojans.
 * Modernized Kuper belt objects and made them more realistic.
+* Restricted Kuper belt detections to large objects.
 
 ### Bug Fixes
 
