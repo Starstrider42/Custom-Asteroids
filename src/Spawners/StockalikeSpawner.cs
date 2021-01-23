@@ -1,6 +1,5 @@
 using KSP.Localization;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Starstrider42.CustomAsteroids
 {
@@ -19,11 +18,14 @@ namespace Starstrider42.CustomAsteroids
         /// <summary>Number of untracked asteroids at which spawn rate stops completely.</summary>
         private const int SPAWN_GROUP_MAX_LIMIT = 8;
 
+        private KSPRandom rng;
+
         /// <summary>
         /// Initializes this spawner's state.
         /// </summary>
         internal StockalikeSpawner ()
         {
+            rng = new KSPRandom ();
         }
 
         protected override float checkInterval ()
@@ -39,9 +41,8 @@ namespace Starstrider42.CustomAsteroids
         {
             if (areAsteroidsTrackable ()
                     && AsteroidManager.spawnRate() > 0.0
-                    && countUntrackedAsteroids () < Random.Range (SPAWN_GROUP_MIN_LIMIT,
-                                                                  SPAWN_GROUP_MAX_LIMIT)) {
-                if (Random.Range (0.0f, 1.0f) < 1.0f / (1.0f + SPAWN_ODDS_AGAINST)) {
+                    && countUntrackedAsteroids () < rng.Next (SPAWN_GROUP_MIN_LIMIT, SPAWN_GROUP_MAX_LIMIT)) {
+                if (rng.NextDouble () < 1.0 / (1.0 + SPAWN_ODDS_AGAINST)) {
                     spawnAsteroid ();
                 } else {
                     Debug.Log ("[StockalikeSpawner]: "

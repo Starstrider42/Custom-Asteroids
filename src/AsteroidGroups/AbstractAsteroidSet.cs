@@ -117,7 +117,7 @@ namespace Starstrider42.CustomAsteroids
             {
                 // Stock asteroids appear to be hardcoded to be from size A to E, even though there are more classes now
                 return (UntrackedObjectClass)(int)
-                    (stockSizeCurve.Evaluate (UnityEngine.Random.Range (0.0f, 1.0f)) * 5);
+                    (stockSizeCurve.Evaluate ((float) RandomDist.drawUniform (0, 1)) * 5);
             }
         }
 
@@ -127,7 +127,7 @@ namespace Starstrider42.CustomAsteroids
         public Pair<double, double> drawTrackingTime ()
         {
             Pair<float, float> trackTimes = AsteroidManager.getOptions ().getUntrackedTimes ();
-            double lifetime = UnityEngine.Random.Range (trackTimes.first, trackTimes.second)
+            double lifetime = RandomDist.drawUniform (trackTimes.first, trackTimes.second)
                                          * SECONDS_PER_EARTH_DAY;
             double maxLifetime = trackTimes.second * SECONDS_PER_EARTH_DAY;
             return new Pair<double, double> (lifetime, maxLifetime);

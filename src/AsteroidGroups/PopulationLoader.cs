@@ -224,7 +224,7 @@ namespace Starstrider42.CustomAsteroids
         {
             // Asteroids appear to be hardcoded to be from size A to E, even though there are more classes now
             return (UntrackedObjectClass)(int)
-                (stockSizeCurve.Evaluate (UnityEngine.Random.Range (0.0f, 1.0f)) * 5);
+                (stockSizeCurve.Evaluate ((float) RandomDist.drawUniform (0.0, 1.0)) * 5);
         }
 
         /// <summary>The length of an Earth day, in seconds.</summary>
@@ -233,7 +233,7 @@ namespace Starstrider42.CustomAsteroids
         public Pair<double, double> drawTrackingTime ()
         {
             Pair<float, float> trackTimes = AsteroidManager.getOptions ().getUntrackedTimes ();
-            double lifetime = UnityEngine.Random.Range (trackTimes.first, trackTimes.second)
+            double lifetime = RandomDist.drawUniform (trackTimes.first, trackTimes.second)
                                          * SECONDS_PER_EARTH_DAY;
             double maxLifetime = trackTimes.second * SECONDS_PER_EARTH_DAY;
             return new Pair<double, double> (lifetime, maxLifetime);
@@ -281,7 +281,7 @@ namespace Starstrider42.CustomAsteroids
             CelestialBody kerbin = FlightGlobals.Bodies.Find (body => body.isHomeWorld);
             CelestialBody dres = FlightGlobals.Bodies.Find (body => body.name.Equals ("Dres"));
 
-            if (dres != null && reachedBody (dres) && UnityEngine.Random.Range (0, 4) == 0) {
+            if (dres != null && reachedBody (dres) && RandomDist.drawUniform (0.0, 1.0) < 0.2) {
                 // Drestroids
                 double a = RandomDist.drawLogUniform (0.55, 0.65) * dres.sphereOfInfluence;
                 double e = RandomDist.drawRayleigh (0.005);

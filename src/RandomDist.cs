@@ -48,6 +48,8 @@ namespace Starstrider42
             /// true.</summary>
             static bool isNextNormal;
 
+            static KSPRandom rng;
+
             /// <summary>
             /// Prepares all random number generators in the class.
             /// </summary>
@@ -55,6 +57,7 @@ namespace Starstrider42
             {
                 isNextNormal = false;
                 nextNormal = 0.0;
+                rng = new KSPRandom ();
             }
 
             /// <summary>
@@ -101,7 +104,7 @@ namespace Starstrider42
                 // important: no exceptions beyond this point
 
                 // assert: r is in [0, norm]
-                double threshold = norm * UnityEngine.Random.value;
+                double threshold = norm * rng.NextDouble ();
 
                 // If you stack up all the weights, at what level do you hit threshold?
                 double level = 0.0;
@@ -122,7 +125,7 @@ namespace Starstrider42
             /// <returns>The value <c>+1</c> or <c>-1</c>.</returns>
             internal static double drawSign ()
             {
-                return (UnityEngine.Random.value < 0.5 ? -1.0 : +1.0);
+                return (rng.Next (2) == 0 ? -1.0 : +1.0);
             }
 
             /// <summary>
@@ -155,7 +158,7 @@ namespace Starstrider42
 
                 // IMPORTANT: don't let anything throw beyond this point
 
-                return UnityEngine.Random.Range ((float)a, (float)b);
+                return rng.NextDouble () * (b - a) + a;
             }
 
             /// <summary>
@@ -185,7 +188,7 @@ namespace Starstrider42
 
                 // IMPORTANT: don't let anything throw beyond this point
 
-                return Math.Exp (UnityEngine.Random.Range ((float)Math.Log (a), (float)Math.Log (b)));
+                return Math.Exp (drawUniform (Math.Log (a), Math.Log (b)));
             }
 
             /// <summary>
@@ -206,7 +209,7 @@ namespace Starstrider42
                         Localizer.Format ("#autoLOC_CustomAsteroids_ErrorExponentialMean", mean));
                 }
                 // IMPORTANT: don't let anything throw beyond this point
-                return -mean * Math.Log (UnityEngine.Random.value);
+                return -mean * Math.Log (rng.NextDouble ());
             }
 
             /// <summary>
@@ -227,7 +230,7 @@ namespace Starstrider42
                         Localizer.Format ("#autoLOC_CustomAsteroids_ErrorRayleighMean", sigma));
                 }
                 // IMPORTANT: don't let anything throw beyond this point
-                return Math.Sqrt (-2.0 * sigma * sigma * Math.Log (UnityEngine.Random.value));
+                return Math.Sqrt (-2.0 * sigma * sigma * Math.Log (rng.NextDouble ()));
             }
 
             /// <summary>
@@ -257,8 +260,8 @@ namespace Starstrider42
                     return mean + stddev * nextNormal;
                 } else {
                     // Box-Muller transform
-                    double u = UnityEngine.Random.value;
-                    double v = UnityEngine.Random.value;
+                    double u = rng.NextDouble ();
+                    double v = rng.NextDouble ();
 
                     u = Math.Sqrt (-2.0 * Math.Log (u));
 
@@ -387,7 +390,7 @@ namespace Starstrider42
             /// angle.</returns>
             internal static double drawIsotropic ()
             {
-                return 180.0 / Math.PI * Math.Acos (1 - 2 * UnityEngine.Random.value);
+                return 180.0 / Math.PI * Math.Acos (1 - 2 * rng.NextDouble ());
             }
         }
     }

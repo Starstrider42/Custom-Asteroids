@@ -19,11 +19,14 @@ namespace Starstrider42.CustomAsteroids
             Localizer.GetStringByTag ("#autoLOC_6001923").Replace ("<<1>>", "(?<id>[\\w-]+)"),
             RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
 
+        private KSPRandom rng;
+
         /// <summary>
         /// Initializes internal state common to all spawners.
         /// </summary>
         protected AbstractSpawner ()
         {
+            rng = new KSPRandom ();
         }
 
         /// <summary>
@@ -45,27 +48,6 @@ namespace Starstrider42.CustomAsteroids
             checkSpawn ();
 
             return Mathf.Max (checkInterval () / TimeWarp.CurrentRate, 0.1f);
-        }
-
-        /// <summary>Change seed of Unity's random number generator to a new value.</summary>
-        /// <remarks>For reasons unknown, the RNG must be frequently re-seeded to
-        /// prevent cycles.</remarks>
-        private void resetRng ()
-        {
-            int newSeed = UnityEngine.Random.Range (0, int.MaxValue);
-            resetRng (newSeed);
-        }
-
-        /// <summary>Change seed of Unity's random number generator to a specific value.</summary>
-        /// <remarks>For reasons unknown, the RNG must be frequently re-seeded to
-        /// prevent cycles.</remarks>
-        /// <param name="seed">The new seed.</param>
-        private void resetRng (int seed)
-        {
-#if DEBUG
-            Debug.Log ($"[CustomAsteroids]: resetting seed to {seed}");
-#endif
-            UnityEngine.Random.InitState (seed);
         }
 
         /// <summary>
@@ -164,7 +146,6 @@ namespace Starstrider42.CustomAsteroids
         /// <remarks>At least one population must have a positive spawn rate.</remarks>
         protected ProtoVessel spawnAsteroid ()
         {
-            resetRng ();
             try {
                 AsteroidSet group = AsteroidManager.drawAsteroidSet ();
                 ProtoVessel asteroid = spawnAsteroid (group);
@@ -393,10 +374,10 @@ namespace Starstrider42.CustomAsteroids
         /// exception.</exception>
         /// <exception cref="System.NullReferenceException">Thrown if <c>group</c> is
         /// null.</exception>
-        private static ConfigNode [] makeAsteroidParts (AsteroidSet group)
+        private ConfigNode [] makeAsteroidParts (AsteroidSet group)
         {
             // The same "seed" that shows up in ProceduralAsteroid?
-            uint seed = (uint)UnityEngine.Random.Range (0, Int32.MaxValue);
+            uint seed = (uint)rng.Next ();
             string part = group.drawAsteroidType ();
             try {
                 ConfigNode potato = ProtoVessel.CreatePartNode (part, seed);

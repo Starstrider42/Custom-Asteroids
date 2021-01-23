@@ -23,6 +23,7 @@ Unreleased
 ### Bug Fixes
 
 * New asteroids/comets now trigger the corresponding game events.
+* Scene changes no longer cause duplicate asteroids.
 
 Version 1.8.0
 ------------

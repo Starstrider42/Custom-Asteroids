@@ -48,7 +48,7 @@ namespace Starstrider42.CustomAsteroids
             double ut = Planetarium.GetUniversalTime ();
             try {
                 // Cap at one asteroid per tick; this is unlikely to reduce the rate even at 100,000×
-                if (areAsteroidsTrackable () && UnityEngine.Random.Range (0.0f, 1.0f) < asteroidChance(ut - lastCheck)) {
+                if (areAsteroidsTrackable () && RandomDist.drawUniform (0, 1) < asteroidChance(ut - lastCheck)) {
                     Debug.Log ("[FixedRateSpawner]: "
                               + Localizer.Format ("#autoLOC_CustomAsteroids_LogSpawnInterval",
                                                   ut));
