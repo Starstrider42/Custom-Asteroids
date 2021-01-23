@@ -249,7 +249,7 @@ namespace Starstrider42.CustomAsteroids
         /// <exception cref="InvalidOperationException">Thrown if <c>first</c> is negative,
         /// <c>second</c> is nonpositive,
         /// or <c>first &gt; second</c>.</exception>
-        internal Pair<float, float> getUntrackedTimes ()
+        internal Tuple<float, float> getUntrackedTimes ()
         {
             if (minUntrackedLifetime < 0.0f) {
                 throw new InvalidOperationException (
@@ -266,7 +266,7 @@ namespace Starstrider42.CustomAsteroids
                     Localizer.Format ("#autoLOC_CustomAsteroids_ErrorOptionsBadRange",
                                   minUntrackedLifetime, maxUntrackedLifetime));
             }
-            return new Pair<float, float> (minUntrackedLifetime, maxUntrackedLifetime);
+            return Tuple.Create (minUntrackedLifetime, maxUntrackedLifetime);
         }
 
         /// <summary>

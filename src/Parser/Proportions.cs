@@ -20,7 +20,7 @@ namespace Starstrider42.CustomAsteroids
     internal class Proportions<Dummy> : System.Collections.IList, IEnumerable<string>
     {
         /// <summary>Parsed representation of the collection.</summary>
-        readonly List<Pair<string, double>> props;
+        readonly List<Tuple<string, double>> props;
 
         /// <summary>
         /// Creates an empty list of proportions.
@@ -28,7 +28,7 @@ namespace Starstrider42.CustomAsteroids
         /// <remarks>Must be public so that it is accessible to [default namespace].ConfigNode.</remarks>
         public Proportions ()
         {
-            props = new List<Pair<string, double>> ();
+            props = new List<Tuple<string, double>> ();
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Starstrider42.CustomAsteroids
         /// have the correct format.</exception>
         internal Proportions (IEnumerable<string> buffer)
         {
-            props = new List<Pair<string, double>> ();
+            props = new List<Tuple<string, double>> ();
             foreach (string item in buffer) {
                 Add (item);
             }
@@ -55,7 +55,7 @@ namespace Starstrider42.CustomAsteroids
         ///
         /// <exception cref="ArgumentException">Thrown if <c>input</c> does not have the correct
         /// format. The program state shall be unchanged in the event of an exception.</exception>
-        static Pair<string, double> parse (string input)
+        static Tuple<string, double> parse (string input)
         {
             Regex inputTemplate = new Regex ("(?<rate>[-+.e\\d]+)\\s+(?<id>\\w+)",
                                       RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
@@ -69,7 +69,7 @@ namespace Starstrider42.CustomAsteroids
                                           parsed ["rate"]));
                 }
 
-                return new Pair<string, double> (parsed ["id"].ToString (), rate);
+                return Tuple.Create (parsed ["id"].ToString (), rate);
             }
             throw new ArgumentException (
                 Localizer.Format ("#autoLOC_CustomAsteroids_ErrorProportionBadFormat", input));
@@ -82,11 +82,11 @@ namespace Starstrider42.CustomAsteroids
         ///
         /// <param name="innerData">The word and weight to convert.</param>
         /// <returns>A string <c>x</c> such that <c>parse(x) == innerData</c>.</returns>
-        static string unparse (Pair<string, double> innerData)
+        static string unparse (Tuple<string, double> innerData)
         {
             const string OUTPUT_TEMPLATE = "{1} {0}";
 
-            return string.Format (OUTPUT_TEMPLATE, innerData.first, innerData.second);
+            return string.Format (OUTPUT_TEMPLATE, innerData.Item1, innerData.Item2);
         }
 
         /// <summary>Represents this collection as a list of paired words and weights. Updates to
@@ -96,7 +96,7 @@ namespace Starstrider42.CustomAsteroids
         ///
         /// <returns>A list of words and weights. The list representation cannot be modified
         /// directly.</returns>
-        internal IList<Pair<string, double>> asPairList ()
+        internal IList<Tuple<string, double>> asPairList ()
         {
             return props.AsReadOnly ();
         }
@@ -176,7 +176,7 @@ namespace Starstrider42.CustomAsteroids
 
         public void CopyTo (Array array, int index)
         {
-            Pair<string, double> [] buffer = new Pair<string, double> [array.Length];
+            Tuple<string, double> [] buffer = new Tuple<string, double> [array.Length];
             props.CopyTo (buffer, index);
             for (int i = 0; i < array.Length; i++) {
                 array.SetValue (unparse (buffer [i]), i);
@@ -202,9 +202,9 @@ namespace Starstrider42.CustomAsteroids
         /// </summary>
         class StringView : IEnumerator<string>
         {
-            readonly IEnumerator<Pair<string, double>> baseEnum;
+            readonly IEnumerator<Tuple<string, double>> baseEnum;
 
-            internal StringView (List<Pair<string, double>> impl)
+            internal StringView (List<Tuple<string, double>> impl)
             {
                 baseEnum = impl.GetEnumerator ();
             }

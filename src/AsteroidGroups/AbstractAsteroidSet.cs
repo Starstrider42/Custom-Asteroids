@@ -124,13 +124,13 @@ namespace Starstrider42.CustomAsteroids
         /// <summary>The length of an Earth day, in seconds.</summary>
         private const double SECONDS_PER_EARTH_DAY = 24.0 * 3600.0;
 
-        public Pair<double, double> drawTrackingTime ()
+        public Tuple<double, double> drawTrackingTime ()
         {
-            Pair<float, float> trackTimes = AsteroidManager.getOptions ().getUntrackedTimes ();
-            double lifetime = RandomDist.drawUniform (trackTimes.first, trackTimes.second)
+            Tuple<float, float> trackTimes = AsteroidManager.getOptions ().getUntrackedTimes ();
+            double lifetime = RandomDist.drawUniform (trackTimes.Item1, trackTimes.Item2)
                                          * SECONDS_PER_EARTH_DAY;
-            double maxLifetime = trackTimes.second * SECONDS_PER_EARTH_DAY;
-            return new Pair<double, double> (lifetime, maxLifetime);
+            double maxLifetime = trackTimes.Item2 * SECONDS_PER_EARTH_DAY;
+            return Tuple.Create (lifetime, maxLifetime);
         }
 
         public double getSpawnRate ()

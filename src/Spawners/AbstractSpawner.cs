@@ -299,9 +299,9 @@ namespace Starstrider42.CustomAsteroids
         /// null.</exception>
         private static ConfigNode makeDiscoveryInfo (AsteroidSet group, UntrackedObjectClass size)
         {
-            Pair<double, double> lifetimes = group.drawTrackingTime ();
+            Tuple<double, double> lifetimes = group.drawTrackingTime ();
             ConfigNode trackingInfo = ProtoVessel.CreateDiscoveryNode (
-                                          DiscoveryLevels.Presence, size, lifetimes.first, lifetimes.second);
+                                          DiscoveryLevels.Presence, size, lifetimes.Item1, lifetimes.Item2);
             return trackingInfo;
         }
 

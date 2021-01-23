@@ -82,6 +82,6 @@ namespace Starstrider42.CustomAsteroids
         /// <exception cref="System.InvalidOperationException">Thrown if the implementing object
         /// cannot produce valid lifetimes. The program will be in a consistent state in the event of
         /// an exception.</exception>
-        Pair<double, double> drawTrackingTime ();
+        System.Tuple<double, double> drawTrackingTime ();
     }
 }

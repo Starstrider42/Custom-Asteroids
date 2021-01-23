@@ -3,37 +3,6 @@ using KSP.Localization;
 
 namespace Starstrider42
 {
-    /// <summary>
-    /// Simple implementation of an ordered pair. Works around the lack of tuple support in .NET 3.5.
-    /// </summary>
-    ///
-    /// <typeparam name="T">The type of the first pair element.</typeparam>
-    /// <typeparam name="U">The type of the second pair element.</typeparam>
-    internal class Pair<T, U>
-    {
-        /// <summary>The first element of the pair.</summary>
-        public T first { get; set; }
-
-        /// <summary>The second element of the pair.</summary>
-        public U second { get; set; }
-
-        /// <summary>Creates an ordered pair whose elements are null.</summary>
-        public Pair ()
-        {
-        }
-
-        /// <summary>
-        /// Creates a new ordered pair. The new object will represent the pair (first, second).
-        /// </summary>
-        /// <param name="first">The first element of the pair.</param>
-        /// <param name="second">The second element of the pair.</param>
-        public Pair (T first, U second)
-        {
-            this.first = first;
-            this.second = second;
-        }
-    }
-
     namespace CustomAsteroids
     {
         /// <summary>
@@ -78,7 +47,7 @@ namespace Starstrider42
             /// <exception cref="ArgumentOutOfRangeException">Thrown if any weight is
             /// negative, or if no weight is positive.</exception>
             internal static T weightedSample<T> (
-                System.Collections.Generic.IList<Pair<T, double>> weightedChoices)
+                System.Collections.Generic.IList<Tuple<T, double>> weightedChoices)
             {
                 if (weightedChoices.Count == 0) {
                     throw new ArgumentException (
@@ -86,14 +55,14 @@ namespace Starstrider42
                         nameof (weightedChoices));
                 }
                 double norm = 0.0;
-                foreach (Pair<T, double> choice in weightedChoices) {
-                    if (choice.second < 0) {
+                foreach (Tuple<T, double> choice in weightedChoices) {
+                    if (choice.Item2 < 0) {
                         throw new ArgumentOutOfRangeException (
                             nameof (weightedChoices),
                             Localizer.Format ("#autoLOC_CustomAsteroids_ErrorNegativeSample",
-                                              choice.second, choice.first));
+                                              choice.Item2, choice.Item1));
                     }
-                    norm += choice.second;
+                    norm += choice.Item2;
                 }
                 if (norm <= 0.0) {
                     throw new ArgumentOutOfRangeException (
@@ -108,15 +77,15 @@ namespace Starstrider42
 
                 // If you stack up all the weights, at what level do you hit threshold?
                 double level = 0.0;
-                foreach (Pair<T, double> choice in weightedChoices) {
-                    level += choice.second;
+                foreach (Tuple<T, double> choice in weightedChoices) {
+                    level += choice.Item2;
                     if (level >= threshold) {
-                        return choice.first;
+                        return choice.Item1;
                     }
                 }
 
                 // Should only get here because of rounding error when threshold = norm
-                return weightedChoices [weightedChoices.Count - 1].first;
+                return weightedChoices [weightedChoices.Count - 1].Item1;
             }
 
             /// <summary>
