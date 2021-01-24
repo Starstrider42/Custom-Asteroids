@@ -33,7 +33,7 @@
   <td id="projectlogo"><img alt="Logo" src="CA_logo_tall.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Custom Asteroids
-   &#160;<span id="projectnumber">1.8</span>
+   &#160;<span id="projectnumber">1.9</span>
    </div>
    <div id="projectbrief">A mod for Kerbal Space Program that lets users control where asteroids appear</div>
   </td>
@@ -105,6 +105,25 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Custom Asteroids conforms to version 2.0.0 of the <a href="http://semver.org/spec/v2.0.0.html">Semantic Versioning specification</a>. All version numbers are to be interpreted as described therein. In addition to the actual <a href="http://starstrider42.github.io/Custom-Asteroids/">public API</a>, the <a href="http://starstrider42.github.io/Custom-Asteroids/newbelts.html">format of asteroid population files</a> and the information stored in KSP save files will be considered part of the API for the purpose of versioning.</p>
+<h2>Version 1.9.0 </h2>
+<h3>New Features</h3>
+<ul>
+<li>Asteroid groups can now create comets that behave according to stock rules (e.g., orbit-dependent science classes).</li>
+</ul>
+<h3>Changes</h3>
+<ul>
+<li>The <code>CaCometActive</code> part and <code>cometSample</code> experiment are now deprecated; use <code>PotatoComet</code> instead. They will be removed in version 2.0.0.</li>
+<li><code>Stockalike.cfg</code> now emulates the four stock comet classes. Comets have been removed from <code>Basic Asteroids.cfg</code> and <code>Trans-Jool.cfg</code>.</li>
+<li>Added a "Main Belt Comet" comet class.</li>
+<li>Nerfed spawn rates of Drestroids and Jool Trojans.</li>
+<li>Modernized Kuper belt objects and made them more realistic.</li>
+<li>Restricted Kuper belt detections to large objects.</li>
+</ul>
+<h3>Bug Fixes</h3>
+<ul>
+<li>New asteroids/comets now trigger the corresponding game events.</li>
+<li>Scene changes no longer cause duplicate asteroids.</li>
+</ul>
 <h2>Version 1.8.0 </h2>
 <h3>New Features</h3>
 <ul>
@@ -114,8 +133,8 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <ul>
 <li>Loading a KSP game in which many years have passed no longer causes Custom Asteroids to "churn" through redundant asteroids.</li>
 <li>Resource drills now work when Custom Asteroids is installed but Community Resource Pack is not.</li>
-<li>Asteroid configs consisting entirely of limited-size or conditionally-spawned asteroids no longer emit error messages.</li>
-<li>Asteroid configs consisting entirely of limited-size or conditionally-spawned asteroids no longer cause the spawner to get stuck in a zero-asteroid state.</li>
+<li>Asteroid configs consisting entirely of limited-number or conditionally-spawned asteroids no longer emit error messages.</li>
+<li>Asteroid configs consisting entirely of limited-number or conditionally-spawned asteroids no longer cause the spawner to get stuck in a zero-asteroid state.</li>
 </ul>
 <h2>Version 1.7.0 </h2>
 <h3>New Features</h3>
@@ -268,7 +287,7 @@ $(document).ready(function(){initNavTree('changelog.html','');});
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="footer">Generated on Sat Jul 18 2020 14:19:30 for Custom Asteroids by
+    <li class="footer">Generated on Sun Jan 24 2021 14:10:25 for Custom Asteroids by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.10 </li>
   </ul>
